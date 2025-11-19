@@ -279,7 +279,7 @@
   prefix: none,
   title: "",
   full-title: auto,
-  breakable: false,
+  breakable: true,
   html-width: 720pt,
   ..args,
   body,
@@ -485,3 +485,5 @@
   show: show-conjecture
   body
 }
+
+#let prob(expr) = $bb(P)[#expr]$

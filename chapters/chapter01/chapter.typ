@@ -230,15 +230,23 @@ We can notice the following important aspects about sigma-algebras:
 - $cal(M) = {emptyset, Omega}$ is the smallest possible sigma-algebra on $Omega$, called *degenerate*
 - $cal(M) = 2^Omega = {E : E subset Omega}$ is the largest possible sigma-algebra on $Omega$, called *power set*
 
+
+#remark[
+  When $Omega subset.eq bb(N)$, is *countable* the most common choice for the associated sigma algebra is the *power set* $cal(M) = 2^Omega$.
+
+  On the other hand, when dealing with *uncountable* $Omega subset.eq bb(R)$, the power set _too large_ to be useful. In this case a common choice for the sigma-algebra is the *Borel Sigma Algebra*, denoted by $cal(B)$, which contains all possible sets that one could practically think about except for everything that could get created by some strange recursive process that resembles the construction of _fractals_.
+]
+
+#pagebreak()
+
 ==== Axiomatic Definition of Probability
 Now that we have defined the sigma-algebra, we can finally provide a formal definition of probability.
-
 #definition(title: "Probability")[
   Assume a sample space #sym.Omega and a sigma-algebra of events $cal(M)$ defined on it. *Probability*
 
-  #math.equation(block: true, $cal(M) -> [0,1]$)
+  #math.equation(block: true, $bb(P) -> [0,1]$)
 
-  is a function of events with the domain $cal(M)$ and the range $[0,1]$ that satisfies the following conditions:
+  is a function of events with the domain $cal(M)$ and the range $[0,1]$ that satisfies the following conditions (which are called the *axioms of probability*):
 
   - *Unit Measure*: the sample space has unit probability: $bb(P)[Omega] = 1$
   - *Sigma-Additivity*: for any finite or countable collection of mutually exclusive events $E_1, E_2, ... in cal(M)$, the probability of their union is equal to the sum of their individual probabilities:
@@ -247,5 +255,91 @@ Now that we have defined the sigma-algebra, we can finally provide a formal defi
   ]
 ]<def:03_probability>
 
-
 It is good to notice that, from the first properties, we can derive that the computing the probability of the sample space amounts to say: '_something happened'_. The second property becomes fundamental when dealing with events that can be broken down into simpler, mutually exclusive events, allowing us to compute their probabilities more easily.
+
+
+All rules of probability are a direct consequence of @def:03_probability. This will allow us to compute probabilities for all events in our interest. Following we outline some of the most important probability rules that will be useful in the next chapters.
+
+- $bb(P)[emptyset] = 0$: this is easy to verify; indeed the we know from the axioms that $bb(P)[Omega] = 1$. From the second axiom we know that the union of any disjoint event has probability equal to their sum, that is $bb(P)(Omega) + bb(P)[emptyset] = 1 => bb(P)[emptyset] = 0$ #sym.qed
+- $bb(P)[A union B] = bb(P)[A] + bb(P)[B] - bb(P)[A inter B]$; we can actually notice that the following relation holds: $bb(P)[A union B] = bb(P)[A inter overline(B)] + bb(P)[B inter overline(A)] + bb(P)[A inter B]$.
+
+We can see how the second formulation is supported by the second axiom in that the three members of the summation form a *partition* of the event $A union B$. The reason why the first formulation is commonly preferred, is that that, if $A$ and $B$ are *independent* the probability of their intersection is given by $bb(P)[A]bb(P)[B]$.
+
+Intuitively, saying that two experiments are independent means that the outcome of one does not affect the outcome of the other one. To be more formal we should also consider that the occurrence of an event doesn't even influence the events' probability in the other experiment.
+
+We would even like to be more formal about the definition of independency but it's not possible without first introducing the concept of *conditional probability*.
+
+== Conditional Probability
+After defining the basic notion of probability, it's time to move on to a slightly more powerful concept, which is the one of *conditional probability*. The following definition gives us a way to compute conditional probabilities of two events.
+
+#definition(title: "Conditional Probability")[
+  Given two events $A$ and $B$ we can define the conditional probability of one event _given_ that the other one has occurred as follows:
+
+  #math.equation(block: true, $prob(A|B) = (prob(A inter B)) / (prob(B))$)<eq:03_cond_prob>
+]
+
+To understand the meaning of @eq:03_cond_prob we can consider the following example.
+
+#example-box("Computation of conditional probability", [
+  Suppose we throw a die 2 times and observe that the sum is 7. We can assert the following:
+
+  - the probability that the event $(6,6)$ happened is 0, since it is impossible to obtain a 7 with $(6,6)$
+  - the probability the rolling $(3,4)$ can be computed even without looking at @eq:03_cond_prob. Indeed if we know that the sum of the tosses is 7, we can manually compute the sample space: ${(1,6), (2,5), (3,4), (4,3), (5,2), (6,1)}$. By simply noticing that the event $(3,4)$ is present only once in the sample space we conclude that its probability is given by $1/6$.
+])
+
+==== Formula Derivation
+The reason behind the formulation of @eq:03_cond_prob is the following: before an experiment the sample space $Omega$ is the set of all possible experiments outcomes. Due to the fact that we are considering a probability we are dealing with a sigma algebra $cal(M)$, we can make safely state the following:
+
+#align(center)[
+  $A,B in cal(M) => A inter B in cal(M) => prob(A), prob(B), prob(A inter B) text("are known")$
+]
+
+or at least can be computed in some way. We can say that #text(fill: red)[$bb(P): cal(M) -> [0,1]$] is a #text(fill: red)[*prior probability*]. If now we perform the experiment and know that $B$ happens we can update the probability to incorporate the new knowledge by computing a new #text(fill: blue)[$bb(P) | B: cal(M) -> [0,1]$], a #text(fill: blue)[*posterior probability*]. In practical terms, if $B$ happened, $overline(B)$ becomes impossible and we can *restrict our sample space* to only those outcomes in which $B$ happens. Therefore the new sample space becomes $Omega_B = {omega in Omega | omega in B}$.
+
+Let's understand the reason why we need to divide by $prob(B)$ in @eq:03_cond_prob:
+
+- suppose we are interested in the whole sample space $Omega$
+
+- prior to knowing that $B$ happened, the probability of $Omega$ is obviously 1: $prob(Omega) = 1$
+
+- after knowing that $B$ happened, the new sample space becomes $Omega_B$ = $Omega inter B = B$
+
+
+- since the new sample space is $Omega inter B$, its probability must still be 1: $prob(Omega inter B) = 1$, but since $Omega inter B = B$ we have that $prob(B | B) = 1$
+
+
+- since we want to make sure that $prob(B | B) = 1$ we can compute $prob(Omega inter B)/prob(B) = 1$, in order to normalize the probability to 1
+
+We can now focus on the single posterior probability of the event $A$ given that $B$ happened following a similar reasoning:
+
+- for any event $A$ prior to knowing that $B$ happened, its probability is given by $prob(A)$
+
+- after knowing that $B$ happened, the new sample space becomes $Omega_B$ = $Omega inter B = B$
+
+- since we need to compute the probability of $A$ in the new sample space, we need to restrict $A$ to only those outcomes in which $B$ happens, therefore the new event becomes $A inter B$. Thus the probability of $A$ in the new sample space becomes $prob(A inter B)$
+
+- to scale everything back to the previous sample space we need to divide by $prob(B)$.
+
+The previous reasoning is clearly represented in the Venn diagram shown in @fig:03_condprob.
+#figure(
+  image("images/03_condprob.png", width: 50%),
+  caption: "Venn diagram representation of conditional probability",
+)<fig:03_condprob>
+
+
+We are now ready to provide a formal definition of independency between two events.
+
+#definition(title: "Independent Events")[
+  Given two events $A$ and $B$, we say that they are independent if by knowing that one event has changed the probability of the other event remains the same. Formally, this can be expressed as:
+
+  #math.equation(block: true, $prob(A | B) = prob(A inter B)/prob(B) = prob(A)$)<eq:04_independent_events>
+]
+
+#warning-box[Although the notions of independency and disjointedness may seem similar at a first glance, they are actually the *opposite*. Indeed if two events are disjoint, the occurrence of one event implies that the other event cannot occur, which means that knowing one event has occurred changes the probability of the other event to zero. Therefore, disjoint events are not independent.]
+
+From the previous definition we can derive the following important relation for independent events.
+
+#theorem[Given two independent events $A, B$ we can look at their definition in order to derive a different formulation for their intersection:
+
+  #math.equation(block: true, $prob(A inter B) = prob(A) prob(B)$)<eq:05_independent_events_intersection>
+]
