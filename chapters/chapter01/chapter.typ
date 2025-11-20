@@ -269,6 +269,38 @@ Intuitively, saying that two experiments are independent means that the outcome 
 
 We would even like to be more formal about the definition of independency but it's not possible without first introducing the concept of *conditional probability*.
 
+==== Inclusion - Exclusion Principle
+There are many cases in which we may be interested in computing the probability (or the amount of elements) of the union of multiple events. We already know how to do that in case of two events. In case we have three or more events we can generalize through the *Inclusion-Exclusion Principle*.We know that in the two event case we have:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $text("count")(A_1 union A_2) = text("count")(A_1) + text("count")(A_2) - text("count")(A_1 inter A_2)$,
+)
+
+Suppose now that we have three non-disjoint events $A_1, A_2, A_3$ as represented in .
+
+The number elements in the union in such case would be given by:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $text("count")(union.big_(i=1)^3 A_i) = sum_(i=1)^3 text("count")(A_i) - sum_(i<j)text("count")(A_i inter A_j) + text("count")(inter.big_(i=1)^3A_i)$,
+)
+#figure(
+  image("images/04_inclusion_exclusion.png", width: 70%),
+  caption: "Three non-disjoint events",
+)<fig:04_inclusion_exclusion>
+
+We are not going to see the full generalized version of the formula, mainly because it is so ugly. Anyway as a general principle we can say that to compute the count of the union multiple events:
+
+- we first sum the counts of each individual event
+- we subtract the counts ef each pairwise union (even number of events)
+- we add back the counts of each triple-wise union (odd number of events)
+- we keep on alternating between subtracting the count of "even-unions" and adding the count of "odd-unions" until we reach the union of all events
+
+#pagebreak()
+
 == Conditional Probability
 After defining the basic notion of probability, it's time to move on to a slightly more powerful concept, which is the one of *conditional probability*. The following definition gives us a way to compute conditional probabilities of two events.
 
@@ -322,7 +354,7 @@ We can now focus on the single posterior probability of the event $A$ given that
 
 The previous reasoning is clearly represented in the Venn diagram shown in @fig:03_condprob.
 #figure(
-  image("images/03_condprob.png", width: 50%),
+  image("images/03_condprob.png", width: 60%),
   caption: "Venn diagram representation of conditional probability",
 )<fig:03_condprob>
 
