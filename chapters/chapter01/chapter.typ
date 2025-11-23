@@ -128,7 +128,7 @@ De Morgan's Laws provide a relationship between the union and intersection of se
   Given sets $E_1, ..., E_n$, the complement of their union is equal to the intersection of their complements:
 
   #align(center)[
-    $overline(E_1 union E_2 union ... union E_n) = overline(E_1) inter overline(E_2) inter ... inter overline(E_n)$
+    $overline(E_1 union E_2 union ... union E_n) = overline(E)_1 inter overline(E)_2 inter ... inter overline(E_n)$
   ]
 ]
 
@@ -136,7 +136,7 @@ De Morgan's Laws provide a relationship between the union and intersection of se
   Given sets $E_1, ..., E_n$, the complement of their intersection is equal to the union of their complements:
 
   #align(center)[
-    $overline(E_1 inter E_2 inter ... inter E_n) = overline(E_1) union overline(E_2) union ... union overline(E_n)$
+    $overline(E_1 inter E_2 inter ... inter E_n) = overline(E)_1 union overline(E)_2 union ... union overline(E_n)$
   ]
 ]
 
@@ -208,31 +208,31 @@ We can see that we need to define both the *domain* and the *codomain* of the fu
 ==== Sigma Algebra
 Now that we have seen how a probability can be seen as a function, to formally define it, we need to specify its domain, codomain, and the mapping rule. This will give us a solid foundation to work with probabilities in a rigorous manner.
 
-As per the *codomain*, we have already mentioned that probabilities are real numbers in the interval $[0,1] in bb(R)$.  The matter becomes a little bit more complicated when it comes to defining the *domain*. We can imagine the domain of the probability function as a _collection of events_ with some specific properties. This collection is called a *sigma-algebra* (or *σ-algebra*). Typically, a sigma-algebra is denoted by the symbol $cal(M)$.
+As per the *codomain*, we have already mentioned that probabilities are real numbers in the interval $[0,1] in bb(R)$.  The matter becomes a little bit more complicated when it comes to defining the *domain*. We can imagine the domain of the probability function as a _collection of events_ with some specific properties. This collection is called a *sigma-algebra* (or *σ-algebra*). Typically, a sigma-algebra is denoted by the symbol $frak(M)$.
 
 #definition(title: "Sigma Algebra")[
-  A collection $cal(M)$ of events is a *#sym.sigma - algebra* on a sample space $Omega$ if:
+  A collection $frak(M)$ of events is a *#sym.sigma - algebra* on a sample space $Omega$ if:
 
   - it includes the sample space:
   #align(center)[
-    $Omega in cal(M)$
+    $Omega in frak(M)$
   ]
-  - every event in $cal(M)$ is contained along with its complement:
-  #align(center)[$E in cal(M) => overline(E) in cal(M)$]
-  - every finite or countable collection of events in $cal(M)$ is contained along with its union:
+  - every event in $frak(M)$ is contained along with its complement:
+  #align(center)[$E in frak(M) => overline(E) in frak(M)$]
+  - every finite or countable collection of events in $frak(M)$ is contained along with its union:
   #align(center)[
-    $E_1, E_2, ... in cal(M) => E_1 union E_2 union ... in cal(M)$
+    $E_1, E_2, ... in frak(M) => E_1 union E_2 union ... in frak(M)$
   ]
 ]<def:02_sigma_algebra>
 
 We can notice the following important aspects about sigma-algebras:
 
-- $cal(M) = {emptyset, Omega}$ is the smallest possible sigma-algebra on $Omega$, called *degenerate*
-- $cal(M) = 2^Omega = {E : E subset Omega}$ is the largest possible sigma-algebra on $Omega$, called *power set*
+- $frak(M) = {emptyset, Omega}$ is the smallest possible sigma-algebra on $Omega$, called *degenerate*
+- $frak(M) = 2^Omega = {E : E subset Omega}$ is the largest possible sigma-algebra on $Omega$, called *power set*
 
 
 #remark[
-  When $Omega subset.eq bb(N)$, is *countable* the most common choice for the associated sigma algebra is the *power set* $cal(M) = 2^Omega$.
+  When $Omega subset.eq bb(N)$, is *countable* the most common choice for the associated sigma algebra is the *power set* $frak(M) = 2^Omega$.
 
   On the other hand, when dealing with *uncountable* $Omega subset.eq bb(R)$, the power set _too large_ to be useful. In this case a common choice for the sigma-algebra is the *Borel Sigma Algebra*, denoted by $cal(B)$, which contains all possible sets that one could practically think about except for everything that could get created by some strange recursive process that resembles the construction of _fractals_.
 ]
@@ -242,14 +242,14 @@ We can notice the following important aspects about sigma-algebras:
 ==== Axiomatic Definition of Probability
 Now that we have defined the sigma-algebra, we can finally provide a formal definition of probability.
 #definition(title: "Probability")[
-  Assume a sample space #sym.Omega and a sigma-algebra of events $cal(M)$ defined on it. *Probability*
+  Assume a sample space #sym.Omega and a sigma-algebra of events $frak(M)$ defined on it. *Probability*
 
   #math.equation(block: true, $bb(P) -> [0,1]$)
 
-  is a function of events with the domain $cal(M)$ and the range $[0,1]$ that satisfies the following conditions (which are called the *axioms of probability*):
+  is a function of events with the domain $frak(M)$ and the range $[0,1]$ that satisfies the following conditions (which are called the *axioms of probability*):
 
   - *Unit Measure*: the sample space has unit probability: $bb(P)[Omega] = 1$
-  - *Sigma-Additivity*: for any finite or countable collection of mutually exclusive events $E_1, E_2, ... in cal(M)$, the probability of their union is equal to the sum of their individual probabilities:
+  - *Sigma-Additivity*: for any finite or countable collection of mutually exclusive events $E_1, E_2, ... in frak(M)$, the probability of their union is equal to the sum of their individual probabilities:
   #align(center)[
     $bb(P)[E_1 union E_2 union ...] = bb(P)[E_1] + bb(P)[E_2] + ...$
   ]
@@ -260,7 +260,7 @@ It is good to notice that, from the first properties, we can derive that the com
 
 All rules of probability are a direct consequence of @def:03_probability. This will allow us to compute probabilities for all events in our interest. Following we outline some of the most important probability rules that will be useful in the next chapters.
 
-- $bb(P)[emptyset] = 0$: this is easy to verify; indeed the we know from the axioms that $bb(P)[Omega] = 1$. From the second axiom we know that the union of any disjoint event has probability equal to their sum, that is $bb(P)(Omega) + bb(P)[emptyset] = 1 => bb(P)[emptyset] = 0$ #sym.qed
+- $bb(P)[emptyset] = 0$: this is easy to verify; indeed the we know from the axioms that $bb(P)[Omega] = 1$. From the second axiom we know that the union of any disjoint event has probability equal to their sum, that is $bb(P)(Omega) + bb(P)[emptyset] = 1 => bb(P)[emptyset] = 0$
 - $bb(P)[A union B] = bb(P)[A] + bb(P)[B] - bb(P)[A inter B]$; we can actually notice that the following relation holds: $bb(P)[A union B] = bb(P)[A inter overline(B)] + bb(P)[B inter overline(A)] + bb(P)[A inter B]$.
 
 We can see how the second formulation is supported by the second axiom in that the three members of the summation form a *partition* of the event $A union B$. The reason why the first formulation is commonly preferred, is that that, if $A$ and $B$ are *independent* the probability of their intersection is given by $bb(P)[A]bb(P)[B]$.
@@ -320,13 +320,13 @@ To understand the meaning of @eq:03_cond_prob we can consider the following exam
 ])
 
 ==== Formula Derivation
-The reason behind the formulation of @eq:03_cond_prob is the following: before an experiment the sample space $Omega$ is the set of all possible experiments outcomes. Due to the fact that we are considering a probability we are dealing with a sigma algebra $cal(M)$, we can make safely state the following:
+The reason behind the formulation of @eq:03_cond_prob is the following: before an experiment the sample space $Omega$ is the set of all possible experiments outcomes. Due to the fact that we are considering a probability we are dealing with a sigma algebra $frak(M)$, we can make safely state the following:
 
 #align(center)[
-  $A,B in cal(M) => A inter B in cal(M) => prob(A), prob(B), prob(A inter B) text("are known")$
+  $A,B in frak(M) => A inter B in frak(M) => prob(A), prob(B), prob(A inter B) text("are known")$
 ]
 
-or at least can be computed in some way. We can say that #text(fill: red)[$bb(P): cal(M) -> [0,1]$] is a #text(fill: red)[*prior probability*]. If now we perform the experiment and know that $B$ happens we can update the probability to incorporate the new knowledge by computing a new #text(fill: blue)[$bb(P) | B: cal(M) -> [0,1]$], a #text(fill: blue)[*posterior probability*]. In practical terms, if $B$ happened, $overline(B)$ becomes impossible and we can *restrict our sample space* to only those outcomes in which $B$ happens. Therefore the new sample space becomes $Omega_B = {omega in Omega | omega in B}$.
+or at least can be computed in some way. We can say that #text(fill: red)[$bb(P): frak(M) -> [0,1]$] is a #text(fill: red)[*prior probability*]. If now we perform the experiment and know that $B$ happens we can update the probability to incorporate the new knowledge by computing a new #text(fill: blue)[$bb(P) | B: frak(M) -> [0,1]$], a #text(fill: blue)[*posterior probability*]. In practical terms, if $B$ happened, $overline(B)$ becomes impossible and we can *restrict our sample space* to only those outcomes in which $B$ happens. Therefore the new sample space becomes $Omega_B = {omega in Omega | omega in B}$.
 
 Let's understand the reason why we need to divide by $prob(B)$ in @eq:03_cond_prob:
 
@@ -375,3 +375,217 @@ From the previous definition we can derive the following important relation for 
 
   #math.equation(block: true, $prob(A inter B) = prob(A) prob(B)$)<eq:05_independent_events_intersection>
 ]
+
+== Conditional Probability and Bayes' theorem
+This section will introduce one of the most important results in all probability theory. Before doing so, we show a couple of examples.
+
+=== Exercise - Crashes in a Computer Program (Baron 2.35)
+
+===== Problem Statement
+A new computer program consists of two modules. The first module contains an error with probability 0.2. The second module is more complex and has a probability of 0.4 of containing an error, _independently of the first one_.
+
+An error in the first module alone causes the program to crash with probability 0.5. For the second module, an error causes a crash with probability 0.8. If there are errors in both modules the probability of a crash rises to 0.9. Suppose that the program has crashed. What is the probability of error in both modules? #sym.qed
+
+===== Definition of the Sample Space and Sigma Algebra
+Let's first try to map all the information provided into terms we are already familiar with. The *experiment* basically consists in running the program. The *sample space $Omega$* should contain all results of this experiment, that is, the program itself and the result of executing it. We can notice how this. Since the experiment is very complicated it makes sense to try and focus only on relevant outcomes. Let's list all the relevant events that must be included in our *sigma algebra*:
+
+- $E_1$: module 1 contains an error$-> overline(E)_1 in frak(M)$  (by $sigma$-algebra properties)
+
+- $E_2$: module 2 contains an error $-> overline(E)_2 in frak(M)$  (by $sigma$-algebra properties)
+
+- $Omega$: any event happens $-> emptyset in frak(M)$  (by $sigma$-algebra properties)
+
+- $C$: program crashes $-> overline(C) in frak(M)$  (by $sigma$-algebra properties)
+
+By the properties of sigma algebras we can also state the following events must be included in $frak(M)$:
+- $E_1 union E_2 in frak(M)$, since sigma algebras are closed under union
+
+- $overline(E_1 union E_2) in frak(M)$, since sigma algebras are closed under complement
+
+- $overline(E)_1 inter overline(E)_2 in frak(M)$, by applying De Morgan laws
+
+The same rational can be applied starting from the complement events. Therefore the sigma algebra will also contain $E_1 inter E_2$. Notice that by simply considering the events $E_1, E_2, C$ we can already keep track of all the possible events we may be interested in ($C inter E_1, C inter E_2, ...$).
+
+===== Information Extraction
+Let's now try to extract valuable information from the problem statement:
+
+- $prob(E_1) = 0.2$
+
+- $prob(E_2) = 0.4$
+
+Since $E_1 tack.t space E_2$ we can use @eq:05_independent_events_intersection to compute the probability of their intersection: $prob(E_1 inter E_2) = prob(E_1) prob(E_2) = 0.08$. The problem also provides us with the following information:
+
+- $prob(C | E_1 inter overline(E)_2) = 0.5$: crash given an error on first module alone
+
+- $prob(C | overline(E)_1 inter E_2) = 0.8$: crash given an error on second module alone
+
+- $prob(C | E_1 inter E_2) = 0.9$: crash given an error on both modules
+
+===== Information Organization
+Now that we have extracted all the relevant information from the problem statement, we can try to organize it in a more structured way. The main approach in order to compute probability is _divide and conquer_. So what we do is trying to divide our events in the smallest possible pieces, that are mutually exclusive and that cover the whole space. This amounts to finding *relevant partitions*. Consider the following picture:
+
+#align(center)[
+  #image("images/06_baronex.png", width: 60%)
+]
+One partition we can consider is the one given by the events $E_1, E_2$ combined and their complements:
+
+- $B_1 = overline(E)_1 inter overline(E)_2 <-> overline(E_1 union E_2)$: this represents the case in which no module has an error
+
+- $B_2 = E_1 inter overline(E)_2$: this represents the case in which only the first module has an error
+
+- $B_3 = overline(E)_1 inter E_2$: this represents the case in which only the second module has an error
+
+- $B_4 = E_1 inter E_2$: this represents the case in which both modules have an error
+
+We can easily notice that these events $(B_1, B_2, B_3, B_4)$ are mutually exclusive and span the whole sample space. Therefore they form a partition of the sample space. Another partition we can consider is the one given by the crash event and its complement: $(C, overline(C))$.
+
+In order to divide and conquer, we can *identify* the *partition* for which we have *prior probabilities* (probabilities which are not conditioned on other events) and the ones for which we need to compute *conditional probabilities*. This step allows us to _find a logical temporal order of events_. In our case we can notice that we have prior probabilities for the events in the partition $(B_1, B_2, B_3, B_4)$ and conditional probabilities for the events in the partition $(C, overline(C))$.
+
+Now we can *compute* the *available probabilities* from the basic information we have extracted. First we can compute the probability of the _intersection_ $B_4 = E_1 inter E_2$:
+
+#math.equation(numbering: none, block: true, $prob(B_4) = prob(E_1 inter E_2) = prob(E_1) prob(E_2) = 0.08$)
+
+Now we would like to compute the probability of $B_1$, for doing so we need the probability of the union, that we can compute as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(E_1 union E_2) = prob(E_1) + prob(E_2) - prob(E_1 inter E_2) = 0.2 + 0.4 - 0.08 = 0.52$,
+)
+
+Thus, the probability of the event $B_1$ becomes: $prob(B_1) = 1 - prob(E_1 union E_2) = 1 - 0.52 = 0.48$.
+
+To compute the probability of $B_2$ we need to compute the following:
+
+- $prob(B_2) = prob(E_1 inter overline(E)_2)$, since $E_1 perp E_2$, then also $E_1 perp overline(E)_2$, therefore we can apply @eq:05_independent_events_intersection and compute: $prob(E_1 inter overline(E)_2) = prob(E_1) prob(overline(E)_2) = 0.2(1-0.4)=0.12$
+
+- the same reasoning can be applied to compute $B_3$, for completeness though, we can also compute both $B_2, B_3$ as follows ($B_3$ case):
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(B_3) = prob(E_2) - prob(E_1 inter E_2) = 0.4 - 0.08 = 0.32$,
+)
+
+#remark[Since $(B_1 ... B_4)$ form a partition we can verify that the sum of their probabilities is equal to 1: $prob(B_1) + prob(B_2) + prob(B_3) + prob(B_4) = 0.48 + 0.12 + 0.32 + 0.08 = 1$.]
+
+Assuming that if we have no crashes the program works fine, we can produce the following diagram that summarizes all the information we have gathered so far. Tha's illustrate @fig:07_knowledge.
+
+Now that we have all the information we have gathered we are finally ready to give a solution. Since we are asked to compute the probability of having errors in both modules given that the program has crashed. We can rewrite it in terms of our events as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(E_1 inter E_2 | C) = prob(B_4 | C)$,
+)
+
+#figure(
+  image("images/07_knowledge.png", width: 80%),
+  caption: "Summary of the information gathered from the problem statement and from the intermediate stages",
+)<fig:07_knowledge>
+
+We can retrieve the definition of conditional probability in @eq:03_cond_prob and apply it to our case: $prob(B_4 | C) = prob(B_4 inter C) / (prob(C))$. To do so, we need different components.
+
+First of all we need to compute the probability of $B_4 inter C$, this can be done by backtracking on the tree in @fig:07_knowledge:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(B_4 inter C) = prob(B_4) prob(C | B_4) = 0.08 dot 0.9 = 0.072$,
+)
+
+Now wee need to compute the probability of a crash, that is $prob(C)$, this is a slightly more complicated matter. To do so, we need to take into consideration all the possible paths that lead from the root of the tree up to node $C$. Therefore we can write:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(C) = prob(B_1) prob(C | B_1) + prob(B_2) prob(C | B_2) + prob(B_3) prob(C | B_3) + prob(B_4) prob(C | B_4) \ = sum_(i = 1)^4 prob(B_i) prob(C | B_i) \ = 0.48 dot 0 + 0.12 dot 0.5 + 0.32 dot 0.8 + 0.08 * 0.9 = 0.388$,
+)
+
+Now that we have all the elements we need, we can finally compute the probability we were looking for:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(B_4 | C) = (prob(B_4 inter C)) / (prob(C)) = 0.072 / 0.388 approx 0.1856 space qed$,
+)
+
+=== Law of Total Probability
+Even though we didn't explicitly mentioned, while resolving the last exercise we have actually applied probably what is one of the most important results in probability theory: the *law of total probability*.
+
+Precisely, we did it when computing the probability of a crash $prob(C)$. We can now formally state the law as follows.
+
+#axiom(title: "Law of Total Probability")[
+  Given a partition of the sample space $(B_1, B_2, ...)$ and an event $A$, the probability of $A$ can be computed as follows:
+
+  #math.equation(
+    block: true,
+    numbering: "(1)",
+    $prob(A) = sum_(i) prob(B_i) prob(A | B_i)$,
+  )<eq:06_law_total_probability>
+]<axiom:01_law_total_probability>
+
+This is the reason why in the previous example we spent so much time trying to compute the partition $(B_1, B_2, B_3, B_4)$. In case we have only two events we can rewrite it as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(A) = prob(A | B)prob(B) + prob(A | overline(B)) prob(overline(B))$,
+)
+
+=== Bayes' Rule
+Another important result that we can derive from the definition of conditional probability is *Bayes' Rule*. This rule allows us to _reverse_ the conditioning of a probability. Formally we can state it as follows.
+
+#theorem(title: "Bayes' Rule")[
+  Given an event $A$ and a partition of the sample space $B = (B_1, B_2, ..., B_k)$, the conditional probability of $B_i in B$ given $A$ can be computed as follows:
+
+  #math.equation(
+    block: true,
+    numbering: "(1)",
+    $prob(B_i | A) = (prob(A | B_i) prob(B_i)) / (sum_(j=1)^k prob(A | B_j) prob(B_j))$,
+  )<eq:07_bayes_rule>
+]
+
+In particular, since $B$ and $overline(B)$ always form a partition of the sample space, we can rewrite @eq:07_bayes_rule for the case of two events as follows:
+#math.equation(
+  block: true,
+  numbering: "(1)",
+  $prob(B | A) = (prob(A | B) prob(B)) / (prob(A | B) prob(B) + prob(A | overline(B)) prob(overline(B)))$,
+)<eq:08_bayes_rule_two_events>
+
+=== Exercise - Reliability of a System (Baron 2.20)
+===== Problem Statement
+Consider the following system of connected components.
+
+#align(center)[
+  #image("images/05_ex.png", width: 50%)
+]
+
+Calculate the reliability of the following system if each component is operable with probability 0.92 independently of the other components #sym.qed
+
+===== Solution
+To solve the proposed problem, we need to define the sample space. In order to be as fast as possible, we can assume it being partitioned by only two events: the system works ($W$) or the system fails ($overline(W)$). To answer the question we need to compute $prob(W)$, that is, the probability that the system works, which is another way to define _reliability_.
+
+For the system to be operational it is necessary that a 'signal' is allowed to travel from the left side to the right side of the system. In order for this to happen we can see there are basically three possible paths:
+
+- the upper part in which the components that need to function are $A$ and $B$, we can call this situation $B_1$
+- the middle part in which the components that need to function are $C$ and either one of $D$ and $E$ (or both), we can call this situation $B_2$
+
+So, we can say that in general the probability of full functionality of the system can be defined as $prob(B_1 union B_2)$. Now that we have defined these events, we can try to compute their individual probabilities.
+
+To compute $prob(B_1)$ we need both components $A$ and $B$ to be operational. Since the components are independent we can apply @eq:05_independent_events_intersection and compute: $prob(B_1) = prob(A) prob(B) = 0.92 dot 0.92 = 0.8464$.
+
+For the lower part of the circuit, since we have a parallel connection between $D$ and $E$, we can compute the probability of at least one of them working as follows: $prob(D union E) = prob(D) + prob(E) - prob(D inter E) = 0.92 + 0.92 - (0.92 dot 0.92) = 0.9936$.
+
+With this new probability defined we can also compute the probability of $B_2$: $prob(B_2) = prob(C) prob(D union E) = 0.92 dot 0.9936 = 0.914112$.
+
+Now that we have both the elements, we can compute the overall probability of the system working as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(W) = prob(B_1 union B_2) = prob(B_1) + prob(B_2) - prob(B_1 inter B_2) \ = 0.8464 + 0.914112 - (0.8464 dot 0.914112) = 0.9756$,
+)
+
+
+Now, if we wanted we can also compute the probability of failure of the system as follows: $prob(overline(W)) = 1 - prob(W) = 1 - 0.9756 = 0.0244$ #rhs([#sym.qed])

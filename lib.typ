@@ -393,7 +393,7 @@
 #let (axiom-counter, axiom-box, axiom, show-axiom) = make-frame(
   "axiom",
   theorion-i18n-map.at("axiom"),
-  inherited-levels: 2,
+  inherited-levels: 1,
   render: fancy-box.with(
     get-border-color: get-secondary-border-color,
     get-body-color: get-secondary-body-color,
@@ -486,4 +486,10 @@
   body
 }
 
-#let prob(expr) = $bb(P)[#expr]$
+#let prob(expr) = $bb(P){#expr}$
+#let rhs(body) = {
+  box()
+  h(1fr)
+  sym.wj
+  box(body)
+}
