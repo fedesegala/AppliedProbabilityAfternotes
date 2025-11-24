@@ -330,3 +330,57 @@ Following we summarize the difference between discrete and continuous random var
 Up to this moment we have only considered *one* random variable *at a time*. However in many practical situations we may be interested in studying *multiple* random variables *simultaneously*. To do so, we introduce the concept of *random vector*.
 
 For simplicity, we focus on a vector *$(X,Y)$* of dimnesion $2$, but everything can be extended to higher dimensions.
+
+Since we are talking about more than one random variable, we need to define the concept of *joint p.m.f* and *joint p.d.f*. Given two variables $X, Y$ we have:
+
+#math.equation(
+  block: true,
+  numbering: "(1)",
+  $
+    p_(X,Y)(x,y) = prob((X,Y) = (x,y)) = prob(X = y inter Y = y)
+  $,
+)<eq:joint_pmf>
+
+In this course, we are going to focus on homogeneous randon vectors, in which all the random variables are either discrete or continuous.
+
+#definition(title: "Joint Cumulative Distribution Function")[
+  For a vector of random variables, the *joint cumulative distribution function* is defined as follows:
+
+  #math.equation(
+    block: true,
+    numbering: "(1)",
+    $
+      F_(X,Y)(x,y) = prob(X <= x inter Y <= y)
+    $,
+  )<eq:join_cdf>
+
+  Given the join c.d.f we can also define the *join probability density function* as the mixed derivative of the joint c.d.f:
+
+  #math.equation(
+    block: true,
+    numbering: "(1)",
+    $
+      f_(X,Y)(x,y) = (partial^2)/partial x partial y F_(X,Y)(x,y)
+    $,
+  )<eq:join_cdf>
+]
+
+Following we report in a table the main formulas we need to use in case we are dealing with continuous or discrete random vectors.
+
+#align(center)[
+  #table(
+    columns: (auto, auto, auto),
+    inset: 10pt,
+    align: horizon,
+    table.header([*Distribution*], [*Discrete*], [*Continuous*]),
+    [Marginal \ Distributions],
+    [$p_(X)(x) = limits(sum)_(y) p_(X,Y)(x,y)\ p_(Y)(y) = limits(sum)_(x)p_(X,Y)(x,y)$],
+    [$f_(X)(x) = integral f_(X,Y)(x,y) d y \ f_(Y)(y) = integral f_(X,Y)(x,y) d x$],
+
+    [Independence], $p_(X,Y)(x,y) = p_(X)(x) p_(Y)(y$, $f_(X,Y)(x,y) = f_(X)(x) f_(Y)(y)$,
+
+    [Computing \ Probabilities],
+    $prob((X,Y) in A) = \ limits(sum sum)_((x,y) in A) p_(X,Y)(x,y)$,
+    $prob((X,Y) in A) = \ limits(integral integral)_((x,y) in A) f_(X,Y)(x,y) space d x space d y$,
+  )
+]
