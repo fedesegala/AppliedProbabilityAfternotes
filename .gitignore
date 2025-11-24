@@ -1,0 +1,4 @@
+*.ipynb 
+pyproject.toml
+.python-version
+.venv/

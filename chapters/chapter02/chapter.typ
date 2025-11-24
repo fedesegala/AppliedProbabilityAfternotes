@@ -137,20 +137,196 @@ If a random variable $X$ can only take a *finite* or at most *countable* number 
 
   The function
 
-  #math.equation(block: true, numbering: none, $P(x) = prob(X = x)$)
+  #math.equation(block: true, $p_(X)(x) = prob(X = x)$)
 
   is called the *probability mass function*. The *cumulative distribution function* is defined as:
 
-  #math.equation(block: true, numbering: none, $F(x) = prob(X <= x) = sum_(y <= x) P(y)$)
+  #math.equation(block: true, $F_(X)(x) = prob(X <= x) = sum_(y <= x) P(y)$)
 
   The set of all possible values of $X$ is called the *support* of the distribution.
 ]
 
+=== Random Variable Characterization
 Suppose we toss a fair coin three times and we want to count the number of heads $X$ that we get. The cumulative distribution function and probability mass function of such a random variable are illustrated in @fig:0201.
 #figure(
   image("images/01_pmf_cdf.png", width: 90%),
   caption: "Example of Probability Mass Function (PMF) and Cumulative Distribution Function (CDF) for a discrete random variable X representing the number of heads in three coin tosses.",
 )<fig:0201>
 
-#remark[Formally, we say that the *probability mass function* characterizes the distribution of a discrete random variable, as it contains all the information about the probabilities of each possible outcome.
+#remark[Boh the *pmf* and the *cdf* are said two *characterize the distribution*, that is, they contain all the information we need about a random variable. This means that we may be given each one of them, for every event we can think of it's possible to compute its probability.
 ]
+
+It is actually possible to define another function to fully characterize a random variable, called the *survival function*.
+
+#definition(title: "Survival Function of Discrete R.V.")[
+  Given a *discrete random variable* $X$, the *survival function* is defined as:
+
+  #math.equation(block: true, $overline(F)_(X)(x) = S_(X)(x) = prob(X > x) = 1 - F(x)$)
+]
+
+To summarize, given a *discrete* random variable $X$, we have the following functions that fully characterize its distribution:
+
+- Probability Mass Function: $p_(X)(x) = prob(X = x) forall x in bb(R)$
+- Cumulative Distribution Function: $F_(X)(x) = prob(X <= x) forall x in bb(R)$
+- Survival Function: $overline(F)_(X)(x) = prob(X > x) = 1-F(x) forall x in bb(R)$
+
+=== Properties of PMF, CDF and Survival Function
+Following we describe some important properties of the concepts and functions we have just defined. First of all, since all the functions we have defined are related to probabilities, they must satisfy the axioms in @def:03_probability.
+
+Once an experiment is completed, and the outcome $omega in Omega$ is known, the random variable $X$ will take a specifica value $X(omega) = x$, therefore the collection of events ${[X = x] : x in bb(R)}$ will form a *partition* of the sample space $Omega$ and thus:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    sum_(x) p_(X)(x) = sum_(x) prob(X = x) = 1
+  $,
+)
+
+Particularly, for any event $A$, we have that:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(X in A) = prob(A) = sum_(x in A) p_(X)(x)$,
+)
+
+== Continuous Random Variables and their Distributions
+We say that a random variable $X$ is *continuous* if it can take an *uncountable* number of values. In this section we are going to explore continuous random variables and their characteristic functions.
+
+The first thing we can notice is that the definition of *probability mass function* we gave for discrete random variables cannot be used in this situation: if we think about it, if $X$ can take an uncountable number of values, if every punctual probability was different from 0, this would violate the axiom of total probability, i.e., $sum_(x) prob(X = x) = infinity != 1$.
+
+Therefore, a first important property we can derive for continuous random variables is:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    p_(X)(x) = 0, forall x in bb(R)
+  $,
+)
+
+We need to find a different way to characterize continuous random variables. To do so, we introduce the concept of *probability density function*.
+
+#definition(title: "Probability Density Function")[
+  Given a random variable $X$, the  *probability density function* (pdf) of $X$ is a function $f_(X)(x)$ such that:
+
+  #math.equation(
+    block: true,
+    $integral_(-infinity)^x f_(X)(x) d x = F_(X)(x) space <--> space f_(X)(x) = (d F_(X)(x)) / (d x)$,
+  )
+]
+
+As already mentioned, the probability density function plays for continuous variables the same role of the probability mass function for discrete variables. Indeed $f(x) >= 0 forall x in bb(R)$ and
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $integral_(-infinity)^(infinity)f(x) space d x = 1$,
+)
+
+In particular, for any event $A$ we have that
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $prob(X in A) = prob(A) = integral_(x in A) f_(X)(x) space d x$,
+)
+
+#example-box("Typical Exercise", [
+  Suppose the lifetime, in years, of some electronic component is a continuous random variable with the following probability density function:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(X)(x) = cases(k/x^3 space "if" x >= 1, 0 space space "otherwise")
+    $,
+  )
+
+  Find $k$, draw a graph of the cdf $F(x)$ and compute the probability for the lifetime to exceed 5 years.
+
+  #solution[
+    To find $k$, we need to use the property that the total integral of the pdf must be equal to 1, that is:
+
+    #math.equation(
+      block: true,
+      numbering: none,
+      $
+        integral_(1)^(infinity) f_(X)(x) space d x = integral_1^(infinity) (k/x^3) space d x = 1
+      $,
+    )
+
+    Solving the integral we get:
+
+    #math.equation(
+      block: true,
+      numbering: none,
+      $
+        k integral_1^infinity x^(-3) space d x = k[(x^(-2))/(-2)]_1^infinity = k(0 + 1/2) = k/2 = 1 space ==> space k = 2
+      $,
+    )
+
+    Since we know that $"cdf" = integral"pdf"$ and we know that for $x < 1$ $F(x) = 0$, we can compute $F(x)$ for $x >= 1$:
+
+    #math.equation(
+      block: true,
+      numbering: none,
+      $
+        F_(X)(x) = integral_1^x (2/t^3) space d t = 2[-(t^(-2))/2]_1^x = 1 - (1/x^2)
+      $,
+    )
+
+    Now that we have the distribution function we can compute the probability that the lifetime exceeds five years by looking at the complement of the cdf at $x=5$:
+
+    #math.equation(
+      block: true,
+      numbering: none,
+      $
+        prob(X > 5) = 1 - F_(X)(5) = 1 - (1 - 1/25) = 1/25 = 0.04
+      $,
+    )
+
+    Following we also show the graph of the cdf $F(x)$ which should confirm our results:
+
+    #figure(
+      image("images/02_excdf.png", width: 60%),
+      caption: "Cumulative Distribution Function (CDF) for the continuous random variable X representing the lifetime of an electronic component.",
+    )
+  ]
+])
+
+#pagebreak()
+
+== Discrete vs Continuous Random Variables
+Following we summarize the difference between discrete and continuous random variables:
+
+#align(center)[
+  #table(
+    columns: (auto, auto, auto),
+    inset: 10pt,
+    align: horizon,
+    table.header([*Distribution*], [*Discrete*], [*Continuous*]),
+    [Definition],
+    [(p.m.f.) $space space space p_(X)(x) = prob(X = x)$],
+    [(p.d.f.) $space space space f_(X)(x) = F'(x)$],
+
+    [Probability \ Computation],
+    $prob(X in A) = limits(sum)_(x in A) p_(X)(x)$,
+    $prob(X in A) = limits(integral)_(x in A) f_(X)(x) space d x$,
+
+    [Cumulative \ Distribution \ Function],
+    $F_(X)(x) = prob(X <= x) \ = limits(sum)_(y space <= space x) p_(X)(y)$,
+    $F(x) = prob(X <= x) \ = limits(integral)_(-infinity)^x f(y) space d y$,
+
+    [Total Probability], $limits(sum)_x p_(X)(x) = 1$, $limits(integral)_(-infinity)^(infinity) f(x) space d x = 1$,
+  )
+]
+
+#remark[
+  In both the discrete and continuous case, the *c.d.f.* $F(x)$ is a *non decreasing* function of $x$, taking values in $[0,1]$ with $limits(lim)_(x -> -infinity) F(x) = 0$ and $limits(lim)_(x -> infinity) F(x) = 1$. In case we were talking about the *survival function* the results would be inverted, that is, it would be a *non increasing* function of $x$, taking values in $[0,1]$ with $limits(lim)_(x -> -infinity) S(x) = 1$ and $limits(lim)_(x -> infinity) S(x) = 0$.
+]
+== Distribution of Random Vectors
+Up to this moment we have only considered *one* random variable *at a time*. However in many practical situations we may be interested in studying *multiple* random variables *simultaneously*. To do so, we introduce the concept of *random vector*.
+
+For simplicity, we focus on a vector *$(X,Y)$* of dimnesion $2$, but everything can be extended to higher dimensions.
