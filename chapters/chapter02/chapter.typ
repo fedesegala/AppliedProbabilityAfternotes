@@ -16,6 +16,27 @@
   }
 }
 
+// Numerazione delle figure per capitolo
+#set figure(numbering: num => {
+  let chapter = counter(heading.where(level: 1)).get().first()
+  numbering("1.1", chapter, num)
+})
+
+// Numerazione delle equazioni per capitolo
+#set math.equation(numbering: num => {
+  let chapter = counter(heading.where(level: 1)).get().first()
+  numbering("(1.1)", chapter, num)
+})
+
+// Resetta i contatori ad ogni nuovo capitolo
+#show heading.where(level: 1): it => {
+  counter(figure.where(kind: image)).update(0)
+  counter(figure.where(kind: table)).update(0)
+  counter(math.equation).update(0)
+  it
+}
+
+
 = Random Variables and Probability Distributions
 This chapter will introduce us to the concept of random variables. In the first sections we are going to define the concepts of *discrete* and *continuous* random variables and their characteristic functions. Then we will explore some of the most important and widely used probability distributions.
 
@@ -25,7 +46,7 @@ To start off, it's important to understand *what is* a random variable. To do so
 #definition(title: "Random Variable")[
   A *random variable* is a *function* of an _outcome_ defined as:
 
-  #math.equation(block: true, numbering: "1", $X = f(omega) \ X : Omega -> X(Omega) = Omega_X subset.eq bb(R)$)
+  #math.equation(block: true, $X = f(omega) \ X : Omega -> X(Omega) = Omega_X subset.eq bb(R)$)
 
   In other words, it is a _quantity that depends on a chance_.
 ]
@@ -37,7 +58,7 @@ Since random variables are functions, we may be interesed in studying their inve
 #definition(title: "Generalized Inverse of a Random Variable")[
   Given a random variable $X: Omega -> Omega_X$, its *generalized inverse* is defined as:
 
-  #math.equation(block: true, numbering: "(1)", $X^(-1)(x) = {omega in Omega : X(omega) = x}$)<eq:generalized_inverse>
+  #math.equation(block: true, $X^(-1)(x) = {omega in Omega : X(omega) = x}$)<eq:generalized_inverse>
 ]
 
 #remark[The definition we gave of generalized inverse in @eq:generalized_inverse may allow to include more than one value, thus $X^(-1)$ is not necessarily a function.
@@ -340,7 +361,6 @@ Since we are talking about more than one random variable, we need to define the 
 
 #math.equation(
   block: true,
-  numbering: "(1)",
   $
     p_(X,Y)(x,y) = prob((X,Y) = (x,y)) = prob(X = y inter Y = y)
   $,
@@ -353,7 +373,6 @@ In this course, we are going to focus on homogeneous randon vectors, in which al
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       F_(X,Y)(x,y) = prob(X <= x inter Y <= y)
     $,
@@ -363,7 +382,6 @@ In this course, we are going to focus on homogeneous randon vectors, in which al
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       f_(X,Y)(x,y) = (partial^2)/(partial x partial y) F_(X,Y)(x,y)
     $,
@@ -398,7 +416,6 @@ Following we report in a table the main formulas we need to use in case we are d
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       p_(X,Y)(x,y) = p_(X)(x) p_(Y)(y)
     $,
@@ -569,7 +586,6 @@ The method we need to address such a situation is *conditional probability*, tha
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       p_((Y|X))(y|x) : prob(Y = y | X = x) = prob(X = x inter Y = y) / prob(X = x) = (p_(X,Y)(x y)) / (p_(X)(x))
     $,
@@ -580,7 +596,6 @@ The method we need to address such a situation is *conditional probability*, tha
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       F_((Y|X))(y|x) = prob(Y <= y | X = x) = (prob(X=x inter Y <= y))/(prob(X = x))
     $,
@@ -590,7 +605,6 @@ The method we need to address such a situation is *conditional probability*, tha
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       F_((Y|X))(y|x) = limits(sum)_(hat(y) <= y) p_((Y|X))(hat(y)|x)
     $,
@@ -617,7 +631,6 @@ Let's now take a look at the continuous case, where not surprisingly we are goin
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $
       F_((Y|X))(y|x) = limits(integral)_(-infinity)^y f_((Y|X))(y|x) space d y
     $,

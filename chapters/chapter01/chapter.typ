@@ -15,6 +15,26 @@
   }
 }
 
+// Numerazione delle figure per capitolo
+#set figure(numbering: num => {
+  let chapter = counter(heading.where(level: 1)).get().first()
+  numbering("1.1", chapter, num)
+})
+
+// Numerazione delle equazioni per capitolo
+#set math.equation(numbering: num => {
+  let chapter = counter(heading.where(level: 1)).get().first()
+  numbering("(1.1)", chapter, num)
+})
+
+// Resetta i contatori ad ogni nuovo capitolo
+#show heading.where(level: 1): it => {
+  counter(figure.where(kind: image)).update(0)
+  counter(figure.where(kind: table)).update(0)
+  counter(math.equation).update(0)
+  it
+}
+
 = Overview of Elementary Probability
 This chapter is focused on providing a concise overview of some fundamental concepts in probability theory that will be essential for understanding more advanced topics that will be presented in the following chapters.
 
@@ -520,7 +540,6 @@ Precisely, we did it when computing the probability of a crash $prob(C)$. We can
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $prob(A) = sum_(i) prob(B_i) prob(A | B_i)$,
   )<eq:06_law_total_probability>
 ]<axiom:01_law_total_probability>
@@ -541,7 +560,6 @@ Another important result that we can derive from the definition of conditional p
 
   #math.equation(
     block: true,
-    numbering: "(1)",
     $prob(B_i | A) = (prob(A | B_i) prob(B_i)) / (sum_(j=1)^k prob(A | B_j) prob(B_j))$,
   )<eq:07_bayes_rule>
 ]
