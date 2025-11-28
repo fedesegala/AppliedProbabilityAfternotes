@@ -128,7 +128,10 @@ The previous example illustrated how a random variable should theoretically modi
 
 Sometimes, if $B$ is a singleton, we may write $bb(P)_(X){X = x}$ instead of $bb(P)_(X){{x}}$ to indicate the same event, where $prob(X = x) <-> prob(omega in Omega: X(omega) = x)$.
 
-== Discrete Random Variables and their Distributions
+
+== Discrete and Continuous Random Variables
+
+=== Discrete Random Variables and their Distributions
 As already mentioned in the introduction, random variables can be classified in two main categories: *discrete* and *continuous*. In this section we are going to explore discrete random variables and their characteristic functions.
 
 If a random variable $X$ can only take a *finite* or at most *countable* number of values, we call it a *discrete random variable*.
@@ -147,7 +150,7 @@ If a random variable $X$ can only take a *finite* or at most *countable* number 
   The set of all possible values of $X$ is called the *support* of the distribution.
 ]
 
-=== Random Variable Characterization
+==== Random Variable Characterization
 Suppose we toss a fair coin three times and we want to count the number of heads $X$ that we get. The cumulative distribution function and probability mass function of such a random variable are illustrated in @fig:0201.
 #figure(
   image("images/01_pmf_cdf.png", width: 90%),
@@ -171,7 +174,7 @@ To summarize, given a *discrete* random variable $X$, we have the following func
 - Cumulative Distribution Function: $F_(X)(x) = prob(X <= x) forall x in bb(R)$
 - Survival Function: $overline(F)_(X)(x) = prob(X > x) = 1-F(x) forall x in bb(R)$
 
-=== Properties of PMF, CDF and Survival Function
+==== Properties of PMF, CDF and Survival Function
 Following we describe some important properties of the concepts and functions we have just defined. First of all, since all the functions we have defined are related to probabilities, they must satisfy the axioms in @def:03_probability.
 
 Once an experiment is completed, and the outcome $omega in Omega$ is known, the random variable $X$ will take a specifica value $X(omega) = x$, therefore the collection of events ${[X = x] : x in bb(R)}$ will form a *partition* of the sample space $Omega$ and thus:
@@ -192,7 +195,7 @@ Particularly, for any event $A$, we have that:
   $prob(X in A) = prob(A) = sum_(x in A) p_(X)(x)$,
 )
 
-== Continuous Random Variables and their Distributions
+=== Continuous Random Variables and their Distributions
 We say that a random variable $X$ is *continuous* if it can take an *uncountable* number of values. In this section we are going to explore continuous random variables and their characteristic functions.
 
 The first thing we can notice is that the definition of *probability mass function* we gave for discrete random variables cannot be used in this situation: if we think about it, if $X$ can take an uncountable number of values, if every punctual probability was different from 0, this would violate the axiom of total probability, i.e., $sum_(x) prob(X = x) = infinity != 1$.
@@ -291,7 +294,7 @@ In particular, for any event $A$ we have that
     Following we also show the graph of the cdf $F(x)$ which should confirm our results:
 
     #figure(
-      image("images/02_excdf.png", width: 60%),
+      image("images/02_excdf.png", width: 43%),
       caption: "Cumulative Distribution Function (CDF) for the continuous random variable X representing the lifetime of an electronic component.",
     )
   ]
@@ -299,7 +302,7 @@ In particular, for any event $A$ we have that
 
 #pagebreak()
 
-== Discrete vs Continuous Random Variables
+=== Discrete vs Continuous Random Variables
 Following we summarize the difference between discrete and continuous random variables:
 
 #figure(
@@ -490,8 +493,6 @@ Following we report in a table the main formulas we need to use in case we are d
     $limits(integral integral)_(Omega_(X Y)) = pi r^2 k = 1 ==> k = 1 / (pi r^2)$,
   )
   #rhs([$qed$])
-
-  #line(length: 100%)
 ]
 
 == Conditional Probabilities
