@@ -486,10 +486,13 @@
   body
 }
 
-#let prob(expr) = $bb(P){#expr}$
+#let prob(expr) = $bb(P)[|#expr|]$
 #let rhs(body) = {
   box()
   h(1fr)
   sym.wj
   box(body)
 }
+
+
+#let coleq(color, x) = text(fill: color)[$#x$]
