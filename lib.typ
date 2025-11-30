@@ -487,6 +487,7 @@
 }
 
 #let prob(expr) = $bb(P)[|#expr|]$
+#let exp(expr) = $bb(E)[|#expr|]$
 #let rhs(body) = {
   box()
   h(1fr)

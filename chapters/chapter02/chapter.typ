@@ -542,6 +542,7 @@ Suppose we wanted to compute the probability of an event $A$ for a random vector
 
 Clearly, it is not possible to compute a *double integral* over a two dimensional: if we fix a value for $x$ there is only a possible for $y$. We need a different method to deal with this.
 
+The method we need to address such a situation is *conditional probability*, that we are just about to define.
 #figure(
   cetz.canvas(length: 2cm, {
     import cetz.draw: *
@@ -579,7 +580,7 @@ Clearly, it is not possible to compute a *double integral* over a two dimensiona
   caption: [Support of the random vector $(X, Y)$],
 )<fig:manifold_support_probability>
 
-The method we need to address such a situation is *conditional probability*, that we are just about to define.
+
 
 #definition(title: "Conditional Probability for Discrete R.V.'s")[
   Suppose we have $X, Y$ two random variables. If these r.v.'s are *discrete*, we can define the *conditional probability mass function* of $Y$ given $X$ as:
@@ -822,3 +823,280 @@ We can define a new random variable $I$ which serves as an *indicator* of the si
 )
 
 Clearly $I$ is a *discrete random variable*. Now it is evident that in the beginning we were not dealing with two continuous random variables, but rather with a continuous random variable $X$ and a discrete random variable $I$.
+
+== Probability Density Factorization
+Even though we already mentioned the concept of independency between random variables in @def:independent_rv, it's worth to revisit that definition giving a practical tool to check if two random variables are independent or not.
+
+=== Independency via Factorization
+We say that two random variables $X, Y$ are independent if and only if it is possible to find functions $h_1$ and $h_2$ such that:
+
+- for *discrete* random variables we have that
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      p_(X,Y)(x,y) = h_1(x) space h_2(y) quad forall x, y in bb(R)^2
+    $,
+  )
+  in this case we can also say that the marginal $p_(X)(x) prop h_1(x)$ and equivalently $p_(Y)(y) prop h_2(y)$, that is the marginal are proportional to the functions $h_1$ and $h_2$ respectively (or equal up to a constant)
+
+- for *continuous* random variables we have that
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(X,Y)(x,y) = h_1(x) space h_2(y) quad forall x, y in bb(R)^2
+    $,
+  )
+  where, again the marginals can be seen as  proportional to the functions $h_1$ and $h_2$ respectively: $f_(X)(x) prop h_1(x)$ and equivalently $f_(Y)(y) prop h_2(y)$.
+
+#example-box("Independency via factorization", [
+  Two random variable $T, S$ have join probability density function given by:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(T, S)(t, s) = 18 e^(-6t)e^(-3s) bb(1)_(t,s in R^(2)_+)
+    $,
+  )
+
+  where the indicator function has exactly the function of expressing the concept that when we are considering negative values for either $t$ or $s$ the density is zero.
+
+  We can try to *factorize* the joint p.d.f. dividing the two members. The only 'tricky' part is the indicator function but we can notice that $(t,s) in (bb(R)^2_+ <=> t in R_+ inter s in R_+)$; therefore we can write the following:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(T,S)(t,s) = coleq(#purple, 18e^(-6t)bb(1)_(t in R_+)) space space coleq(#green, e^(-3s)bb(1)_(s in R_+))
+    $,
+  )
+
+  where we can see the purple factor as $coleq(#purple, h_1(t))$, and the green factor as $coleq(#green, h_2(s))$. Therefore, we can conclude that $T$ and $S$ are independent random variables.
+
+  We may now ask ourselves whether $h_1(t) = f_(T)(t)$ and $h_2(s) = f_(S)(s)$; indeed from what we said above we know they are proportional, but we can't say anything about the *proportionality constant*. To solve this we can rewrite the marginals as scaled by an unknown proportionality constant. We are going to first focus on $f_(T)(t)$:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(T)(t) = k space h_1(t) = 18 k e^(-6t) bb(1)_(t > 0)
+    $,
+  )
+
+  From the _law of total probability_ we also know that integrating the marginal over the whole support $bb(R)$ should give us $1$; therefore we can write:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      1 = limits(integral)_(-infinity)^(infinity) f_(T)(t) space d t &= limits(integral)_0^(infinity) 18 k e^(-6t) space d t = 18 k limits(integral)_0^(infinity) e^(-6t) space d t \
+      &= 18 k space [- 1/6 e^(6t)]_0^(infinity) = 18 k space [- 0/6 - (-1/6)] = 3 k
+    $,
+  )
+
+  Therefore we can conclude that the constant $k$ we were looking for is equal to $1/3$. So we can conclude that marginal density function of $T$ is:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      F_(T)(t) = 6 e^(-6t) bb(1)_(t > 0)
+    $,
+  )
+
+  To compute the second marginal $f_(S)(s)$ we don't even need to compute a second integral; that's because we know the joint p.d.f. can be written as a product of the marginals (by independency), therefore we can compute the following:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(T,S)(t,s) & = 18 e^(-6t) bb(1)_(t > 0) space e^(-3s) bb(1)_(s > 0) \
+                   & = f_(T)(t) space f_(S)(s) \
+                   & = 6 e^(-6t) bb(1)_(t > 0) space 3 e^(-3s) bb(1)_(s > 0)
+    $,
+  )
+
+  that is because since we need to get back to the original 18 in the joint p.d.f., the only possible value for the proportionality factor of $h_2(s)$ is 3.  #rhs([$qed$])
+])
+
+By looking at the previous example we can also notice that there is another (calculus-based) method to compute the marginal probabilities, that is computing the integrals of the density functions over the other variables:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    f_(T)(t) = limits(integral)_(0)^(infinity) f_(T,S)(t,s) space d s quad quad quad f_(S)(s) = limits(integral)_(0)^(infinity) f_(T,S)(t,s) space d t
+  $,
+)
+
+
+=== Factorization via Marginal and Conditional Probabilities
+#example-box("Dependent Variables Factorization", [
+  Suppose we have two R.V.'s $X, Y$ with joint probability density function given by:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(X,Y)(x,y) = x e^(-x(y+1)) bb(1)_(x,y in R^(2)_+)
+    $,
+  )
+
+  First of all, we don't even know whether this is a _valid p.d.f._, in order to _check_ this we need to compute the double integral over the whole support and require it to be equal to $1$:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      limits(integral)_0^infinity limits(integral)_0^infinity x^e^(-x(y+1)) space d x d y = 1
+    $,
+  )
+
+  Since this double integral is quite ugly we can try to *factorize* the joint p.d.f.  by separating the terms depending of only on $x$ and those depending only on $y$ (if possible):
+
+  #math.equation(
+    block: true,
+    $
+      f_(X,Y)(x,y) = x e^(-x) bb(1)_{x > 0} dot e^(-x y) bb(1)_{y > 0}
+    $,
+  )<eq:wrong_factorization>
+
+  For what concerns the first term, it's possible to notice it only depends on $x$, while the second one cannot be further simplified since it depends on on both $x$ and $y$. We can conclude the two random variables are *not independent*.
+])
+
+It is always possible to *factorize* the joint p.d.f of two random variables $X, Y$ using the marginal and conditional probabilities:
+
+#math.equation(
+  block: true,
+  $
+    f_(X,Y)(x,y) = f_(X)(x) space f_(Y | X)(y | x)
+  $,
+)<eq:marginal_conditional_factorization>
+
+#warning-box[If the random variables are not independent, and don't have additional information, there is not shortcut to know which is the marginal and which is the conditional probability density function. So going back to the previous example, it would be totally *wrong* to see the factorization in <eq:wrong_factorization> as if the two factors were the marginal and conditional p.d.f. respectively as in @eq:marginal_conditional_factorization.]
+
+To address the previous exercise, one may recall that the *exponential distribution* has form
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    lambda e^(-lambda t) bb(1)_(t > 0)
+  $,
+)
+
+and is always a valid p.d.f. for any $lambda > 0$. With this new piece of information, we can now look again at the factorization in <eq:wrong_factorization> and notice that we could actually reorder the factors so that both members look like valid exponential marginal distributions:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    f_(X,Y)(x,y) = e^(-x) bb(1)_(x > 0) dot x e^(-x y) bb(1)_(y > 0)
+  $,
+)
+
+In this way, the first factor looks like an exponential distribution with $lambda = 1$ and the second number looks like an exponential distribution with $lambda = x$. Now we can really say that $f_(X,Y)(x,y)$ can be factorized in marginal and conditional where:
+
+- the *marginal* p.d.f. of $X$ is given by $e^(-x) bb(1)_(x > 0)$
+
+- the *conditional* p.d.f. of $Y$ given $X$ is given by $x e^(-x y) bb(1)_(y > 0)$
+
+To check the correctness of this factorization we can now compute check that the integral over all possible values of $y$ yields the marginal of $X$, and that the joint p.d.f. divided the the marginal of $X$ yields the conditional of $Y$ given $X$, that is:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    f_(X)(x) = limits(integral)_0^infinity f_(X,Y)(x,y) d y = e^(-x) quad quad quad (f_(X,Y)(x,y)) / (f_(X)(x)) = x e^(-x y)
+  $,
+)
+
+== Conditional Independency
+
+=== Characterization of Single Random Variables
+Following we try to summarize what we have seen so far about random variables and random vectors. Starting from a *single random variable*, its _distribution_ is characterized by either of:
+
+- either one between probability *mass* function or *density* function (depending on whether the random variable is discrete or continuous)
+- the *cumulative distribution function* which is obtained by integrating or summing the p.m.f. or p.d.f. over the possible values of the random variable.
+- the *survival function* which is obtained by computing the complement of the c.d.f.
+
+=== Characterization of Random Vectors
+In case we are dealing with a *pair* of random variables, the _distribution_ $(X,Y)$ is characterized by either of:
+
+- the *joint* probability *mass* function or *density* function (depending on whether the random variables are discrete or continuous)
+- the *joint cumulative distribution function* which is obtained by integrating or summing the joint p.m.f. or p.d.f. over the possible values of the random variables.
+- the *joint survival function* which is obtained by computing the complement of the joint cumulative distribution function
+- the *marginal* of $X$ and the *conditional* of $Y$ given $X$ (or viceversa); when referring to marginal and conditional distribution we may referring to either one of the p.m.f. / p.d.f., c.d.f, or survival function
+- the *marginals* for $X$ and $Y$ and the information that they are *independent*
+
+
+=== Independency and Conditional Independency
+In case we are told that it is possible to get the joint of $X$ and $Y$ from just the two marginals, then we can conclude that $X$ and $Y$ are independent random variables.
+
+Similarly, if we are told that it is possible to get the joint of $(X, Y, Z)$ from just the three marginals, then we can conclude that $X, Y, Z$ are *mutually independent*, that is every possible pair is independent: $X perp Y, Y perp Z, X perp Z$.
+
+In case we are told that it's possible to get the joint of $(X, Y, Z)$ from the marginal of $X$, the conditional of $Y$ given $X$ and the condition of $Z$ given $Y$, this means we don't need knowledge about $Z | X, Y$; we can conclude $Z$ is *conditionally independent* of $X$ given $Y$.  We can formalize this concept in @def:conditional_independency.
+
+#pagebreak()
+
+#definition(title: "Conditional Independency")[
+  Given three random variables $(X,Y,Z)$, we say that $Z$ is *conditionally independent* of $X$ given $Y$ if and only if:
+
+  #math.equation(
+    block: true,
+    $
+      f_(Z | Y)(z | y) = f_(Z | X,Y)(z | x,y)
+    $,
+  )<eq:conditional_independency>
+
+  which basically means that the knowledge of $X$ does not provide any additional information about $Z$ once we know $Y$.
+
+]<def:conditional_independency>
+
+#remark[
+  With respect of the conditional independency definition, we can rewrite the density of $Z$ given $X$ and $Y$ by means of @eq:conditional_pdf (conditional p.d.f.):
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(Z | X,Y)(z | x,y) = (f_(Z,X | Y)(z,x | y)) / (f_(X | Y)(x | y))
+    $,
+  )
+
+  where the rational is that to compute the conditional probability of something conditioned to something else, we can always computed it dividing their joint probability by the marginal of the conditioning variable. With this in mind we can derive:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      f_(Z | Y)(z | y) f_(X | Y)(x | y) = f_(Z, X | Y)(z,x | y)
+    $,
+  )
+]
+
+== Characteristics of a Distribution
+In the previous chapter we discussed some conditions that are sufficient to determine all the characteristics of a distribution, we didn't mention however what these characteristics actually are. Since there is potentially a plethora of characteristics that can be defined given a distribution, we are going to focus on just some of them, specifically we are dividing them in three principal *families*:
+
+- measures of *central tendency*: the _mean_, _median_ and _mode_
+- measures of *variability*: _variance_, _standard deviation_, _range_, _interquartile range_,
+- measures of *position* or *shape*: _quantiles_ , _skewness_ and _kurtosis_
+
+We are also going to measure the *relationship* between *two variables*, by means of tools such as _covariance_ and _correlation_ (potentially with many different indices).
+
+==== Expected Value of a Random Variable
+#definition(title: "Mean of a Random Variable")[
+  Given a random variable $X$ we define the *mean* or *expected value* as:
+
+  #math.equation(
+    block: true,
+    $
+      mu_(X) = exp(X) = limits(sum)_(x in Omega_X) x space p_X)(x) space "or" space mu_(X) = exp(X) limits(integral)_(x in Omega_X) x space f_(X)(x) space d x
+    $,
+  )<eq:mean_random_variable>
+
+  basically, it is a weighted average of all possible values the random variable can take, where the weights are given by the probabilities of each value.
+]<def:mean_random_variable>
+
+We can see the *mean* of a random variably as the *physical center of mass* of its distribution. Indeed, if we imagine the p.d.f. as a physical object with density proportional to the value of the p.d.f. at each point, then the mean is the point where we could balance this object on the tip of a pencil.
