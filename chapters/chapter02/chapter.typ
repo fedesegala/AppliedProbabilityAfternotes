@@ -25,7 +25,7 @@
 // Numerazione delle equazioni per capitolo
 #set math.equation(numbering: num => {
   let chapter = counter(heading.where(level: 1)).get().first()
-  numbering("(1.1)", chapter, num)
+  numbering("1.1", chapter, num)
 })
 
 // Resetta i contatori ad ogni nuovo capitolo
@@ -1100,3 +1100,119 @@ We are also going to measure the *relationship* between *two variables*, by mean
 ]<def:mean_random_variable>
 
 We can see the *mean* of a random variably as the *physical center of mass* of its distribution. Indeed, if we imagine the p.d.f. as a physical object with density proportional to the value of the p.d.f. at each point, then the mean is the point where we could balance this object on the tip of a pencil.
+
+==== Mode and Median
+Imagine we want to guess the result of an experiment for a random variable $X$. To do so we may come up with different ideas.
+
+We could pick the value with the highest probability or highest density value in case the random variable is continuous; this is called the *mode* of the random variable. It is the value that maximizes the probability of correctly guessing the outcome.
+
+Clearly, this approach is flawed in some sense, consider for instance the experiment of throwing a die, every event has probability $1/6$, so we can't actually define a mode here. To see another example, suppose we have a discrete random variable $X$ with $Omega_X = [-n, n]$. The probability of having $x = 0$ is $1/2$ and the probability of having any other value is evenly split among the remaining values. The choice in this case would be to pick 0 as the value independently of the value of $n$. The problem is there is always a positive probability that $X = n$, so if for instance $n = 1,000,000$, we would have $1/2$ probability of being off by very large amounts.
+
+Let $a$ be a possible guess for the value of $X$. We can measure our error as $|a-x|$, that is, we compute the *absolute error*. Before doing the experiment the absolute error is unknown, but it can be seen as a random variable itself, thus we could try to minimize it in expectation choosing the value of $a$ that minimizes $exp(|a - X|)$.
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    m = limits(arg min)_(a in bb(R)) exp(|a - X|)
+  $,
+)
+
+The value $m$ is actually called the *median* of the random variable $X$.
+
+
+==== Properties of the Expected Value
+Before looking at the properties of the expected value, it's worth to define the concept of *linear operator*. Let's look at the following definition.
+
+#definition(title: "Linear Operator")[
+  An operator $cal(g)$ is a function such that for any linear transformation $cal(T)$ it is the case that $cal(g) dot cal(T) = cal(T) dot cal(g)$, in other words we have that:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      cal(g)(a x + b) = a cal(g)(x) + b
+    $,
+  )
+
+]<def:linear_operator>
+
+===== Linearity
+
+The expected value is indeed a *linear operator*. This means that for any random variable $X$ and for any constants $a, b in bb(R)$ it is the case that:
+
+$ exp(a X + b) = a exp(X) + b $<eq:linear_operator_expectation>
+
+@eq:linear_operator_expectation holds only in case of linear transformations of the random variable.
+
+#example-box("Linearity of Expected Value", [
+  A discrete random variable $X$ with $Omega_X = {0,1}$ where the probability mass function is given by:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      p_X (X) = cases(
+        1 - p space space "if" x = 0,
+        p space space "if" x = 1
+      )
+    $,
+  )
+
+  The expected value of $X$ is given by:
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      exp(X) = 0 dot (1-p) + 1 dot p = p
+    $,
+  )
+
+  Similarly, if we apply a linear transformation to $X$, for instance $Y = 25 X - 2$ we have:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      exp(Y) = exp(25 X - 2) = 25 exp(X) - 2 = 25 p - 2
+    $,
+  )
+])
+
+@def:mean_random_variable suggests us that we can calculate the expected value of a random variable $W$ where $W$ is a linear transformation of $X$, i.e., $W = cal(T)(X)$  without even knowing the distribution of $W$. We can compute the expected value for *any function of a random variable* as :
+#math.equation(
+  block: true,
+  $
+    exp(h(X)) = cases(
+      limits(sum)_(x in Omega_X) h(x) space p_X (x) space space & "if" X "is discrete",
+      limits(integral)_(x in Omega_X) h(x) space f_X (x) space d x space space & "if" X "is continuous"
+    )
+  $,
+)<eq:expected_value_function_random_variable>
+
+===== Jensen's Inequality
+With respect to @eq:expected_value_function_random_variable, we can notice that if the function $h$ is *convex*, then the following inequality holds:
+
+#math.equation(
+  block: true,
+  $
+    exp(h(X)) >= exp(X)
+  $,
+)<eq:jensen_inequality_1>
+
+on the other hand if the function $h$ is *concave*, then the opposite inequality holds:
+#math.equation(
+  block: true,
+  $
+    exp(h(X)) <= exp(X)
+  $,
+)<eq:jensen_inequality_2>
+
+===== Mean Squared Error Minimizer
+Consider the previous example where we were trying to find the best possible guess for the outcome of some experiment. Suppose that instead of the absolute error we were trying to minimized the *mean squared error*, we would find the optimal value is $exp(X)$, that is:
+#math.equation(
+  block: true,
+  $
+    exp(X) = limits(arg min)_(a in bb(R)) space exp((a - X)^2)
+  $,
+)
