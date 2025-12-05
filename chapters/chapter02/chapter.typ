@@ -1190,6 +1190,36 @@ $ exp(a X + b) = a exp(X) + b $<eq:linear_operator_expectation>
   $,
 )<eq:expected_value_function_random_variable>
 
+As a corollary of this property, we can also notice that the expected value of a constant is equal to the constant itself, and that given $n$ random variables $X_1, ..., X_n$ we have that:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(limits(sum)_(i = 1)^n X_i) = limits(sum)_(i = 1)^n exp(X_i)
+  $,
+)
+
+#remark[
+  As $n -> infinity$, under adequate conditions, we may have that
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      limits(sum)_(i = 1)^n X_i -> X^*
+    $,
+  )
+
+  with $X^*$ being another 'fresh' random variable. If this is the case we have that
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      limits(sum)_(i = 1)^n exp(X_i) -> exp(X^*)
+    $,
+  )
+]
 ===== Jensen's Inequality
 With respect to @eq:expected_value_function_random_variable, we can notice that if the function $h$ is *convex*, then the following inequality holds:
 
@@ -1215,4 +1245,271 @@ Consider the previous example where we were trying to find the best possible gue
   $
     exp(X) = limits(arg min)_(a in bb(R)) space exp((a - X)^2)
   $,
+)<eq:mean_squared_error_minimizer>
+
+==== Variance of a Random Variable
+Consider @eq:mean_squared_error_minimizer. If we try to substitute the optimal value $a = exp(X)$ in the expression we get the following equation:
+
+#math.equation(
+  block: true,
+  $
+    limits(min)_(a in bb(R)) space exp((a - X)^2) = exp((exp(X) - X)^2) = "Var"(X)
+  $,
+)<eq:variance_random_variable>
+
+that is, the *variance* of a random variable $X$ can be seen as the minimum mean squared error we can get when trying to guess the outcome of the experiment. We can also write the variance of a random variable by expanding the square in @eq:variance_random_variable:
+
+#math.equation(
+  block: true,
+  $
+    "Var"(X) = exp(X^2) - (exp(X))^2
+  $,
+)<eq:variance_random_variable_expanded>
+
+==== Properties of the Variance
+
+===== Scaling Property
+If we try to compute the variance of a *linear transformation* we obtain:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    "Var"(a X + b) & = exp((a X + b)^2) - (exp(a X + b))^2 \
+    & = exp(a^2 X^2 + 2 a b X + b^2) - (a exp(X) + b)^2 \
+    & = a^2 exp(X^2) + coleq(#purple, 2 a b exp(X)) + coleq(#orange, b^2) - (a^2 (exp(X))^2 + coleq(#purple, 2 a b exp(X)) +coleq(#orange, b^2)) \
+    & = a^2 (exp(X^2) - (exp(X))^2) = a^2 "Var"(X)
+  $,
+)
+
+This also suggests us that the variance of a constant is equal to zero, this is by no surprise since the variance is used to measure the variability of a random variable, and a constant has no variability at all.
+
+===== Law of Total Variance
+Consider 2 (continuous) random variables $X, Y$ with p.d.f. $f_(X,Y)(x,y)$. Given this random vector we can say that it is fully defined by its join p.d.f., that is $(X,Y) ~ f_(X,Y)(x,y)$, but we can also derive the marginal probabilities both for $X$ and for $Y$. Given all the previous quantities we can also define the conditional probability of $X$ given $Y$ and viceversa:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    X | Y ~ f_(X | Y)(x | y) = (f_(X,Y)(x,y)) / (f_(Y)(y))
+  $,
+)
+
+#definition(title: "Conditional Expectation")[
+  Given a random vector of two continuous random variables $(X,Y)$ we can define the
+  *conditional expectation* as the expected value of one random variable given the other:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      exp(X | Y) = limits(integral)_(-infinity)^infinity x space f_(X | Y)(x | y) space d x
+    $,
+  )
+
+  Clearly, this depends on the value taken by $Y$.
+]
+
+It is important to notice that $exp(X | Y)$ is random because $Y$ is random. For every fixed $y in Omega_Y$, $exp(X | Y = y)$ is a number, but since $Y$ is random, $exp(X | Y)$ is a random variable. Basically we can see $exp(X | Y)$ as a function of $y$, say, $g(y)$. We can try to compute the expected value of $g(y)$:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(g(y))_Y &= exp(exp(X | Y)_X)_Y = limits(integral)_(-infinity)^(infinity) exp(X | Y = y) space f_(Y)(y) space d y \
+    &= limits(integral)_(-infinity)^(infinity) [limits(integral)_(-infinity)^(infinity) x space f_(X | Y)(x | y) space d x] space f_(Y)(y) space d y
+    = limits(integral)_(-infinity)^infinity limits(integral)_(-infinity)^(infinity) x f_(X, Y)(x, y) space d x space d y \
+    &= limits(integral)_(-infinity)^infinity limits(integral)_(-infinity)^(infinity) x f_(X, Y)(x, y) space d y space d x space = limits(integral)_(-infinity)^(infinity) x [limits(integral)_(-infinity)^(infinity) f_(X, Y)(x, y) space d y] space d x \
+    &= limits(integral)_(-infinity)^(infinity) x f_(X)(x) space d x = exp(X)
+  $,
+)
+
+#definition(title: "Conditional Variance")[
+  Given two random variables $(X,Y)$ we can define the *conditional variance* as:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      "Var"(X | Y) = exp(X^2 | Y) - exp(X | Y)^2
+    $,
+  )
+]<def:conditional_variance>
+
+Again, the value of the conditional variance may depend on the value taken by $Y$. Similarly to the previous case, since the conditional variance can be seen as a random variable, we can try to compute the expected value of the conditional variance.
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp("Var"(X | Y)) = exp(exp(X^2 | Y)) - exp(exp(X | Y)^2)
+  $,
+)
+
+This is obtained by *linearity* of the expected value operator. We can notice that the first member of the difference is actually equal to $exp(X^2)$, indeed the outer expectation is taken with respect to the value of $Y$, thus it serves to take into account all possible values for $Y$. For the second member however we can't do the same, since there is a square involved, we can notice the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(W^2) - (exp(W))^2 = "Var"(W) ==> exp(W^2) = "Var"(W) + exp(W)^2
+  $,
+)
+
+Thus we can rewrite the previous quantity as:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp("Var"(X | Y)) & = exp(X^2) - ["Var"(exp(X | Y)) + exp(exp(X | Y))^2] \
+                      & = exp(X^2) - "Var"(exp(X | Y)) - exp(X)^2
+  $,
+)
+
+where we used the property seen before that $exp(exp(X | Y)) = exp(X)$ and we squared it. Now if we put together the terms depending only on the $X$ we can obtain the variance back:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp("Var"(X | Y)) = "Var"(X) - "Var"(exp(X | Y))
+  $,
+)
+
+To take this one step even further we can rearrange the terms to obtain the following important result called the *law of total variance*
+
+#math.equation(
+  block: true,
+  $
+    "Var"(X) = exp("Var"(X | Y)) + "Var"(exp(X | Y))
+  $,
+)<eq:law_of_total_variance>
+
+
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+
+    line((-5, 0), (5, 0), mark: (end: ">"), name: "x-axis")
+    line((0, -3), (0, 4), mark: (end: ">"), name: "y-axis")
+    content((5.3, -0.2), $X$)
+    content((-0.4, 4), $Y$)
+
+    let y1 = 0.5
+    let y2 = 1.5
+    let y3 = 2.5
+
+    line((-4.5, y1), (5, y1), stroke: (paint: rgb(100, 150, 200), thickness: 1pt))
+    line((-4.5, y2), (5, y2), stroke: (paint: rgb("#44a744"), thickness: 1pt))
+    line((-4.5, y3), (5, y3), stroke: (paint: rgb("#be771a"), thickness: 1pt))
+
+    content((-5, y1), text(fill: rgb(100, 150, 200), size: 8pt, $y_1$), anchor: "east")
+    content((-5, y2), text(fill: rgb("#44a744"), size: 8pt, $y_2$), anchor: "east")
+    content((-5, y3), text(fill: rgb("#be771a"), size: 8pt, $y_3$), anchor: "east")
+
+    // Valori attesi E[X|Y=y_i]
+    let ex_y1 = 1
+    let ex_y2 = 2.5
+    let ex_y3 = 4
+
+    // Punti E[X|Y=y_i]
+    circle((ex_y1, y1), radius: 0.1, fill: rgb(100, 150, 200), stroke: black)
+    circle((ex_y2, y2), radius: 0.1, fill: rgb("#44a744"), stroke: black)
+    circle((ex_y3, y3), radius: 0.1, fill: rgb("#be771a"), stroke: black)
+
+    line((-3.5, -2.5), (ex_y2, y2), (ex_y3, y3), stroke: (paint: black, thickness: 0.8pt, dash: "dashed"))
+
+    content((ex_y1, -0.5), text(size: 8pt, $bb(E)[X|Y=y_1]$))
+    content((ex_y2 + 1, y2 - 0.5), text(size: 8pt, $bb(E)[X|Y=y_2]$))
+    content((ex_y3 + 1, y3 - 0.5), text(size: 8pt, $bb(E)[X|Y=y_3]$))
+
+    let density_points = ()
+    for i in range(0, 100) {
+      let y = -2.5 + i * 0.06
+      let dens = 0
+
+      // Uso funzioni sigmoidali per transizioni lisce
+      if y < y1 {
+        dens = 0.19 * calc.exp(-calc.pow((y - y1) / 0.8, 2))
+      } else if y >= y1 and y < y2 {
+        // Transizione liscia con funzione sigmoidale
+        let t = (y - y1) / (y2 - y1)
+        dens = 0.2 + 0.7 * (3 * calc.pow(t, 2) - 2 * calc.pow(t, 3))
+      } else if y >= y2 and y <= y3 {
+        // Massimo plateau tra y2 e y3
+        dens = 0.9
+      } else if y > y3 and y < y3 + 0.8 {
+        // Decrescita liscia dopo y3
+        let t = (y - y3) / 0.8
+        dens = 0.9 * (1 - (3 * calc.pow(t, 2) - 2 * calc.pow(t, 3)))
+      } else {
+        // Coda esponenziale
+        dens = 0
+      }
+
+      density_points.push((dens * 1.8, y))
+    }
+
+    for i in range(1, density_points.len()) {
+      line(density_points.at(i - 1), density_points.at(i), stroke: (paint: rgb("#e63946"), thickness: 0.8pt))
+    }
+
+    content((-0.5, 3.4), text(size: 9pt, fill: rgb("#e63946"), $f_Y (y)$))
+
+    // Distribuzione di E[X|Y] lungo la linea tratteggiata
+    // Calcolo la direzione della linea
+    let line_start_x = -3.5
+    let line_start_y = -2.5
+    let line_end_x = ex_y3
+    let line_end_y = y3
+
+    // Vettore direzione
+    let dx = line_end_x - line_start_x
+    let dy = line_end_y - line_start_y
+    let line_length = calc.sqrt(dx * dx + dy * dy)
+
+    // Vettore perpendicolare normalizzato
+    let perp_x = -dy / line_length
+    let perp_y = dx / line_length
+
+    let density_expy_points = ()
+    let density_expy_base = ()
+
+    for i in range(0, 100) {
+      let t = i / 99.0 // Parametro da 0 a 1 lungo la linea
+      let base_x = line_start_x + t * dx
+      let base_y = line_start_y + t * dy
+
+      // Densità che segue f_Y (stessa forma ma ruotata)
+      let y_val = base_y // Usa la coordinata y per determinare la densità
+      let dens = 0
+
+      if y_val < y1 {
+        dens = 0.4 * calc.exp(-calc.pow((y_val - y1) / 0.8, 2))
+      } else if y_val >= y1 and y_val < y2 {
+        let s = (y_val - y1) / (y2 - y1)
+        dens = 0.4 + 0.9 * (2 * calc.pow(s, 2) - 2 * calc.pow(s, 3))
+      } else if y_val >= y2 and y_val <= y3 {
+        let s = (y_val - y2) / (y3 - y2)
+        dens = 0.4 + 0.4 * (1 * calc.pow(s, 2) - 2 * calc.pow(s, 3))
+      } else {
+        dens = 6
+      }
+
+      // Punto sulla curva perpendicolare alla linea (aumentato moltiplicatore)
+      let curve_x = base_x + perp_x * dens * 2.5
+      let curve_y = base_y + perp_y * dens * 2.5
+      density_expy_points.push((curve_x, curve_y))
+      density_expy_base.push((base_x, base_y))
+    }
+
+    // Disegna la curva della densità di E[X|Y]
+    for i in range(1, density_expy_points.len()) {
+      line(density_expy_points.at(i - 1), density_expy_points.at(i), stroke: (paint: rgb("#457b9d"), thickness: 2pt))
+    }
+
+    // Etichetta per f_E[X|Y]
+    content((ex_y3 - 1.5, y3 + 0.8), text(size: 13pt, fill: rgb("#457b9d"), $f_(bb(E)[X|Y])(x, y)$))
+  }),
+  caption: [Visualization of conditional expectation distribution function],
 )

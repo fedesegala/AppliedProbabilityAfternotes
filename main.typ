@@ -46,6 +46,8 @@
 #include "chapters/chapter01/chapter.typ"
 #pagebreak()
 #include "chapters/chapter02/chapter.typ"
+#pagebreak()
+
 
 #outline(
   title: "Figures Index",
