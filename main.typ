@@ -47,6 +47,9 @@
 #pagebreak()
 #include "chapters/chapter02/chapter.typ"
 #pagebreak()
+#include "chapters/chapter03/chapter.typ"
+#pagebreak()
+
 
 
 #outline(

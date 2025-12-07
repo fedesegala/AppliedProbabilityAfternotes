@@ -1253,7 +1253,7 @@ Consider @eq:mean_squared_error_minimizer. If we try to substitute the optimal v
 #math.equation(
   block: true,
   $
-    limits(min)_(a in bb(R)) space exp((a - X)^2) = exp((exp(X) - X)^2) = "Var"(X)
+    limits(min)_(a in bb(R)) space exp((a - X)^2) = exp((exp(X) - X)^2) = var(X)
   $,
 )<eq:variance_random_variable>
 
@@ -1262,7 +1262,7 @@ that is, the *variance* of a random variable $X$ can be seen as the minimum mean
 #math.equation(
   block: true,
   $
-    "Var"(X) = exp(X^2) - (exp(X))^2
+    var(X) = exp(X^2) - exp(X)^2
   $,
 )<eq:variance_random_variable_expanded>
 
@@ -1275,10 +1275,10 @@ If we try to compute the variance of a *linear transformation* we obtain:
   block: true,
   numbering: none,
   $
-    "Var"(a X + b) & = exp((a X + b)^2) - (exp(a X + b))^2 \
-    & = exp(a^2 X^2 + 2 a b X + b^2) - (a exp(X) + b)^2 \
-    & = a^2 exp(X^2) + coleq(#purple, 2 a b exp(X)) + coleq(#orange, b^2) - (a^2 (exp(X))^2 + coleq(#purple, 2 a b exp(X)) +coleq(#orange, b^2)) \
-    & = a^2 (exp(X^2) - (exp(X))^2) = a^2 "Var"(X)
+    var(a X + b) & = exp((a X + b)^2) - exp(a X + b)^2 \
+    & = exp(a^2 X^2 + 2 a b X + b^2) - ( exp(X) + b^2 \
+    & = a^2 exp(X^2) + coleq(#purple, 2 a b exp(X)) + coleq(#orange, b^2) - (a^2 exp(X)^2 + coleq(#purple, 2 a b exp(X)) +coleq(#orange, b^2)) \
+    & = a^2 (exp(X^2) - exp(X)^2) = a^2 var(X)
   $,
 )
 
@@ -1331,7 +1331,7 @@ It is important to notice that $exp(X | Y)$ is random because $Y$ is random. For
     block: true,
     numbering: none,
     $
-      "Var"(X | Y) = exp(X^2 | Y) - exp(X | Y)^2
+      var(X | Y) = exp(X^2 | Y) - exp(X | Y)^2
     $,
   )
 ]<def:conditional_variance>
@@ -1341,7 +1341,7 @@ Again, the value of the conditional variance may depend on the value taken by $Y
   block: true,
   numbering: none,
   $
-    exp("Var"(X | Y)) = exp(exp(X^2 | Y)) - exp(exp(X | Y)^2)
+    exp(var(X | Y)) = exp(exp(X^2 | Y)) - exp(exp(X | Y)^2)
   $,
 )
 
@@ -1351,7 +1351,7 @@ This is obtained by *linearity* of the expected value operator. We can notice th
   block: true,
   numbering: none,
   $
-    exp(W^2) - (exp(W))^2 = "Var"(W) ==> exp(W^2) = "Var"(W) + exp(W)^2
+    exp(W^2) - exp(W)^2 = var(W) ==> exp(W^2) = var(W) + exp(W)^2
   $,
 )
 
@@ -1361,8 +1361,8 @@ Thus we can rewrite the previous quantity as:
   block: true,
   numbering: none,
   $
-    exp("Var"(X | Y)) & = exp(X^2) - ["Var"(exp(X | Y)) + exp(exp(X | Y))^2] \
-                      & = exp(X^2) - "Var"(exp(X | Y)) - exp(X)^2
+    exp(var(X | Y)) & = exp(X^2) - [var(exp(X | Y)) + exp(exp(X | Y))^2] \
+                    & = exp(X^2) - var(exp(X | Y)) - exp(X)^2
   $,
 )
 
@@ -1372,7 +1372,7 @@ where we used the property seen before that $exp(exp(X | Y)) = exp(X)$ and we sq
   block: true,
   numbering: none,
   $
-    exp("Var"(X | Y)) = "Var"(X) - "Var"(exp(X | Y))
+    exp(var(X | Y)) = var(X) - var(exp(X | Y))
   $,
 )
 
@@ -1381,7 +1381,7 @@ To take this one step even further we can rearrange the terms to obtain the foll
 #math.equation(
   block: true,
   $
-    "Var"(X) = exp("Var"(X | Y)) + "Var"(exp(X | Y))
+    var(X) = exp(var(X | Y)) + var(exp(X | Y))
   $,
 )<eq:law_of_total_variance>
 
@@ -1512,4 +1512,228 @@ To take this one step even further we can rearrange the terms to obtain the foll
     content((ex_y3 - 1.5, y3 + 0.8), text(size: 13pt, fill: rgb("#457b9d"), $f_(bb(E)[X|Y])(x, y)$))
   }),
   caption: [Visualization of conditional expectation distribution function],
+)<fig:conditional_expectation_distribution>
+
+Consider @fig:conditional_expectation_distribution: whenever we fix a value for $Y$, which in the picture corresponds to $y_1, y_2, y_3$, we may find the expected value of $X$ given that value of $Y$. In red we can see the density function of $Y$. Now since we said we can visualize the conditional expectation as a random variable itself, according to the value that $Y$ takes, we can also visualize its density function, which is represented in blue in the picture.
+
+==== Covariance and Correlation
+Up to now we never really talked about the *relationship* between two random variables. In order to quantify this information it is necessary to introduce the concepts of *covariance* and *correlation*.
+
+#definition(title: "Covariance")[
+  Given two random variables $(X,Y)$ we can define the *covariance* between them $sigma_(X Y)$ and it is given by the following equation:
+
+  #math.equation(
+    block: true,
+    $
+      cov(X, Y) & = exp((X - exp(X)) (Y - exp(Y))) \
+                & = exp(X Y) - exp(X)exp(Y)
+    $,
+  )<eq_2_covariance>
+]
+
+Usually, when people talk about covariance they refer to it as the measure of association between two random variables, as if this is the only possible way of measuring association. In reality, this is a very limited index, which can only measure *linear association*.
+
+===== Expected Value and Variance
+Let $X$ be a Binomial random variable with parameters $n$ and $p$. Considering its probability mass function in @eq_4_binomial_pmf, we can compute its *expected* *value* as:
+
+#math.equation(
+  block: true,
+  $
+    exp(X) = exp(limits(sum)_(i=1)^n X_i) = limits(sum)_(i=1)^n exp(X_i) = n dot p
+  $,
 )
+
+where we used the linearity of expectation to move the expectation inside the sum.
+As far as the *variance* is concerned, we cannot use the same trick, in that the variance operator is not linear.
+
+Consider two discrete random variables $X, Y$ with joint probability mass function $p_(X Y)(x,y)$ and with support which is represented in @fig_3_support_xy. Suppose also that the orange point is the point $(exp(X), exp(Y))$.
+
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+
+    line((-5, 0), (5, 0), mark: (end: ">"), name: "x-axis")
+    line((0, -3), (0, 3), mark: (end: ">"), name: "y-axis")
+    content((5.3, -0.2), $X$)
+    content((-0.4, 3), $Y$)
+
+    let start_x = -5
+    let end_x = 4.5
+    let step_x = 0.9
+
+    let xy_points = ()
+    let x_support = ()
+    let y_support = ()
+
+    while start_x <= end_x {
+      xy_points.push((start_x, 0.5 * start_x))
+      x_support.push((start_x, 0))
+      y_support.push((0, 0.5 * start_x))
+      start_x = start_x + step_x
+    }
+
+    for i in range(0, xy_points.len()) {
+      circle(xy_points.at(i), radius: 0.05, fill: blue.lighten(80%), stroke: blue)
+
+      circle(x_support.at(i), radius: 0.05, fill: red.lighten(80%), stroke: red)
+
+      circle(y_support.at(i), radius: 0.05, fill: green.lighten(80%), stroke: green)
+    }
+
+    for i in range(1, xy_points.len()) {
+      line(xy_points.at(i - 1), xy_points.at(i), stroke: (paint: rgb("#457b9d"), thickness: 0.5pt, dash: "dashed"))
+    }
+
+    for i in range(0, x_support.len()) {
+      line(x_support.at(i), xy_points.at(i), stroke: (thickness: 0.2pt, dash: "dashed"))
+      line(y_support.at(i), xy_points.at(i), stroke: (thickness: 0.2pt, dash: "dashed"))
+    }
+
+    circle((1.8, 0.5 * 1.8), radius: 0.1, fill: orange.lighten(70%), stroke: orange)
+    line((1.8, -0.3), (1.8, 0.5 * 1.8), stroke: (thickness: 0.3pt, dash: "dashed"))
+    content((1.8, -0.5), text(size: 8pt, fill: orange)[$exp(X) = mu_X$])
+    line((-0.3, 0.5 * 1.8), (1.8, 0.5 * 1.8), stroke: (thickness: 0.3pt, dash: "dashed"))
+    content((-1.1, 0.5 * 1.8), text(size: 8pt, fill: orange)[$exp(Y) = mu_Y$])
+
+    content((-3, 2.5), text(size: 10pt, fill: red)[Support of $X : Omega_X$])
+    content((-3, 2), text(size: 10pt, fill: green)[Support of $Y : Omega_Y$])
+  }),
+  caption: [Support of two random variables $X$ and $Y$ that are positively correlated],
+)<fig_3_support_xy>
+
+Suppose now that we fix a value both for the random variable $X$ and $Y$. We could try to compute the 'offset' of those values from their respective expected values, that is:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    X - exp(X) space space "and" space space Y - exp(Y)
+  $,
+)
+
+It is evident that, if we fix a point $(x,y)$ in the support of the random vector $(X,Y)$, and multiply the offsets define above and we weigh them by the joint probability of $(x,y)$, will always get a positive quantity; that is
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    cov(X, Y) quad = limits(sum)_((x,y) in Omega_(X Y)) (x - exp(X)) space (y - exp(Y)) space p_(X Y)(x,y) > 0
+  $,
+)<eq:positive_covariance>
+
+In other word, $X$ and $Y$ are *positively correlated*: this means that when $X$ is above its expected value, also $Y$ tends to be above its expected value, and viceversa.
+
+
+To be more specific, the one in @fig_3_support_xy is an example of *perfect linear relationship* meaning that, whenever we know the value of one of the two random variables, we can exactly determine the value of the other one.
+
+#remark[
+  It is possible to notice that the *magnitude* of the covariance depends on the *dispersione* of the two random variables, that is, the higher the variance of either one of the random variables, the higher the covariance will be.
+]
+
+We would actually like to be able to obtain a *standardized* way to measure the linear association between two random variables, in order to be able to compare the strength of the linear relationship between different pairs of random variables. To do so we can introduce the concept of *correlation coefficient*.
+
+#definition(title: "Correlation Coefficient")[
+  Given two random variables $(X,Y)$ we can define the *correlation coefficient* between them $rho_(X Y)$ as:
+
+  #math.equation(
+    block: true,
+    $
+      "Corr"(X,Y) = rho_(X Y) = (cov(X, Y)) / (sqrt(var(X)) space sqrt(var(Y)))
+    $,
+  )<eq:correlation_coefficient>
+
+  One important property of the correlation coefficient is that it is always bounded between -1 and 1, that is:
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      -1 <= rho_(X Y) <= 1
+    $,
+  )
+]<def:correlation_coefficient>
+
+In our previous example of @fig_3_support_xy, since the two random variables are perfectly positively correlated, we have that $rho_(X Y) = 1$.
+
+#warning-box[
+  It is essential to notice that both covariance and correlation coefficient only measure *linear association* between two random variables. Two random variables may not be linearly correlated at all, but present some kind of non-linear dependency between them.
+]
+
+To understand this consider two random variables whose support is represented in @fig:non_linear_relationship.
+
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+
+    line((-5, 0), (5, 0), mark: (end: ">"), name: "x-axis")
+    line((0, -0.5), (0, 3), mark: (end: ">"), name: "y-axis")
+    content((5.3, -0.2), $X$)
+    content((-0.4, 3), $Y$)
+
+    let start_x = -4
+    let x_step_positive = 0.8
+
+    let xy_points = ()
+
+    let x_support = ()
+    let y_support = ()
+
+    while start_x <= 4 {
+      if start_x < 0 {
+        xy_points.push((start_x, -0.5 * start_x))
+        y_support.push((0, -0.5 * start_x))
+      } else {
+        xy_points.push((start_x, 0.5 * start_x))
+        y_support.push((0, 0.5 * start_x))
+      }
+      x_support.push((start_x, 0))
+
+      start_x = start_x + x_step_positive
+    }
+
+    for i in range(0, xy_points.len()) {
+      circle(xy_points.at(i), radius: 0.05, fill: blue.lighten(80%), stroke: blue)
+    }
+
+
+    for i in range(1, xy_points.len()) {
+      line(xy_points.at(i - 1), xy_points.at(i), stroke: (paint: rgb("#457b9d"), thickness: 0.5pt, dash: "dashed"))
+    }
+
+    for i in range(0, y_support.len()) {
+      line(y_support.at(i), xy_points.at(i), stroke: (thickness: 0.2pt, dash: "dashed"))
+      line(x_support.at(i), xy_points.at(i), stroke: (thickness: 0.2pt, dash: "dashed"))
+    }
+
+    line((-4, 1.5), (4, 1.5), stroke: (paint: purple, thickness: 2pt, dash: "dotted"))
+    content((-4.5, 1.5), text(size: 10pt, fill: purple)[$exp(Y)$])
+
+    line((0, -0.3), (0, 2.5), stroke: (paint: purple, thickness: 2pt, dash: "dotted"))
+    content((0, -1), text(size: 10pt, fill: purple)[$exp(X)$])
+
+    circle((2, 1), radius: 0.1, fill: orange.lighten(70%), stroke: orange)
+    content((2.3, 0.6), text(size: 10pt, fill: orange)[$(x_1, y_1)$])
+    circle((-2, 1), radius: 0.1, fill: orange.lighten(70%), stroke: orange)
+    content((-2.3, 0.6), text(size: 10pt, fill: orange)[$(x_2, y_2)$])
+  }),
+  caption: [Support of two random variables $X$ and $Y$ that not linearly correlated],
+)<fig:non_linear_relationship>
+
+In this case we would have that the quantity $x_1 - exp(X)$ would be positive, while the quantity $y_1 - exp(Y_1)$ would be negative, thus the product between them would yield a negative value. The problem in this case is that if we consider the point $(x_2, y_2)$, and consider the offset with respect to the expected values, we would find that their product is positive but with the same magnitude of the previous one. This would happen for every other pair of points in the support, thus we would obtain a linear correlation factor equal to zero.
+
+We basically have found out that the two random variables are *uncorrelated*, meaning that there is no linear relationship between them, even though they are clearly *not independent*, indeed knowing the value of one of the two random variables allows us to know the value of the other one up to a sign.
+
+In general, we can always say that if two random variables are independent, then they are also uncorrelated, and have covariance equal to zero. The opposite is not true in general, as we have just seen in the example above, in such case, we can only state that their relation, if any, is non-linear.
+
+==== Properties of Covariance and Variance
+As we have introduced a new operator, it is worth to take a look at its properties, specifically, since it is strongly related to the variance operator, not surprisingly we'll see how variance and covariance can be put together to derive some useful results.
+
+- $var(a X + b Y + c) = a^2 var(X) + b^2 var(Y) + 2 a b cov(X, Y)$, here we can see that the first two members of the sum can be obtained from the scaling property of the variance, as well as the disappearance of the constant $c$.
+
+- If we want to compute the covariance between linear transformations of multiple random variables we need to take into account all possible pairs of linearly transformed variable: $cov(a X + b Y, c Z + d W) = a d cov(X, W) + b c cov(Y, Z) + a d cov(X, W) + b d cov(Y, W)$
+
+- $cov(X, a) = exp((x - exp(X))(a - exp(a))) = exp((x - exp(X)) dot 0) = 0$
+- $cov(X, Y) = cov(Y, X)$, that is the covariance is *symmetric* as well as the correlation coefficient
+
+- $cov(a X + b, b Y + c) = a c cov(X, Y)$, in case we are dealing with the correlation operator we shall have that the constants $a, c$ will cancel out with the scaling of the standard deviations in the denominator, that is $rho(a X + b, c Y + d) = rho(X, Y)$
+
+-

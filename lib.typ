@@ -488,6 +488,8 @@
 
 #let prob(expr) = $bb(P)[|#expr|]$
 #let exp(expr) = $bb(E)[|#expr|]$
+#let var(expr) = $"Var"{#expr}$
+#let cov(v1, v2) = $"Cov"{#v1, v2}$
 #let rhs(body) = {
   box()
   h(1fr)
