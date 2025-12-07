@@ -1736,4 +1736,18 @@ As we have introduced a new operator, it is worth to take a look at its properti
 
 - $cov(a X + b, b Y + c) = a c cov(X, Y)$, in case we are dealing with the correlation operator we shall have that the constants $a, c$ will cancel out with the scaling of the standard deviations in the denominator, that is $rho(a X + b, c Y + d) = rho(X, Y)$
 
--
+==== Chebyshev's Inequality
+One last important property involving the variance of a random variable is the so called *Chebyshev's inequality*. This is a very useful result, which comes in handy when we don't know the exact distribution of a random variable, but we know its expected value $mu$ and variance $sigma^2$, which thinking about it are two values which is not so difficult to estimate from experimental data. In such case we can use this result.
+
+#theorem(title: "Chebyshev's Inequality")[
+  Given a random variable $X$ with expected value $exp(X) = mu$ and variance $var(X) = sigma^2$, then for any $epsilon > 0$ we have that:
+
+  #math.equation(
+    block: true,
+    $
+      prob(|X - mu| > epsilon) <= ((sigma)/(epsilon))^2
+    $,
+  )
+]
+
+This result is very important since it allows us to bound the probability that a random variable deviates from its expected value by more than a certain amount $epsilon$, just knowing its variance.
