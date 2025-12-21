@@ -1,4 +1,4 @@
-#import "@preview/theorion:0.4.0": make-frame, showybox, use-state
+#import "@preview/theorion:0.4.1": make-frame, showybox, use-state
 
 // Workaround for the lack of an `std` scope.
 #let std-bibliography = bibliography
@@ -227,9 +227,9 @@
 }
 
 
-#import "@preview/theorion:0.4.0": language-aware-start, theorion-i18n, theorion-i18n-map
+#import "@preview/theorion:0.4.1": language-aware-start, theorion-i18n, theorion-i18n-map
 #let example-box(
-  fill: rgb("#acb2bf"),
+  fill: rgb("#d082e7"),
   ..args,
   title,
   body,

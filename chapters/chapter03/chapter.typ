@@ -1,4 +1,4 @@
-#import "@preview/theorion:0.4.0": *
+#import "@preview/theorion:0.4.1": *
 #import cosmos.fancy: *
 #show: show-theorion
 #import "@preview/codly:1.3.0": *
@@ -58,8 +58,8 @@ Let $X$ be a Bernoulli random variable with parameter $p$. The probability mass 
   block: true,
   $
     p_X (x) = cases(
-      q = 1 - p space space & "if" space x = 0 \
-                          p & "if" space x = 1
+      q = 1 - p space space & "if" space x = 0,
+      p & "if" space x = 1
     )
   $,
 )<eq_1_bernoulli_pmf>
@@ -83,7 +83,7 @@ Given the expected value compute previously, we can also plug it into @eq:varian
   $,
 )<eq_3_bernoulli_variance>
 
-Now that we have defined all the important characteristics of a Bernoulli random variable, we can try to use is to model some more complex experiment. Suppose for example that we want to *replicate* a bernoulli trial multiple times, say $n$ and each of those trials is independent, this is how we get a *Binomial distribution*.
+Now that we have defined all the important characteristics of a Bernoulli random variable, we can try to use is to model some more complex experiment. Suppose for example that we want to *replicate* a Bernoulli trial multiple times, say $n$ and each of those trials is independent, this is how we get a *Binomial distribution*.
 
 #definition(title: "Binomial Distribution")[
   A variable described as the number of successes $Y$ in a sequence of independent Bernoulli trials $X_i limits(~)^("i.i.d.") "Ber"(p)$, has *binomial distribution*. Its parameters are $n$, the number of trials, and $p$, the probability of success in each trial.
@@ -225,7 +225,7 @@ Let $X$ be a Geometric random variable with parameter $p$. Considering its proba
   $,
 )
 
-where $I_i$ is an indicator that *at least* $i$ trials are needed to get the first success. We can compute the expected value of $X$ as follows:
+Where $I_i$ is an indicator that *at least* $i$ trials are needed to get the first success. We can compute the expected value of $X$ as follows:
 
 #math.equation(
   block: true,
@@ -235,7 +235,7 @@ where $I_i$ is an indicator that *at least* $i$ trials are needed to get the fir
   $,
 )
 
-but $prob(X >= i)$ is the probability that the first $i - 1$ trials are failures, so $prob(X >= i) = (1 - p)^(i-1)$ therefore we have:
+But $prob(X >= i)$ is the probability that the first $i - 1$ trials are failures, so $prob(X >= i) = (1 - p)^(i-1)$ therefore we have:
 
 #math.equation(
   block: true,
@@ -296,7 +296,7 @@ In `R` we have the following functions to work with Geometric random variables:
 
 - `rgeom(r, p)` simulates $r$ realizations of $X - 1$
 
-== Hypergeometric Distribution
+== Hyper-geometric Distribution
 Another important random variable distribution is the *hypergeometric distribution*, which is used to model experiments where we draw samples without replacement from a finite population.
 
 #definition(title: "Hypergeometric Distribution")[
@@ -316,7 +316,7 @@ Let $X$ be a hypergeometric random variable with parameters $N$ (population size
 where $x$ is an integer such that $max(0, n - N + M) <= x <= min(n, M)$
 
 ===== Expected Value and Variance
-Let $X$ be a hypergeometric random variable with p.m.f. given by $"hyper geom"(x, n, N, M)$, then we can define its expected value and variance as follows:
+Let $X$ be a hypergeometric random variable with p.m.f. given by $"hyper geom"(x, n, N, M)$, then we can de fine its expected value and variance as follows:
 
 #math.equation(
   block: true,
@@ -324,3 +324,103 @@ Let $X$ be a hypergeometric random variable with p.m.f. given by $"hyper geom"(x
     exp(X) = n dot M/N quad quad quad var(X) = (N - n)/(N - 1) dot n dot M/N (1 - M/N)
   $,
 )
+
+== Introduction to Stochastic Processes
+In this section we will try to build a link between everything we have seen so far about random variables and basic probability theory, and the core concept of this course: *stochastic processes*.
+A sequence ${X_n}$ of random variables is a *stochastic process*. With the term "sequence" we refer to an _infinite random vector_.
+
+If we consider a *_finite collection_* of random variables ${X_1, X_2, ..., X_n}$ we can characterize all we need to know about such random variables and their relationships by means of their *joint probability distribution*. Indeed starting from it we can compute all the marginal probabilities; furthermore we can also notice that $forall i_1, i_2, ..., i_k$ and for $k >= 1$ we can compute the joint probability of $(X_(i 1), X_(i 2), ..., X_(i k))$ by integrating (or summing) out all the other variables from the joint distribution.
+
+If we can do this for every possibile finite subset of r.v.'s from our infinite collection, that means we know the *law* (which is the distribution in this context of random processes) of the random sequence. Informally speaking, we can say that if $X = {X_n}_(n=1)^infinity$ the *law of $X$* is defined as the collection of all the _finite-dimensional distributions_ $forall n in {1, 2, 3, ...}$.
+Given any subset of indices $i_1, i_2, ..., i_k$ with $k >= 1$, the finite-dimensional distribution is defined as the joint distribution of the random variables $(X_(i 1), X_(i 2), ..., X_(i k))$.
+
+
+The simplest stochastic process we can think about is a collection $X_i limits(~)^("i.i.d.") F_X quad i = 1, 2, ...$. A finite subset of them is called a *sample* from distribution $F_X$. The reason why it is the simplest is given in the following equation:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    forall n, forall i_1, i_2, ..., i_n : prob((X_(i_1), ... , X_(i_n))) = F_(X_(i 1), ... X_(i n)) (x_(i 1), ..., x_(i n)) = product_(j=1)^n F_X (x_(i j)),
+  $,
+)
+
+that is, the joint distribution of any finite subset of them can be computed as the product of their marginal distributions, since they are all *independent* and *identically* *distributed*.
+
+#remark[
+  If the random variables are independent but not identically distributed we need to know the *marginal distribution* for each one of the random variables. Namely, if $X_i limits(~)^("ind") F_(X_i)$ then we have that the joint probability of the sample is given by:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      F_(X_(i 1), ... X_(i n)) (x_(i 1), ..., x_(i n)) = product_(j=1)^n F_(X_(i j)) (x_(i j))
+    $,
+  )
+
+  namely, we need to have knowledge about a countable number of marginal distributions.
+]
+
+#example-box("Sequence of independent non identically distributed random variables", [
+  Suppose we are dealing with a sequence of independent random variables which are not *identically distributed*. To keep the matter simple, let's suppose that the distribution changes according to the index of the random variable in the sequence and the basic distribution is always a Bernoulli distribution, that is: $X_i ~ "Bern"(1 / i)$.
+
+  Of course, considering everything we have said so far, we can say that ${X_n}_(n=1)^infinity$ is a stochastic process.
+])
+
+Consider now the following object:
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    Y_n = limits(sum)_(i = 1)^n X_i "Bin"(n,p))
+  $,
+)
+
+and consider the collection ${Y_n}_(n=1)^infinity$; that one is also a *stochastic process*. Again, in this case $Y_i$'s are surely *not* *identically* *distributed*, indeed if $n != m$, $Y_m$ and $Y_n$ have a different distribution while both being Binomial random variable. As far as independency is concerned we can take a look at the following equation:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    Y_(n+1) = limits(sum)_(i = 1)^(n+1) X_i = Y_n + X_(n+1)
+  $,
+)
+
+if we try to study the value of $Y_(n+1)$ alone we can correctly conclude that it may take any value in {0, ..., n+1}; however if we consider $Y_(n+1) | Y_n = n$ we can easily see that $Y_(n+1)$ can only take the values in {n, n+1}, thus $Y_(n+1)$ and $Y_n$ are *not independent*. Indeed the conditional distribution of $Y_(n+1) | Y_n$ is given by:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    p_(Y_(n+1) | Y_n) (y_(n+1) | y_n) = cases(
+      1 - p quad & "if" y_(n+1) = y_n,
+      p & "if" y_(n+1) = y_n + 1,
+      0 & "otherwise"
+    )
+  $,
+)
+
+That is actually quite trivial to compute since we are dealing with Binomial random variables built from independent Bernoulli trials.
+In *general*, supposing we are working with Binomial random variables, we have that:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    p_(Y_1, Y_2, ..., Y_n) (y_1, y_2, ..., y_n) = p_(Y_1)(y_1) space p_(Y_2 | Y_1)(y_2 | y_1) ... space p_(Y_n | Y_(n-1)) (y_n | y_(n-1))
+  $,
+)
+
+Suppose that we know $Y_n = y_n$ and $Y_(n-1) = y_(n-1)$, let's see how we can use this information:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    Y_(n+1) = Y_n + X_(n+1)
+  $,
+)
+
+Basically, the first information is very useful since it tells us how many successes we had up to trial $n$, whilst the second information is just telling us that we can write $Y_n = y_(n-1) + X_n$, but we already know the value of $Y_n$ so that second piece of information is not really adding anything new in case we already know $Y_n$.
+
+
