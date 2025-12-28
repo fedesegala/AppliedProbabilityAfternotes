@@ -7,6 +7,12 @@
 #import "../../lib.typ": *
 #import "@preview/cetz:0.4.2"
 
+#show ref: it => {
+  if query(it.target).len() == 0 {
+    return text(fill: red, "ciaone" + str(it.target))
+  }
+  it
+}
 // apply numbering up to h3
 #show heading: it => {
   if (it.level > 3) {
@@ -331,7 +337,7 @@ A sequence ${X_n}$ of random variables is a *stochastic process*. With the term 
 
 If we consider a *_finite collection_* of random variables ${X_1, X_2, ..., X_n}$ we can characterize all we need to know about such random variables and their relationships by means of their *joint probability distribution*. Indeed starting from it we can compute all the marginal probabilities; furthermore we can also notice that $forall i_1, i_2, ..., i_k$ and for $k >= 1$ we can compute the joint probability of $(X_(i 1), X_(i 2), ..., X_(i k))$ by integrating (or summing) out all the other variables from the joint distribution.
 
-If we can do this for every possibile finite subset of r.v.'s from our infinite collection, that means we know the *law* (which is the distribution in this context of random processes) of the random sequence. Informally speaking, we can say that if $X = {X_n}_(n=1)^infinity$ the *law of $X$* is defined as the collection of all the _finite-dimensional distributions_ $forall n in {1, 2, 3, ...}$.
+If we can do this for every possible finite subset of r.v.'s from our infinite collection, that means we know the *law* (which is the distribution in this context of random processes) of the random sequence. Informally speaking, we can say that if $X = {X_n}_(n=1)^infinity$ the *law of $X$* is defined as the collection of all the _finite-dimensional distributions_ $forall n in {1, 2, 3, ...}$.
 Given any subset of indices $i_1, i_2, ..., i_k$ with $k >= 1$, the finite-dimensional distribution is defined as the joint distribution of the random variables $(X_(i 1), X_(i 2), ..., X_(i k))$.
 
 
@@ -345,7 +351,7 @@ The simplest stochastic process we can think about is a collection $X_i limits(~
   $,
 )
 
-that is, the joint distribution of any finite subset of them can be computed as the product of their marginal distributions, since they are all *independent* and *identically* *distributed*.
+That is, the joint distribution of any finite subset of them can be computed as the product of their marginal distributions, since they are all *independent* and *identically* *distributed*.
 
 #remark[
   If the random variables are independent but not identically distributed we need to know the *marginal distribution* for each one of the random variables. Namely, if $X_i limits(~)^("ind") F_(X_i)$ then we have that the joint probability of the sample is given by:
@@ -358,7 +364,7 @@ that is, the joint distribution of any finite subset of them can be computed as 
     $,
   )
 
-  namely, we need to have knowledge about a countable number of marginal distributions.
+  Namely, we need to have knowledge about a countable number of marginal distributions.
 ]
 
 #example-box("Sequence of independent non identically distributed random variables", [
@@ -376,7 +382,7 @@ Consider now the following object:
   $,
 )
 
-and consider the collection ${Y_n}_(n=1)^infinity$; that one is also a *stochastic process*. Again, in this case $Y_i$'s are surely *not* *identically* *distributed*, indeed if $n != m$, $Y_m$ and $Y_n$ have a different distribution while both being Binomial random variable. As far as independency is concerned we can take a look at the following equation:
+And consider the collection ${Y_n}_(n=1)^infinity$; that one is also a *stochastic process*. Again, in this case $Y_i$'s are surely *not* *identically* *distributed*, indeed if $n != m$, $Y_m$ and $Y_n$ have a different distribution while both being Binomial random variable. As far as independency is concerned we can take a look at the following equation:
 
 #math.equation(
   block: true,
@@ -423,4 +429,52 @@ Suppose that we know $Y_n = y_n$ and $Y_(n-1) = y_(n-1)$, let's see how we can u
 
 Basically, the first information is very useful since it tells us how many successes we had up to trial $n$, whilst the second information is just telling us that we can write $Y_n = y_(n-1) + X_n$, but we already know the value of $Y_n$ so that second piece of information is not really adding anything new in case we already know $Y_n$.
 
+#warning-box[
+  This does not mean, by any means, that $Y_(n+1)$ and $Y_(n-1)$ are independent. Indeed the value of $Y_(n+1)$ is very much dependent on the value of $Y_(n-1)$: $Y_(n+1) = Y_(n-1) + X_n + X_(n+1)$. To be more precise, we can also write the conditional probability of $Y_(n+1) | Y_(n-1)$ as follows:
 
+  #math.equation(
+    numbering: none,
+    block: true,
+    $
+      p_(Y_(n+1) | Y_(n-1)) (y_(n+1) | y_(n-1)) = cases((1 - p)^2 quad quad quad &"if" y_(n+1) = y_(n-1), 2(1-p)p &"if" y_(n+1) = y_(n-1)+1, p^2 &"if" y_(n+1) = y_(n-1)+2, 0 &"otherwise")
+    $,
+  )
+  What we can say about $Y_(n+1)$ and $Y_(n-1)$ is that they are *conditionally independent* given $Y_n$, this is very useful because it allows us to simplify the computation of joint probabilities.
+]
+
+If we now try to look at the joint probabilities we may be interested in,we can use what we have just observed to write the following:
+
+#math.equation(
+  block: true,
+  $p_(Y_1, ..., Y_n) (y_1, ..., y_n) &= p_(Y_1)(y_1) dot p_(Y_2 | Y_1)(y_2 | y_1) dot p_(Y_3 | Y_2) (y_3 | y_2) ... \ &= p_(Y_1)(y_1) limits(Pi)_(i=1)^(n-1) p_(Y_(i+1) | Y_i) (y_(i+1) | y_i)$,
+)<eq_03_stochastic_process_joint_probability>
+
+If each $X_i$ is the result of a coin toss we can model a $Y_n$ as the _number of wins_ in the first $n$ throws we can    model a $Y_n$ as the _number of wins_ in the first $n$ throws. For the first toss we are going to have the following:
+
+#math.equation(block: true, numbering: none, $p_(Y_1) (y_1) = cases(1-p quad quad &"if" y_1 = 0, p &"if" y_1 = 1)$)
+
+This is straightforward since $Y_1$ is just a Bernoulli random variable. For the second toss we have:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    p_(Y_2) (y_2) = cases((1-p)^2 quad quad &"if" y_2 = 0, 2(1-p)p &"if" y_2 = 1, p^2 &"if" y_2 = 2)
+  $,
+)
+
+We can derive this result by noticing that $Y_2 ~ "Binom"(2, p)$. Given these pieces of information we can compute several different probabilities. For instance $prob(Y_1 = 1)$, $prob(Y_n = 1)$. But what about the probability of getting a win in the first throw and only lose in the next 6? This can be modeled by the following equation which leverages @eq_03_stochastic_process_joint_probability:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(Y_1 = 1 and Y_2 = 1 &and ... and Y_7 = 1) = p_(Y_1)(y_1) dot p_(Y_2 | Y_1)(1 | 1) \
+    & dot ... dot p_(Y_7 | Y_6) (1 | 1) \
+    & = p dot limits(Pi)_(i=1)^(7-1) p_(Y_(i+1) | Y_i) (1 | 1) \ &= p dot limits(Pi)_(i=1)^(6) (1-p)^2 = p (1-p)^(12) = 1/2 (1/2)^(12) = 1/2^(13)
+  $,
+)
+
+#definition(title: "Markov Process")[
+  A sequence $X = {X_n}_(n=1)^infinity$ where each $X_n+1$ is *conditionally independent* of ${X_(n-1) ... X_1}$ given $X_n$ is called a *Markov process* or *Markov chain*, which is a stochastic process with some interesting properties that make it easier to study and analyze.
+]

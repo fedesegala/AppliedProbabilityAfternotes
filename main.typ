@@ -14,8 +14,7 @@
   title: [Applied Probability for Computer Science],
   author: "Federico Segala",
   imagePath: "unilogo.png",
-  abstract: [
-    Academic Year: 2025-2026#linebreak()
+  abstract: [ Academic Year: 2025-2026#linebreak()
     Lecture Notes
     #linebreak()
     prof. Isadora Antoniano Villalobos

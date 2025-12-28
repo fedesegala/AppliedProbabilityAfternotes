@@ -6,6 +6,12 @@
 #show: codly-init.with()
 #import "../../lib.typ": *
 
+#show ref: it => {
+  if query(it.target).len() == 0 {
+    return text(fill: red, "<ciaone" + str(it.target) + ">")
+  }
+}
+
 // apply numbering up to h3
 #show heading: it => {
   if (it.level > 3) {
@@ -88,7 +94,7 @@ Taking into account the assignment of the previous exercises, we can notice that
 
 Clearly, the concept we have failed to represent so far is *time*. To be more precise, we can write the sample spaces prior to any noise event as respectively: $Omega_0 = {0,1,2}$ and $Omega_0 = {(0,2), (1,1), (2,0)}$.
 
-If we wanted to describe the *full experiment* we would need to descrive an *infinite sequence* of states. This is what's called a *random sequence*. We can briefly describe it as in @eq:01_infinite_sample_space.
+If we wanted to describe the *full experiment* we would need to describe an *infinite sequence* of states. This is what's called a *random sequence*. We can briefly describe it as in @eq:01_infinite_sample_space.
 
 #math.equation(
   block: true,
