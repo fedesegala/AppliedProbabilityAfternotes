@@ -478,3 +478,298 @@ We can derive this result by noticing that $Y_2 ~ "Binom"(2, p)$. Given these pi
 #definition(title: "Markov Process")[
   A sequence $X = {X_n}_(n=1)^infinity$ where each $X_n+1$ is *conditionally independent* of ${X_(n-1) ... X_1}$ given $X_n$ is called a *Markov process* or *Markov chain*, which is a stochastic process with some interesting properties that make it easier to study and analyze.
 ]
+
+==== Stochastic Processes and Common Random Variables
+Let's now try to review the concept of *geometric* distribution we have already seen before but in a stochastic process fashion. Consider the random variables $X_i limits(~)^("i.i.d.") "Ber"(p)$ and consider the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    W_1 = min{n : X_n = 1}
+  $,
+)
+
+Clearly we can see $W_1 ~ "Geom"(p)$. And we can sort of consider its value as the 'expected waiting time' until the first success. We can also consider the random variable $Y_n$ as the sum of all the $X_i$ up to time $n$.
+
+We can define two random sequences as follows:
+
+- $W = {W_n}$ as the sequence of *waiting times* between changes in the process (or in the value of $Y_n$). We also refer to them as *inter-arrival times*.
+- $Y = {Y_n}$ as the sequence that counts the number of successes up to time $n$, basically it is a *counting process*.
+
+We can actually do the same for *hyper-geometric* random variables. Suppose we have for instance $N$ balls in an urn, of which $M$ are successes (say red) and $N - M$ are failures. The probability of success when drawing a ball at random from the urn is $p = M/N$. So if we consider the first ball extraction we obtain the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    X_1 ~ "Bern"(p_1 = M/N)
+  $,
+)
+
+Now, if we move to the second extraction, we still have a Bernoulli random variable, but we don't know its parameter, since it depends on the result of the first extraction. We can consider two cases:
+
+- $X_2 | X_1 = 1 ~ "Bern"((M-1)/(N-1))$, in case the first extraction was a success.
+
+
+- $X_2 | X_1 = 0 ~ "Bern"(M/(N-1))$, in case the first extraction was a failure.
+
+
+If we now take a look at $X_3$, we can notice that this gets more complicated:
+
+- $X_3 | X_2 = 1, X_1 = 1 ~ "Bern"((M-2)/(N-2))$, in case the first two extractions were successes.
+
+- $X_3 | X_2 = 1, X_1 = 0 ~ "Bern"((M-1)/(N-2))$, in case the first extraction was a failure and the second a success.
+
+- $X_3 | X_2 = 0, X_1 = 1 ~ "Bern"((M-1)/(N-2))$, in case the first extraction was a success and the second a failure.
+
+- $X_3 | X_2 = 0, X_1 = 0 ~ "Bern"(M/(N-2))$, in case the first two extractions were failures.
+
+We can notice that, if we take in consideration the *sum* of the successes up to time $n$, we can actually define the conditional distribution based solely on the value of that sum, not the individual outcomes of each previous extraction. We say that, in general, $X_(n+1)$ is *conditionally independent* on ${X_n, X_(n-1), ..., X_1}$ given $Y_n = limits(sum)_(i=1)^n X_i$.
+
+== Negative Binomial Distribution
+Earlier in this chapter we have been talking  about binomial distributions and how they are related to the geometric distribution, which measures the 'waiting time' until the first success in a sequence of Bernoulli trials.
+
+#definition(title: "Negative Binomial Distribution")[
+  Given a sequence of independent Bernoulli trials with success probability $p$, we can model the *number of trials* to obtain *$k$ successes* with a *Negative Binomial distribution*. Suppose we have $W_i limits(~)^"i.i.d." "Geom"(p)$. The random variable
+
+  #math.equation(
+    block: true,
+    $
+      N_k = limits(sum)_(i=1)^k W_i
+    $,
+  )
+
+  follows a *Negative Binomial distribution* with parameters $k$ and $p$.
+]
+
+==== Probability Mass Function
+Let $N_k$ be a Negative Binomial random variable with parameters $k$ and $p$. The probability mass function (p.m.f.) of $N_k$ is defined as follows:
+
+#math.equation(
+  block: true,
+  $
+    p_X (x) = binom(x-1, k-1) space (1 - p)^(x-k) space p^k quad forall x >= k
+  $,
+)<eq_3_negbinomial_pmf>
+
+intuitively, this formulation makes sense: to have the $k$-th success at trial $x$ we need to have $k -1$ successes in the first $x - 1$ trial (which can happen in $binom(x-1, k-1)$ ways). Every combination $k-1$ successes and $x - k$ failures happens with probability $p^(k-1) (1-p)^(x-k)$; finally we need to have a success at trial $x$, which happens with probability $p$.
+
+==== Expected Value and Variance
+Let $N_k$ be a Negative Binomial random variable with parameters $k$ and $p$. Considering its probability mass function in @eq_3_negbinomial_pmf, we can compute its expected value and variance as follows:
+
+#math.equation(
+  block: true,
+  $
+    exp(N_k) = k / p quad quad quad var(N_k) = k (1 - p) / p^2
+  $,
+)<eq_4_negbinomial_expectation_variance>
+
+==== R Implementation
+Before introducing the `R` functions to work with Negative Binomial random variables, it is important to notice that there are two different conventions to define this random variable, `R` actually uses a different one with respect to the one we have just introduced, similarly to what happened with the Geometric distribution, we will need to adjust the parameters accordingly:
+
+- `dnbinom(x - k, k, p)` $= prob(X = x)$, is the probability mass function (p.m.f.).
+- `pnbinom(x - k, k, p)` $= prob(X <= x)$, is the cumulative distribution function (c.d.f.).
+- `qnbinom(q, k, p) + k` $= x$ "if" $prob(X <= x) = q$, is the quantile function.
+- `rnbinom(r, k, p)` simulates $r$ realizations of $X - k$.
+
+To switch from the `R` definition to the one we have introduced, it is necessary to first transform the random variable $X$ into the random variable $X = Y + k$.
+
+== Uniform Distribution
+In the past few sections we have been focusing our attention on *discrete random variables*, but as we know, there are also *continuous random variables*.
+
+#definition(title: "Uniform Distribution")[
+  A random variable that has an equal probability of taking any value within a given interval $[a, b]$ has *Uniform distribution*. Its parameters are $a$ and $b$, the endpoints of the interval. If the interval of values if $[0,1]$ we say that the random variable has a *standard uniform distribution*.
+]
+==== Probability Density Function
+Let $X$ be a Uniform random variable with parameters $a$ and $b$. The probability density function (p.d.f.) of $X$ is defined as follows:
+
+#math.equation(
+  block: true,
+  $
+    f_X (x) = 1/(b-a) quad quad forall x in [a, b]
+  $,
+)<eq:03_uniform_pdf>
+
+Actually the above definition is not really precise, indeed when we talk about continuous random variables we cannot really talk about probability, rather we need to talk about *density*. The reason because uniform distributions are so important is that they are the building blocks for all other random variable distributions.
+
+#remark[
+  In order for @eq:03_uniform_pdf to be valid, it is necessary that the value $|b - a|$ is a finite positive number so that there is no chance of dividing by zero or by infinity. The rational behind this is quite simple, if we try to choose a random number in an interval of infinite length, we cannot do it with uniform probability since the density would be zero everywhere.
+]
+
+
+==== Uniform Property
+For any $h>0$ and $t in [a, b-h]$ we have that:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(t < X < t + h) = limits(integral)_t^(t+h) 1 / (b-a) space d x = h / (b - a)
+  $,
+)
+
+is *independent of $t$*. The probability is only determined by the length of the interval not buy the location of the point in the interval.
+
+==== Expected Value and Variance
+Let $X$ be a Uniform random variable with parameters $a$ and $b$. Considering its probability density function in @eq:03_uniform_pdf, we can compute its expected value and variance as follows:
+
+#math.equation(
+  block: true,
+  $
+    exp(X) = (a + b) / 2 quad quad quad var(X) = (b - a)^2 / 12
+  $,
+)<eq_5_uniform_expectation_variance>
+
+It is by no surprise that the expected value of a uniform random variable is the midpoint of the interval $[a, b]$. As far as the variance is concerned, we can notice that it increases quadratically with the length of the interval. If we consider the standard uniform distribution, that is $a = 0$ and $b = 1$, we have that $exp(X) = 1/2$ and $var(X) = 1/12$.
+
+==== Uniform Distribution Transformation and Standardization
+One very common operation when working with this kind of random variable is to transform it into a standard uniform random variable and vice-versa. Consider two random variables $X ~ "Uniform"(a,b)$ and $Y ~ "Uniform"(0,1)$. We can transform $X$ into $Y$ and vice-versa as follows:
+
+#math.equation(
+  block: true,
+  $
+    Y = (X - a) / (b - a) ~ "Uniform"(0,1) \
+    X = a + (b - a) Y ~ "Uniform"(a,b)
+  $,
+)
+
+Let's now consider the following new random variable:
+
+#math.equation(block: true, numbering: none, $Z = (X - exp(X)) / (sqrt(var(X))) space ~ "Uniform"(z_l, z_u)$)
+
+Abd suppose we want to compute its expected value and variance. To do so we need to compute the values of $z_l$ and $z_u$ first:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    x = a quad => quad z_l = (a - exp(X)) / (sqrt(var(X))) = (a - (a + b) / 2) / (sqrt((b - a)^2 / 12)) \
+    x = b quad => quad z_u = (b - exp(X)) / (sqrt(var(X))) = (b - (a + b) / 2) / sqrt((b - a)^2 / 12)
+  $,
+)
+
+Now that we have these values it is easy to notice that  $exp(Z) = 0, quad var(Z) = 1$.
+
+#definition(title: "Standardization")[
+  Given *any* discrete or continuous random variable $X$ with expected value $exp(X) = mu$ and variance $var(X) = sigma^2$, we can define the *standardized* random variable $Z$ as follows:
+
+  #math.equation(
+    block: true,
+    $
+      Z = (X - mu) / sigma^2
+    $,
+  )<eq_03_standardization>
+
+  which satisfies $exp(Z) = 0$ and $var(Z) = 1$.
+]
+
+It is actually easy to see why the expected value and variance of $Z$ are as we have just said:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(Z) = exp((X - mu) / sqrt(sigma^2)) = 1/sigma (exp(X) - mu) = 0 \
+    var(Z) = var((X - mu) / sqrt(sigma^2)) = 1/sigma^2 (var(X) - 0) = 1 quad qed
+  $,
+)
+
+The set of possible values of $Z$ and $X$ are different. For instance, consider $X ~ "Bern"(p)$ with $Omega_X = {0, 1}$.  The standardized random variable $Z$ can now be built as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    Z = X - p / sqrt(p(1 - p))
+  $,
+)
+
+If we now take a look at the possible values of $Z$ we have: $Omega_Z = {- p/sqrt(p(1-p)), (1-p)/sqrt(p(1-p))}$ respectively when $X = 0$ and $X = 1$. Clearly $Z$ is *not a Bernoulli*. This tells us a very important fact about standardization.
+
+#warning-box[In general, a *standardized random variable* does not belong to the _same family_ of the original random variable that was used to build the standardization]
+
+Following we have a theorem which tells us something very important about standardization and uniform random variables:
+
+#theorem(title: "Standardization of Uniform Random Variables")[
+  Given any uniform random variable $X ~ "Uniform"(a,b)$, it is *closed under linear transformation*, that is the uniformness of the random variable is preserved under any linear transformation, including *standardization*.
+]
+
+#warning-box[
+  Even though the name suggests it, the *standard uniform random variable* $Y ~ "Uniform"(0,1)$ is just a special case of uniform random variable. It is *not* the result of a standardization process.
+]
+
+==== R Implementation
+In `R` we have the following functions to work with Uniform random variables:
+
+- `dunif(x, a, b)` $= f_X(x)$, is the probability density function (p.d.f.).
+- `punif(x, a, b)` $= prob(X <= x)$, is the cumulative distribution function (c.d.f.).
+- `qunif(q, a, b)` $= x = F^(-1)(q)$, i.e., $prob(X <= x) = q$, is the quantile function.
+- `runif(r, a, b)` simulates $r$ realizations of $X$.
+#pagebreak()
+
+== Normal (Gaussian) Distribution
+Although it is not the distribution we are going to preponderantly use in this course, the *Normal distribution* is so common and important in all probability theory that it is worth spending some time on it. If the uniform distribution serves to express the idea of 'equiprobability', the normal distribution is often used to model 'natural' phenomena.
+
+#definition(title: "Normal Distribution")[
+  A random variable that models phenomena where values tend to cluster around a central mean value with a certain variability has *Normal distribution*. Its parameters are $mu$ (the mean) and $sigma^2$ (the variance).
+]
+
+When dealing with this kind of random variables we often refer to the mean as *location parameter* and to the variance as *scale parameter*.
+
+==== Probability Density Function
+Let $X$ be a Normal random variable with parameters $mu$ and $sigma^2$. The probability density function (p.d.f.) of $X$ is defined as follows:
+
+#math.equation(
+  block: true,
+  $
+    f_X (x) = 1 / (sigma sqrt(2 pi)) "exp"{ (- (x - mu)^2) / (2 sigma^2)}
+  $,
+)<eq_6_normal_pdf>
+
+We can see how this formulation intuitively makes sense. The numerator of the fraction in the exponential is squared so that larger errors are more penalized (i.e., less likely) w.r.t. smaller errors. The numerator is then divided by the variance so that larger variances lead to less penalization for larger errors. Finally the whole expression is normalized by the factor $1 / (sigma sqrt(2 pi))$ so that the total area under the curve is equal to 1.
+
+We can see that the value of $mu$ serves to control the *location* of the distribution's peak, whilst the value of $sigma^2$ serves to control the *spread* of the distribution around the mean. This is illustrated in @fig_03_normal_distribution.
+
+#figure(
+  image("/assets/03_01_normal_distribution.png", width: 50%),
+  caption: "Normal distributions with different parameters",
+)<fig_03_normal_distribution>
+
+==== Standardization
+There is actually no point in computing the expected value and variance of a Normal random variable in that they are exactly equal to the parameters used to define the distribution: $exp(X) = mu$ and $var(X) = sigma^2$.
+
+Nevertheless, it is possible to define a *standard normal random variable* $Z$ such as it has expected value equal to 0 and variance equal to 1. Along with this fact, it is interesting to notice that Normal random variables are *closed under linear transformation*, that is if we take any Normal random variable and we apply a linear transformation to it, the resulting random variable is still Normal. In particular we can notice the following:
+
+#math.equation(
+  block: true,
+  $
+    X = a Z + b ~ "Normal"(a exp(Z) + b, a^2 var(Z))
+  $,
+)
+
+and by simply plugging the knowledge that $exp(Z) = 0$ and $var(Z) = 1$ in the above equation we have that $X ~ "Normal"(b, a^2)$.
+
+
+==== Transformation from and to Standard Normal
+Given any Normal random variable $X ~ "Normal"(mu, sigma^2)$ and a standard normal random variable $Z ~ "Normal"(0,1)$ we can transform $X$ into $Z$ and vice-versa as follows:
+
+#math.equation(
+  block: true,
+  $
+    Z = (X - mu) / sigma ~ "Normal"(0,1) \
+    X = mu + sigma Z ~ "Normal"(mu, sigma^2)
+  $,
+)
+
+This is indeed very similar to the standardization process we have already seen in the case of uniform random variables.
+
+==== R Implementation
+In `R` we have the following functions to work with Normal random variables:
+
+- `dnorm(x, mu, sigma)` $= f_X(x)$, is the probability density function (p.d.f.).
+- `pnorm(x, mu, sigma)` $= prob(X <= x)$, is the cumulative distribution function (c.d.f.).
+- `qnorm(q, mu, sigma)` $= x = F^(-1)(q)$, i.e., $prob(X <= x) = q$, is the quantile function.
+- `rnorm(r, mu, sigma)` simulates $r$ realizations of $X$.
+
+== Poisson Distribution
