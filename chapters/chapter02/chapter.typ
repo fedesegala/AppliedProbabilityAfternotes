@@ -1188,7 +1188,7 @@ $ exp(a X + b) = a exp(X) + b $<eq:linear_operator_expectation>
       limits(integral)_(x in Omega_X) h(x) space f_X (x) space d x space space & "if" X "is continuous"
     )
   $,
-)<eq:expected_value_function_random_variable>
+)<eq_expected_value_function_random_variable>
 
 As a corollary of this property, we can also notice that the expected value of a constant is equal to the constant itself, and that given $n$ random variables $X_1, ..., X_n$ we have that:
 
@@ -1221,7 +1221,7 @@ As a corollary of this property, we can also notice that the expected value of a
   )
 ]
 ===== Jensen's Inequality
-With respect to @eq:expected_value_function_random_variable, we can notice that if the function $h$ is *convex*, then the following inequality holds:
+With respect to @eq_expected_value_function_random_variable, we can notice that if the function $h$ is *convex*, then the following inequality holds:
 
 #math.equation(
   block: true,

@@ -6,6 +6,7 @@
 #show: codly-init.with()
 #import "../../lib.typ": *
 #import "@preview/cetz:0.4.2"
+#import "@preview/suiji:0.5.1": *
 
 #show ref: it => {
   if query(it.target).len() == 0 {
@@ -773,3 +774,464 @@ In `R` we have the following functions to work with Normal random variables:
 - `rnorm(r, mu, sigma)` simulates $r$ realizations of $X$.
 
 == Poisson Distribution
+Let's now take a look at what is probably the most important distribution for this course: the *Poisson distribution*.  Let's first take a look at its definition.
+
+#definition(title: "Poisson Distribution")[
+  The numbero of "*rare*" events occurring within a fixed interval of time has *Poisson Distribution*.
+]
+
+This definition looks a bit vague in that we still need to clarify what we mean by "rare" events. Before doing so, let's first take a look at its probability mass function.
+
+==== Probability Mass Function
+Let $X ~ "Poisson"(lambda)$ be a Poisson random variable with parameter $lambda > 0$. The probability mass function (p.m.f.) of $X$ is defined as follows:
+
+#math.equation(
+  block: true,
+  $
+    p_X (x) = e^(- lambda) lambda^x / x! quad forall x in {0, 1, 2, ...}
+  $,
+)<eq_7_poisson_pmf>
+
+Though this formulation may look strange, it is indeed a probability mass function. Indeed it is both positive for all $x$ and it sums to 1.
+
+===== Positivity
+To understand why it is positive there is not much to say, all the components of the product in @eq_7_poisson_pmf are positive for any $lambda > 0$ and any $x in {0, 1, 2, ...}$.
+
+===== Normalization
+To understand why it sums to 1 we can consider the definition of $f(lambda) = e^lambda$ as the limit of an infinite series:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    e^lambda = limits(sum)_(x=0)^infinity lambda^x / x! space <==> space limits(sum)_(x=0)^infinity e^(- lambda) lambda^x / x! = 1
+  $,
+)
+
+where the series on the right-hand side is exactly the formulation of the p.m.f. in @eq_7_poisson_pmf. If we try to see this the other way around, we may wonder which is the constant factor $k$ that makes the function $lambda^x / x!$ be a proper p.m.f. We can find such a constant by solving the following equation:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    1 = k dot limits(sum)_(x=0)^infinity lambda^x / x! space <==> k = 1 / limits(sum)_(x=0)^infinity lambda^x / x! = e^(- lambda)
+  $,
+)
+
+===== Expected Value and Variance
+We can try to compute the *expected value* of the Poisson distribution by leveraging again the Taylor series expansion of the exponential function:
+
+#math.equation(
+  block: true,
+  $
+    exp(X) &= limits(sum)_(x=0)^infinity x space p_X(x) = limits(sum)_(x=0)^infinity x space e^(- lambda) lambda^x / x! \
+    &= 0 + limits(sum)_(x=1)^infinity coleq(#purple, x) space e^(-lambda) coleq(#orange, lambda^x) / coleq(#purple, x!) = coleq(#orange, lambda) e^(- lambda) limits(sum)_(x=1)^infinity coleq(#orange, lambda^(x-1)) / coleq(#purple, (x - 1)!) \
+    &= e^(-lambda) lambda limits(sum)_(x=0)^infinity lambda^x / x! = e^(-lambda) lambda e^lambda = lambda
+  $,
+)<eq_pois_expected_value>
+
+The parameter $lambda$ of the Poisson distribution is called the *rate* or *frequency* parameter, since it represents the expected (mean) number of events per fixed amount of time.
+
+Before actually computing the variance of the Poisson distribution it is necessary to compute another quantity. Specifically by recalling @eq_expected_value_function_random_variable we can notice the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(X(X - 1)) &= limits(sum)_(x=0)^infinity x(x-1) space p_X (x) = limits(sum)_(x=0)^infinity x(x-1) space e^(- lambda) lambda^x / x! \
+    &= 0 + 0 + e^(- lambda) lambda^2 limits(sum)_(x=2)^infinity x(x-1)lambda^(x-2) / (x(x-1)(x-2)!) = lambda^2
+  $,
+)
+
+Now, if we notice that by linearity of expectation we can also write:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(X(X-1)) = exp(X^2 - X) = exp(X^2) - exp(X)
+  $,
+)
+
+Therefore we can combine the results above and conclude that $exp(X^2) = lambda^2 + lambda$. Now we are finally ready to give an expression for the *variance*:
+
+#math.equation(
+  block: true,
+  $
+    var(X) = exp(X^2) - (exp(X))^2 = (lambda^2 + lambda) - lambda^2 = lambda
+  $,
+)<eq_pois_variance>
+
+We can also generalize what we have seen before when we were computing $exp(X(X-1))$:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(limits(Pi)_(i=0)^(k-1)(X-i)) = lambda^k
+  $,
+)
+
+==== R Implementation
+In `R` we have the following functions to work with Poisson random variables:
+- `dpois(x, lambda)` $= p_X (x)$, is the probability mass function (p.m.f.).
+- `ppois(x, lambda)` $= prob(X <= x)$, is the cumulative distribution function (c.d.f.).
+- `qpois(q, lambda)` $= x = F^(-1)(q)$, i.e., $prob(X <= x) = q$, is the quantile function.
+- `rpois(r, lambda)` simulates $r$ realizations of $X$.
+
+
+==== Properties of Poisson Random Variables
+In this section we are going to observe some important properties of Poisson random variables, which will come in very handy in the next few chapters.
+
+===== Poisson Approximation of Binomial Distribution
+In this section we are going to see how the Poisson distribution can be used to approximate a Binomial distribution when the number of trials considered is large and the probability of success $p$ of those Bernoulli trials is small. This approximation is adequate say, for $n >= 30$ and $p <= 0.05$ and becomes more and more accurate as $n$ increases and $p$ decreases.
+
+#theorem(title: "Law of Rare Events")[
+  #math.equation(
+    block: true,
+    $
+      limits("lim")_(n -> infinity, p -> 0 \ n p = lambda) binom(n, x) p^x (1 - p)^(n - x) = e^(- lambda) lambda^x / x!
+    $,
+  )
+]<theo_law_rare_events>
+
+The convergence presented in @theo_law_rare_events is called *convergence in distribution*, which is not the same as the usual convergence we are used to.
+
+In our case, this means that, as the number of Bernoulli trials $n$ increases and the probability of success $p$ decreases in such a way that their product $n p$ remains constant, say equal to $lambda$, the distribution of the Binomial random variable $X ~ "Binom"(n, p)$ approaches the distribution of the Poisson random variable $Y ~ "Poisson"(lambda)$.
+
+To make this more concrete, consider a sequence of random variables $X_n ~ "Binom"(n, lambda/n)$, where $lambda/n = p$, for some adequate value of $lambda$, that is, $p = lambda/n < 1$. We can notice that $n p = lambda$ but if $n -> infinity$ then $p = lambda / n -> 0$. This means that the distribution of $X_n$ approaches the distribution of $Y ~ "Poisson"(lambda)$ as $n$ increases. If $n -> infinity$ then $X_n limits(-->)^"d" X l~ "Poisson"(lambda)$, where "$limits(-->)^d$" indicates _convergence in distribution_. To better understand this, it is useful to remember that each $X_n$ can be seen as a function of $omega$: $X_n (omega)$.
+
+#figure(
+  cetz.canvas({
+    import cetz.draw: *
+
+    let rng = gen-rng-f(42)
+    line((-5, 0), (5, 0), mark: (end: ">"), name: "x-axis")
+    line((-4.5, -.5), (-4.5, 3), mark: (end: ">"), name: "y-axis")
+    content((5.1, -0.4), $omega in Omega$)
+    content((-5, 3), $X_n$)
+
+    let start_x = -4.5
+    let step = 0.01
+
+    let x_1_vals = ()
+    let x_2_vals = ()
+    let x_3_vals = ()
+
+    while start_x <= 3.7 {
+      let y_1 = 2 + calc.sin(3 * start_x) * 0.5 * calc.cos(start_x)
+      let y_2 = 1 + calc.sin(4 * start_x) * calc.abs(calc.cos(start_x / 2))
+      let y_3 = 0.8 + calc.sin(3 * start_x) * calc.abs(calc.cos(start_x / 2)) + 1
+      x_1_vals.push((start_x, y_1))
+      x_2_vals.push((start_x, y_2))
+      x_3_vals.push((start_x, y_3))
+      start_x += step
+    }
+
+    for i in range(1, x_1_vals.len()) {
+      line(x_1_vals.at(i - 1), x_1_vals.at(i), stroke: (paint: rgb("#457b9d"), thickness: 1pt))
+
+      line(x_2_vals.at(i - 1), x_2_vals.at(i), stroke: (paint: rgb("#e63946"), thickness: 1pt))
+
+      line(x_3_vals.at(i - 1), x_3_vals.at(i), stroke: (paint: rgb("#4e9c36"), thickness: 1pt))
+    }
+
+    content((4.7, 2.8), text(fill: rgb("#457b9d"))[*$X_1(omega)$*])
+    content((4.7, 2), text(fill: rgb("#4e9c36"))[*$X_2(omega)$*])
+    content((4.7, 1), text(fill: rgb("#e63946"))[*$X_3(omega)$*])
+  }),
+
+  caption: [Different random variables $X_n$ plots for the same outcome $omega$],
+)<fig_03_different_random_variables>
+
+@fig_03_different_random_variables shows that every time we perform the experiment, we get one outcome $omega in Omega$ and each $X_n (omega)$ gets its individual value $x_n$.
+
+#warning-box[
+  Convergence in distribution *does not mean* that for each $omega$ we have:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      X_n (omega) = x_n quad "and" quad X(omega) = x
+    $,
+  )
+
+  rather, it is interested in the *probability* of $X_n$ taking values in certain intervals converging to the probability of $X$ taking values in the same intervals as $n$ goes to infinity.
+]
+
+===== Additivity of Poisson Random Variables
+Another very important property of Poisson random variables is their *additivity*. Let's look at the following theorem:
+
+#theorem(title: "Additivity of Poisson Random Variables")[
+  If $X ~ "Poisson"(lambda)$ and $Y ~ "Poisson"(mu)$ are two *independent* Poisson random variables, then $X + Y ~ "Poisson"(lambda + mu)$.
+]
+
+To view this under a more practical light, consider two disjoint periods of time $pi_1$ and $pi_2$, say $pi_1 = [0, t_1), pi_2 = [t_1, t_2]$. Suppose for each of these periods we define a Poisson random variable, for instance $X ~ "Pois"(lambda)$ counts the number of rare events occurring during $pi_1$ and $Y ~ "Pois"(mu)$ counts number of rare events occurring in $pi_2$; where $X$ and $Y$ represent respectively the fact that we are expecting to observe $lambda$ events during $pi_1$  and $mu$ events to happen during the span of $pi_2$: $exp(X) = lambda, exp(Y) = mu$.
+
+Let's now consider the period $Pi = [0, t_2]$ and define the random variable $W$ as the number or rare events occurring during $Pi$, intuitively also this variable is a Poisson. If we also remember that the parameter of a Poisson random variable models the expected number of events occurring during the time period, we can intuitively say that it makes sense to expect to observe $lambda + mu$ events during the period $Pi$. Therefore we can conclude that $W ~ "Pois"(lambda + mu)$.
+
+#warning-box[
+  The additivity property of Poisson random variables *only holds* when the random variables considered are *independent*.
+]
+
+Let's now try to prove the theorem in a formal way. By the notion of independence we know that the following equation holds:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(X = r and Y = s) & = prob(X = r) prob(Y = s) \
+                          & = lambda^r e^(-lambda) / r! space mu^s e^(-mu) / s!
+  $,
+)
+
+Now we actually need to consider all possible ways of obtaining $W = n$, that is, we need to consider all the pairs $(r, s)$ such that $r + s = n$. Therefore we can write:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(X + Y = n) & = limits(sum)_(r=0)^n prob(X = r and Y = n - r) \
+                    & = limits(sum)_(r=0)^n (lambda^r e^(-lambda)) / r! (mu^(n-r) e^(-mu)) / ( (n - r)!) \
+  $,
+)
+
+We can multiply and divide everything inside the sum by $n!$, this is useful since now we can bring out of the summation all the terms that do not depend on $r$ and obtain the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(X + Y = n) & =(e^(-(lambda+mu)))/n! limits(sum)_(r=0)^n binom(n, r) lambda^r mu^(n-r) \
+                    & = ((lambda + mu)^n space e^(-(lambda+mu))) / n!
+  $,
+)
+
+which is exactly the p.m.f. of a Poisson random variable with parameter $lambda + mu$. This can be easily generalized to the sum of $k$ independent Poisson random variables by _mathematical induction_.
+It is actually possible to generalize this property even further: we can even consider the case in which there is a *infinite countable* number of independent Poisson random variables.
+
+#theorem(title: "Generalized Additivity of Poisson Random Variables")[
+  Let $X_j ~ "Pois"(lambda_j)$ for $j = 1, 2, ...$ be a sequence of independent random variables. If we have that $sum_(j=1)^infinity lambda_j = lambda < infinity$, i.e., the series converges, then we have that:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      prob(S = sum_(j=2)^infinity X_j < infinity) = 1 quad "and" quad S ~ "Pois"(lambda)
+    $,
+  )
+
+  that is, the infinite sum of independent Poisson r.v.'s is still a Poisson r.v. If, on the other hand, the series $sum lambda_j = infinity$ then also the probability that the infinite sum diverges is equal to 1.
+]
+
+The type of convergence used by this theorem is called *almost sure convergence*, which is stronger than convergence in distribution. To better understand this, suppose we have a sequence $X_i ~ "Pois"(lambda_i)$. We can define *partial sums*: $S_1 = X_1$, $S_2 = X_1 + X_2$, $S_3 = X_1 + X_2 + X_3$, and so on until $S_n$. Along with these random variables we can also define the partial sums of their parameters: $mu_1 = lambda_1$, $mu_2 = lambda_1 + lambda_2$, $mu_3 = lambda_1 + lambda_2 + lambda_3$, and so on until $mu_n$, so that $S_n ~ "Pois"(mu_n)$.
+
+If we have that $mu_n limits(->)_infinity mu < infinity$, then we have that $S_n limits(-->)^bb(P) S ~ "Pois"(mu)$, where "$limits(-->)^bb(P)$" indicates *convergence in probability*.
+
+#let c1 = cetz.canvas({
+  import cetz.draw: *
+
+  let rng = gen-rng-f(42)
+  line((-.5, 0), (10, 0), mark: (end: ">"), name: "x-axis")
+  line((0, -.5), (-0, 5), mark: (end: ">"), name: "y-axis")
+  content((10.1, -0.4), $omega in Omega$)
+  content((-0.5, 5.2), $X_n$)
+
+  let x1_vals = ((0, 1), (2, 1), (2, 2), (4, 2), (4, 3), (6, 3), (6, 1), (9, 1))
+  let x2_vals = (
+    (0, 0.8),
+    (1.5, 0.8),
+    (1.5, 1.5),
+    (2.5, 1.5),
+    (2.5, 0.8),
+    (4, 0.8),
+    (4, 1.5),
+    (5, 1.5),
+    (5, 1),
+    (7, 1),
+    (7, 2),
+    (9, 2),
+  )
+
+  for i in range(1, x1_vals.len()) {
+    line(x1_vals.at(i - 1), x1_vals.at(i), stroke: (paint: rgb("#457b9d"), thickness: 1pt))
+  }
+
+  for i in range(1, x2_vals.len()) {
+    line(x2_vals.at(i - 1), x2_vals.at(i), stroke: (paint: rgb("#680a80"), thickness: 1pt))
+  }
+
+  content((9.7, 0.8), text(fill: rgb("#457b9d"))[*$X_1(omega)$*])
+  content((9.7, 2), text(fill: rgb("#680a80"))[*$X_2(omega)$*])
+})
+
+#let c2 = cetz.canvas({
+  import cetz.draw: *
+
+  let rng = gen-rng-f(42)
+  line((-.5, 0), (10, 0), mark: (end: ">"), name: "x-axis")
+  line((0, -.5), (-0, 5), mark: (end: ">"), name: "y-axis")
+  content((10.1, -0.4), $omega in Omega$)
+  content((-0.5, 5.2), $S_n$)
+
+  let x1_vals = ((0, 1), (2, 1), (2, 2), (4, 2), (4, 3), (6, 3), (6, 1), (9, 1))
+  let x2_vals = (
+    (0, 1.8),
+    (1.5, 1.8),
+    (1.5, 2.5),
+    (2, 2.5),
+    (2, 3.5),
+    (2.5, 3.5),
+    (2.5, 2.8),
+    (4, 2.8),
+    (4, 4.5),
+    (5, 4.5),
+    (5, 4),
+    (6, 4),
+    (6, 2),
+    (7, 2),
+    (7, 3),
+    (9, 3),
+  )
+
+  for i in range(1, x1_vals.len()) {
+    line(x1_vals.at(i - 1), x1_vals.at(i), stroke: (paint: rgb("#457b9d"), thickness: 1pt))
+  }
+
+  for i in range(1, x2_vals.len()) {
+    line(x2_vals.at(i - 1), x2_vals.at(i), stroke: (paint: rgb("#680a80"), thickness: 1pt))
+  }
+
+  content((9.2, 0.6), text(fill: rgb("#457b9d"))[*$S_1 = X_1(omega)$*])
+  content((8.3, 3.5), text(fill: rgb("#680a80"))[*$S_2 = X_1(omega) + X_2(omega)$*])
+})
+
+#figure(
+  c1,
+  caption: [Two random variables $X_1$ and $X_2$ for the same outcome $omega$],
+)<fig_03_independent_rv_omega>
+
+#figure(
+  c2,
+  caption: [Partial sums $S_1$ and $S_2$ for the same outcome $omega$],
+)<fig_03_dependent_partial_sums>
+
+Looking at the figures above and trying to consider a fixed value of $omega$, in @fig_03_independent_rv_omega the observed values of the sequence may not converge, but in @fig_03_dependent_partial_sums, for each $omega$ the observed values $X_n (omega) = x_n$ always converge, if $n$ is large enough. The convergence works every time we perform the experiment. This happens thanks to the strong dependence that exists between the partial sums.
+
+===== Poisson - Multinomial Relationship
+Up to this point we have talked about sums, basically we have seen that if we know the values of the $X$'s then we can easily compute the value of their sums. Now we would like to invert this relation. Suppose we know the value of a sum of Poisson random variables, we'd like to be able to infer something about the values of the individual Poisson r.v.'s that are being summed up. Let's look at the following theorem.
+
+#theorem(title: "Poisson - Multinomial Relationship")[
+  Let $S_n = X_1 + ... + X_n$ be the sum of $n$ independent Poisson random variables each with parameter $lambda_i$ and let $lambda = lambda_1 + ... + lambda_n$. The *conditional distribution* of the vector *$X$* $= (X_1, ..., X_n)$ given the value of $S_n$ is *multinomial* with its parameter being *$p$* $= (lambda_1\/lambda, ... , lambda_n\/lambda)$.
+]
+
+Intuitively, this makes sense, because if we know that the total number of events observed is $k$, then the only uncertainty the remains is about how these $k$ events are distributed among the different $X_i$'s. This is exactly what a multinomial distribution models.
+
+To see this in a more formal way, suppose we have $r_1 + r_2 + ... + r_n = s$, then we can write:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(X_1 = r_1", ..., " X_n = r_n | S_n = s) &= (prob(X_1 = r_1", ..., " X_n = r_n "," S_n = s)) / (prob(S_n = s)) \
+    &= (coleq(#green, Pi_(j=1)^n) (lambda_j^(r_j) coleq(#green, e^(-lambda_j)) / (r_j!))) / (lambda^s coleq(#green, e^(lambda))/s!) = s! / (pi_(j=1)^n r_j!) ((lambda_1) / lambda)^(r_1) ... ((lambda_n) / lambda)^(r_n)
+  $,
+)
+
+where the first equality comes from the definition of conditional probability in @eq:conditional_cdf and the second equality is obtained by noticing that $S_n = s$ is a redundant condition once we have all the values of the $X_i$'s and by multiplying the p.m.f.'s of the individual Poisson random variables. As far as the third equality is concerned the $lambda^s$ has been replaced by a product of $lambda^(r_1) dot ... dot lambda^(r_n) = lambda$, and the other simplifications are highligted in green.
+
+#remark[
+  Notice that, in case $n=2$, the multinomial distribution reduces to a _Binomial distribution_. Given $S_2 = s$, if $X_1 = r$ and $X_2 = s - r$, we have that:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      prob(X_1 = r"," X_2 = s - r | S_2 = s) & = prob(X_1 = r | S_2 = s) \
+                                             & = binom(s, r) p^r (1 - p)^(s - r)
+    $,
+  )
+
+  where $p = lambda_1 / (lambda_1 + lambda_2)$.
+]
+
+#remark[
+  In a very similar fashion it is possible to do the opposite, that is, let $S ~ "Pois"(lambda)$ and assume that, conditionally on $S$, $X$ has a $"Binom"(S, p)$ distribution. Then $X$ and $Y = S-X$ are *independent* Poisson random variables with parameters $lambda_1 = lambda p$ and $lambda_2 = lambda (1-p)$.
+]
+
+To see why this last remark is true, we can produce the following derivation:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(X = r"," S - X = k) &= coleq(#orange, prob(S = k + r)) coleq(#blue, prob(X = r | S = k + r)) \
+    &= coleq(#orange, (lambda^(k + r) e^(-lambda)) / ((k + r)!)) coleq(#blue, binom(k + r, r) p^r (1 - p)^k) \
+    &= ((lambda p)^r e^(-lambda p)) / (r!) space ((lambda (1-p))^k e^(-lambda (1-p))) / (k!)
+  $,
+)
+
+Here, instead of starting from the conditional, and writing it as the ratio between the joint and the marginal, we have started from the joint of $X, Y$ being equal to $r, k$ writing it as the product of the marginal of $S$ and the conditional of $X$ given $S$. The #text(fill: orange)[marginal of $S$] can be found by noticing that $S ~ "Pois"(lambda)$. The #text(fill: blue)[conditional of $X$ given $S$] is a Binomial distribution, indeed we want to estimate the probability of having exactly $r$ successes out of $k + r$ trials, where the probability of success is $p$.
+
+Notice how $prob(X = r | S = n) = binom(n, r) p^r (1 - p)^(n - r) limits(==>)^(n = k + r \ n - r = k) binom(k + r, r) p^r (1 - p)^(k + r - r)$. And we have written $e^(-lambda)$ as $e^(-lambda(p + 1 - p)) = e^(-lambda p) space e^(-lambda(1-p))$ which has been later split into the two partes in the last equality. We can notice that the two factors are exactly the p.m.f.'s of two independent Poisson random variables with parameters $lambda p$ and $lambda (1-p)$ respectively.
+
+In the end, the important takeaway is that, with this type of random variables, if we have the marginals, we can also derive the conditionals and vice-versa. This property may look trivial but it is actually quite unique in the whole world of probability distributions.
+
+== Exponential Distribution
+Another very important distribution that is often used to model 'natural' phenomena is the *Exponential distribution*. Specifically it is often used to model *time*: waiting times, inter-arrival times, hardware lifetime, failure times and so on.
+
+We are not going to spend time on giving the definition of this distribution, since it is pretty much all contained in the few lines above. Similarly to Poisson random variables, exponential random variables are also characterized by a *rate* parameter $lambda$ which models the expected number of events occurring per unit of time.
+
+==== Probability Density Function
+Since this distribution models time, it is only possible to define it in a continuous fashion. Let $X ~ "Exp"(lambda)$ be an exponential random variable with parameter $lambda > 0$. The *probability density function* of $X$ is defined as:
+
+#math.equation(
+  block: true,
+  $
+    f_X (x) = lambda e^(- lambda x) quad forall x > 0
+  $,
+)<eq_03_exp_pdf>
+
+
+==== Expected Value and Variance
+Since we know the expected value of a Poisson random variable with parameter $lambda$ is exactly $lambda$, we can leverage this, and obtain that, since $lambda$ here models the amout of 'rare' events occurring per unit of time, the *expected* waiting time for the occurrence of one such event is:
+
+#math.equation(
+  block: true,
+  $
+    exp(X) = 1 / lambda
+  $,
+)<eq_03_exponential_mean>
+
+To see this in a more formal way, we can compute the expected value as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(X) &= limits(integral)_(0)^infinity x space lambda e^(- lambda x) space d x quad "integrating by parts: " cases(u = x"," d u = d x, d v = lambda e^(- lambda x)"," v = - e^(- lambda x)) \
+    &= [-x e^(- lambda x)]_0^infinity + limits(integral)_0^oo e^(-lambda x) space d x = 0 - [(e^(- lambda x) / lambda)]_0^oo = 1 / lambda
+  $,
+)
+
+As far as the variance is concerned we need to first compute the value of $exp(X^2)$:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    exp(X^2) &= limits(integral)_0^oo x^2 space lambda e^(-lambda x) space d x quad "integrating by parts: " cases(u = x^2"," d u = 2 x, d v = lambda e^(- lambda x)"," v = - e^(- lambda x)) \
+    &= [-x^2 e^(- lambda x)]_0^oo + limits(integral)_0^oo 2 x e^(-lambda x) space d x =
+    0 + 2 / lambda limits(integral)_0^oo lambda x e^(- lambda x) space d x = 2 / lambda^2
+  $,
+)
+
+Now we can compute the *variance* as follows:
+
+#math.equation(
+  block: true,
+  $
+    var(x) = exp(X^2) - exp(X)^2 = (2 / lambda^2) - (1 / lambda)^2 = 1 / lambda^2
+  $,
+)<eq_03_exponential_variance>
