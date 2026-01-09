@@ -1435,8 +1435,8 @@ Intuitively the factor $x^(alpha-1)$ is used to gradually decrease the speed of 
 
 
 #figure(
-  image("/assets/0302_gamma.png", width: 50%),
-  caption: "Probability density function of a Gamma random variable for different values of the shape parameter"
+  image("/assets/0302_gamma.png", width: 60%),
+  caption: "Probability density function of a Gamma random variable for different values of the shape parameter",
 )<fig_0302_gamma>
 
 ===== Gamma Function
@@ -1452,7 +1452,7 @@ For the Gamma function we are going to proceed similarly, the only difference is
   $,
 )
 
-The problem is the *starting point* (the base case of induction). This was easy in case of the factorial in that we stopped when reaching $0! = 1$. Here we need to proceed differently, before defining the function formally it is important to start from the mathematica (probabilistic, actually) motivation behind it. 
+The problem is the *starting point* (the base case of induction). This was easy in case of the factorial in that we stopped when reaching $0! = 1$. Here we need to proceed differently, before defining the function formally it is important to start from the mathematica (probabilistic, actually) motivation behind it.
 Consider a random variable with the following probability density function:
 
 
@@ -1515,7 +1515,7 @@ Now that we have defined the Gamma distribution it is important to mention that,
 
 ==== R Implementation
 As usual, in `R` we have the following functions to work with Gamma random variables:
-- `dgamma(x, shape, rate)` $= f_X (x)$, is the probability density function 
-- `pgamma(x, shape, rate)` $= prob(X <= x)$, is the cumulative distribution function 
+- `dgamma(x, shape, rate)` $= f_X (x)$, is the probability density function
+- `pgamma(x, shape, rate)` $= prob(X <= x)$, is the cumulative distribution function
 - `qgamma(q, shape, rate)` $= x = F^(-1)(q)$, i.e., $prob(X <= x) = q$, the quantile function
-- `rgamma(r, shape, rate)` simulates $r$ realizations of $X$. 
+- `rgamma(r, shape, rate)` simulates $r$ realizations of $X$.
