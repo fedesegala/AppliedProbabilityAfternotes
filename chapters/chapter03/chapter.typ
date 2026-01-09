@@ -818,7 +818,7 @@ where the series on the right-hand side is exactly the formulation of the p.m.f.
   $,
 )
 
-===== Expected Value and Variance
+==== Expected Value and Variance
 We can try to compute the *expected value* of the Poisson distribution by leveraging again the Taylor series expansion of the exponential function:
 
 #math.equation(
@@ -1193,6 +1193,23 @@ Since this distribution models time, it is only possible to define it in a conti
   $,
 )<eq_03_exp_pdf>
 
+By means of this p.d.f. we can also write the *cumulative distribution function* as follows:
+
+#math.equation(
+  block: true,
+  $
+    F_X (x) = prob(X <= x) = limits(integral)_0^x lambda e^(- lambda t) d t = [-e^(- lambda t)]_0^x = 1 - e^(- lambda x)
+  $,
+)<eq_03_exp_cdf>
+
+Sometimes it may be really useful to deal with the *survival function*, which is defined as in @eq_02_survival_function, therefore in this specific case we have:
+
+#math.equation(
+  block: true,
+  $
+    S_X (x) = prob(X > x) = 1 - F_X (x) = e^(- lambda x)
+  $,
+)<eq_03_exp_survival>
 
 ==== Expected Value and Variance
 Since we know the expected value of a Poisson random variable with parameter $lambda$ is exactly $lambda$, we can leverage this, and obtain that, since $lambda$ here models the amout of 'rare' events occurring per unit of time, the *expected* waiting time for the occurrence of one such event is:
@@ -1235,3 +1252,270 @@ Now we can compute the *variance* as follows:
     var(x) = exp(X^2) - exp(X)^2 = (2 / lambda^2) - (1 / lambda)^2 = 1 / lambda^2
   $,
 )<eq_03_exponential_variance>
+
+==== R Implementation
+As usual, in `R` we have the following functions to work with exponential random variables:
+
+- `dexp(x, lambda)` $= f_X (x)$, is the probability density function (p.d.f.).
+- `pexp(x, lambda)` $= prob(X <= x)$, is the cumulative distribution function (c.d.f.).
+- `qexp(q, lambda)` $= x = F^(-1)(q)$, i.e., $prob(X <= x) = q$, is the quantile function.
+- `rexp(r, lambda)` simulates $r$ realizations of $X$.
+
+==== Poisson - Exponential Relationship
+As we have already hinted, there is a very strong relationship between Poisson and Exponential random variables. This section is dedicated to exploring it in detail.
+
+Consider a sequence or _rare_ events, where the number $N_t$ of occurrences during a period of time of length $t$ is modeled as a Poisson random variable with parameter $lambda$ proportional to $t$. In other words we can write $N_1 ~ "Pois"(lambda), N_t ~ "Pois"(lambda t)$.
+
+Consider now the event $A =$ "the time $T$ until the next event (arrival) is greater than $t$". This is basically equivalent to saying that "during a period of time of length $t$ no events occur": we can write the event as $A = {N_t = 0}$. If we try to _compute the probability of $A$_ we get the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(A) = prob(T > t) = prob(N_t = 0) = e^(- lambda t)
+  $,
+)
+
+This is because, if we take a look at the p.m.f. of a Poisson random variable in @eq_7_poisson_pmf, we can see that our parameter when considering the time period of length $t$ is exactly $lambda t$, therefore if we set $x = 0$ we get exactly the following equality:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    p_X (x) = e^(- lambda) lambda^x / x! = e^(-lambda t)
+  $,
+)
+
+But this is exactly equal to the *survival function* of an Exponential random variable with parameter $lambda t$ as shown in @eq_03_exp_survival. This property is also known as the *inevitability of exponential distribution*.
+
+==== Properties of Exponential Random Variables
+We have defined quite a bit of properties about Poisson random variables; not surprisingly, since they are so tightly related to Exponential ones, many of these properties can be translated to Exponential random variables as well.
+
+===== Memoryless Property
+One of the most important properties of Exponential random variables is their *memoryless property*. We are going to present it in the following theorem.
+
+#theorem(
+  title: "Memoryless Property for Exponential",
+)[Suppose that an exponential random variable $T$ represents a waiting time. Regardless of the event $T > t$, when the total waiting time exceeds $t$, the remaining waiting time still has exponential distribution with the same parameter $lambda$.
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      prob(T > t + x | T > t) = prob(T > x) quad "for" t, x > 0
+    $,
+  )
+
+  where $t$ represents the portion of waiting time that has already elapsed, and $x$ represents the additional remaining time.]
+
+This can be proved by recognizing the survival function of the exponential distribution:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(T > t + x | T > t) & = (prob(T > t + x inter T > t)) / (prob(T > t)) = e^(- lambda (t + x)) / (e^(- lambda t)) \
+                            & = e^(- lambda x) = prob(T > x)
+  $,
+)
+
+#remark[
+  Just like the *geometric distribution* is the only discrete memoryless distribution, the *exponential distribution* is the only continuous memoryless distribution.
+]
+
+This is by no surprise, since we have already seen that the Binomial distribution is related to the Geometric distribution in a very similar way as the Poisson distribution is related to the Exponential distribution.
+
+===== Minimization Property
+When we talked about the Poisson distribution, we have mentioned the case in which we may have different independent Poisson random variables and we were interested in their sum, in which case the sum was still a Poisson random variable, and on the other hand we have also seen that if we had the sum of independent Poisson random variables, conditionally on the value of the sum, the individual random variables were multinomially distributed.
+
+Since exponential random variables do not consider the number of events occurring but rather times until the occurrence of such events, it makes sense to consider the *minimum* of a set of independent exponential random variables.
+
+#theorem(title: "Minimization Property")[
+  Let $X_j ~ "Exp"(lambda_j)$ for $j = 1, 2, ..., n$ be a collection of *independent* exponential random variables, then we have that:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      L_n = min{X_1, X_2, ..., X_n} ~ "Exp"(lambda)
+    $,
+  )
+
+  where $lambda = limits(sum)_(j=1)^n lambda_j$ is the parameter of the resulting exponential random variable.
+]
+
+Indeed, we can take a look at the cumulative distribution function of $L_n$:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    F_(L_n) (x) & = prob(L_n <= x) = 1 - prob(L_n > x) \
+                & = 1 - prob(X_1 > x"," X_2 > x"," ..."," X_n > x) \
+                & = 1 - limits(product)_(j=1)^n prob(X_j > x) quad "by independence" \
+                & = 1 - limits(product)_(j=1)^n e^(-lambda_j x) = 1 - e^(sum_(j=1)^n -lambda_j x) = 1 - e^(- lambda x)
+  $,
+)
+
+where we went from the first to the second line by noticing that the minimum of $n$ r.v.'s is greater than $x$ if and only if all the individual r.v.'s are greater than $x$. In the end we have obtained exactly the survival function of an exponential random variable with parameter $lambda$, as we were supposed to.
+
+#remark[
+  It is important to notice that the minimum $L_n$ of independent exponential random variables is *not independent* of ${X_1, X_2, ..., X_n}$. Indeed $L_n = X_k$ for some $k in {1, ..., n}$ and:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      prob(L_n = X_k) = lambda_k / lambda = lambda_k / (sum_(j=1)^n lambda_j)
+    $,
+  )
+
+  Indeed, by the law of total probability for continuous random variables we have that:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      prob(L_n = X_k) &= limits(integral)_0^oo prob(inter.big_(j!=k)(X_k < X_j) | X_k = x) f_(X_k) (x) space d x \
+      &= limits(integral)_0^oo prob(inter.big_(j != k) X_j > x) f_(X_k) (x) space d x = limits(integral)_0^oo (limits(product)_(j!=k) e^(- lambda_j x)) space (lambda_k e^(- lambda_k x)) space d x \
+      &= lambda_k limits(integral)_0^oo e^(- (lambda_1, ..., lambda_n)x) space d x = lambda_k / (sum_(j=1)^n lambda_j)
+    $,
+  )
+
+  where we switched from the first to the second equality by noticing that the all the $X_j$'s are independent from the conditioning event $X_k = x$. It is clear that $sum_(k=1)^n prob(L_n = X_k) = 1$.
+]
+
+The above result can actually be generalized to the case in which we have a countably infinite number of independent exponential random variables. If the same of the parameters converges to a finite value, say $lambda$, when we have that:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    prob(L_n = x) = lambda_k / lambda quad "where" lambda = limits(sum)_(j=1)^infinity lambda_j < infinity
+  $,
+)
+
+#warning-box[
+  The same reasoning *cannot* be applied to the *maximum* of two or more independent exponential random variables. Indeed:
+
+  #math.equation(
+    block: true,
+    numbering: none,
+    $
+      prob(max{X_1, X_2} <= x) & = prob(X_1 <= x"," X_2 <= x) = prob(X_1 <= x) space prob(X_2 <= x) \
+                               & = (1 - e^(- lambda_1 x)) space (1 - e^(- lambda_2 x))
+    $,
+  )
+
+  which cannot be simplified to the c.d.f. of an exponential random variable. Intuitively, this happens because we cannot reduce the c.d.f to a survival function as we did in the original case with the minimum.
+]
+
+== Gamma Distribution
+When dealing with discrete random variables, we have seen how, given a Bernoulli trial and a series of independent repetitions of it, we can define more and more complex distributions, arriving at the negative binomial distribution, which models the number of trials until a fixed number of successes is observed, which in practice is the sum of independent geometric random variables.
+
+Now we are going to se how, starting from a bunch of independent exponential random variables, we can define a more general distribution, called the *Gamma distribution*, which models the behavior of their sum.
+
+#definition(title: "Gamma Distribution")[
+  Let $X_1, X_2, ..., X_n$ be independent exponential random variables with parameter $lambda$. The *Gamma distribution* with parameters $alpha = n$, $lambda = lambda$ serves to model the distribution of the sum $Y = X_1 + X_2 + ... + X_n$. We write $Y ~ "Gamma"(alpha, lambda)$.
+]
+
+The parameter $alpha$ is often called the *shape parameter*, while $lambda$ is called the *rate parameter*. We can notice that when $alpha = 1$ we have that the Gamma distribution reduces to the Exponential distribution.
+
+==== Probability Density Function
+The *probability density function* of a Gamma random variable with parameters $alpha, lambda$ is defined as follows:
+
+#math.equation(
+  block: true,
+  $
+    f_X (x) = (lambda^alpha) / Gamma(alpha) space x^(alpha - 1) e^(- lambda x) quad forall x > 0
+  $,
+)<eq_03_gamma_pdf>
+
+Intuitively the factor $x^(alpha-1)$ is used to gradually decrease the speed of the exponential decay, this is mainly the reason why, for the shape parameter $alpha = 1$ the distribution reduces to the exponential one. @fig_0302_gamma shows how the $alpha$ parameter affects the shape of the p.d.f. of a Gamma random variable.
+
+
+#figure(
+  image("/assets/0302_gamma.png", width: 50%),
+  caption: "Probability density function of a Gamma random variable for different values of the shape parameter"
+)<fig_0302_gamma>
+
+===== Gamma Function
+In the above definition we have used the *Gamma function* $Gamma(alpha)$ which can be seen as a generalization of the factorial function to real numbers. Suppose we are to write an algorithm that computes the factorial of a number $n$: in this case we must proceed *recursively*, since the factorial is defined by induction.
+
+For the Gamma function we are going to proceed similarly, the only difference is that we are going to define it for any $alpha in bb(R)$. One may therefore think that we can define it as follows:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    Gamma(alpha) = alpha dot Gamma(alpha - 1)
+  $,
+)
+
+The problem is the *starting point* (the base case of induction). This was easy in case of the factorial in that we stopped when reaching $0! = 1$. Here we need to proceed differently, before defining the function formally it is important to start from the mathematica (probabilistic, actually) motivation behind it. 
+Consider a random variable with the following probability density function:
+
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    f_X (x) = k space x^(alpha - 1) e^(- lambda x) quad forall alpha, x > 0
+  $,
+)
+
+where $k$ is a normalizing constant that makes the area under the curve equal to 1. To find the value of $k$ we need to solve the following integral.
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    1 = k limits(integral)_0^oo x^(alpha - 1) space e^(- lambda x) space d x
+  $,
+)
+
+To solve this we proceed by parts, identifying the following: $cases(u = x^(alpha-1)"," d u = (alpha - 1)x^(alpha-2), d v = e^(-lambda x) d x"," v = -e^(-lambda x) / lambda)$. If $alpha = n$, integration by parts takes us to the following:
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    1/k = limits(integral)_0^oo x^(n-1) &space e^(-lambda x) space d x = coleq(#orange, [x^(n-1) e^(-lambda x) / (-lambda)]_0^oo) coleq(#blue, -) limits(integral)_0^oo coleq(#blue, (n-1))x^(n-2) space e^(-lambda x)/coleq(#blue, (-lambda)) \
+    &= coleq(#orange, 0) coleq(#blue, + (n-1)/lambda) limits(integral)_0^oo x^(n-2) space e^(-lambda x) space d x \
+    &= (n-1)(n-2)/lambda^2 limits(integral)_0^oo x^(n-3) space e^(-lambda x) space d x = ... = (n-1)! / lambda^(n)
+  $,
+)
+
+Therefore we can conclude that $k = lambda^n / (n-1)!$. This is not the normalization factor we find in @eq_03_gamma_pdf, that's because this is only valid in case $alpha$ is an integer.
+
+When lambda is not an integer, the exponent of the $x$'s that get derived inside the integration by parts will not reach $0$ and we will not be able to stop the process, instead they may reach negative values. In general we have that the equation
+
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    1/k = limits(integral)_0^oo x^(alpha - 1) space e^(- lambda x) space d x
+  $,
+)
+
+has not a closed (analytical) form solution for any $alpha$. To solve this, a named function has been defined, called the *Gamma function*, which has actually been computed by setting *$lambda = 1$* and is defined as $Gamma(z) = limits(integral)_0^oo t^(z - 1) e^(-t) space d t$.
+
+==== Expected Value and Variance
+Following we are going to provide the formulas to compute the expected value and the variance of a Gamma random variable with parameters $alpha, lambda$.
+
+#math.equation(
+  block: true,
+  $
+    exp(X) = alpha / lambda quad quad quad var(X) = alpha / lambda^2
+  $,
+)
+
+==== Additivity of Exponential Random Variables
+Now that we have defined the Gamma distribution it is important to mention that, if we have $n$ independent random variables $X_j ~ "Exp"(lambda)$ for $j = 1, 2, ..., n$, then their sum $S_n = X_1 + X_2 + ... + X_n$ is a Gamma random variable with parameters $alpha = n$ and $lambda = lambda$.
+
+==== R Implementation
+As usual, in `R` we have the following functions to work with Gamma random variables:
+- `dgamma(x, shape, rate)` $= f_X (x)$, is the probability density function 
+- `pgamma(x, shape, rate)` $= prob(X <= x)$, is the cumulative distribution function 
+- `qgamma(q, shape, rate)` $= x = F^(-1)(q)$, i.e., $prob(X <= x) = q$, the quantile function
+- `rgamma(r, shape, rate)` simulates $r$ realizations of $X$. 

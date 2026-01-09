@@ -186,7 +186,7 @@ It is actually possible to define another function to fully characterize a rando
 #definition(title: "Survival Function of Discrete R.V.")[
   Given a *discrete random variable* $X$, the *survival function* is defined as:
 
-  #math.equation(block: true, $overline(F)_(X)(x) = S_(X)(x) = prob(X > x) = 1 - F(x)$)
+  #math.equation(block: true, $overline(F)_(X)(x) = S_(X)(x) = prob(X > x) = 1 - F(x)$)<eq_02_survival_function>
 ]
 
 To summarize, given a *discrete* random variable $X$, we have the following functions that fully characterize its distribution:
