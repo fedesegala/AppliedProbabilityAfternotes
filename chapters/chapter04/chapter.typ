@@ -600,4 +600,12 @@ To put this in practical terms, the Markov property states that, knowing the pre
   $,
 )
 
-For the future development of a Markov process, only its present state is important, and it does not matter how the process arrived to this state. 
+For the future development of a Markov process, only its present state is important, and it does not matter how the process arrived to this state.
+
+Before concluding this chapter and starting to look at some concrete examples of random and Markov process, we introduce one last definition: the notion of *Markov Chain*, that is a particular type of Markov process.
+
+#definition(title: "Markov Chain")[
+  A *Markov Chain* is a *dicrete time*, *discrete state* Markov stochastic process.
+]
+
+More generally, the term "Markov Chain" is often used to refer to any discrete-space stochastic process with the Markov property. Since Markov Chains are discrete in both time and state space, we are not going to use them so much, as they are not sufficiently flexible for modeling real world phenomena. We are indeed going to focus on *continuous-time Markov Chains* (CTMC).
