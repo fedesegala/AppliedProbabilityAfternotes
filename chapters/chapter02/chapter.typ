@@ -1627,9 +1627,10 @@ In other word, $X$ and $Y$ are *positively correlated*: this means that when $X$
 To be more specific, the one in @fig_3_support_xy is an example of *perfect linear relationship* meaning that, whenever we know the value of one of the two random variables, we can exactly determine the value of the other one.
 
 #remark[
-  It is possible to notice that the *magnitude* of the covariance depends on the *dispersione* of the two random variables, that is, the higher the variance of either one of the random variables, the higher the covariance will be.
+  It is possible to notice that the *magnitude* of the covariance depends on the *dispersion* of the two random variables, that is, the higher the variance of either one of the random variables, the higher the covariance will be.
 ]
 
+===== Correlation Coefficient
 We would actually like to be able to obtain a *standardized* way to measure the linear association between two random variables, in order to be able to compare the strength of the linear relationship between different pairs of random variables. To do so we can introduce the concept of *correlation coefficient*.
 
 #definition(title: "Correlation Coefficient")[
@@ -1652,13 +1653,15 @@ We would actually like to be able to obtain a *standardized* way to measure the 
   )
 ]<def:correlation_coefficient>
 
-In our previous example of @fig_3_support_xy, since the two random variables are perfectly positively correlated, we have that $rho_(X Y) = 1$.
-
 #warning-box[
   It is essential to notice that both covariance and correlation coefficient only measure *linear association* between two random variables. Two random variables may not be linearly correlated at all, but present some kind of non-linear dependency between them.
 ]
 
-To understand this consider two random variables whose support is represented in @fig:non_linear_relationship.
+In our previous example of @fig_3_support_xy, since the two random variables are perfectly positively correlated, we have that $rho_(X Y) = 1$.
+
+
+
+To understand the previous warning consider two random variables whose support is represented in @fig:non_linear_relationship.
 
 #figure(
   cetz.canvas({

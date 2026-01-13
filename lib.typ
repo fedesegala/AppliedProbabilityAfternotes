@@ -500,3 +500,4 @@
 
 #let coleq(color, x) = text(fill: color)[$#x$]
 
+#let tilde(exp) = $limits(exp)^~$
