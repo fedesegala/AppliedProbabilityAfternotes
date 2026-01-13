@@ -557,7 +557,7 @@ After defining some of the most important functions that characterize the behavi
 
 #definition(title: "Stationary Stochastic Process")[
   A random process $X(t)$ is said to be *strictly stationary* if all of its statistical properties are *invariant* with respect to time. More precisely, $X(t)$ is stationary if, for any time points $t_1, ..., t_r$ and any value $tau$, the joint distribution of $X(t_1), ..., X(t_r)$ is the same as the joint distribution of $X(t_1 + tau), ..., X(t_r + tau)$.
-]
+]<def_0406_strongstationarity>
 
 To verify strict stationarity it is therefore necessary to check that *all* finite-dimensional distributions of the process are invariant w.r.t. time shifts. This definition implies that all statistical properties of the process are also unchanged, since we require all joint distributions to be invariant over time.
 
