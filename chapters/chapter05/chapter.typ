@@ -5,8 +5,8 @@
 #import "@preview/codly-languages:0.1.1": *
 #show: codly-init.with()
 #import "../../lib.typ": *
-#import "@preview/cetz:0.4.2"
 #import "@preview/suiji:0.5.1": *
+#import "@preview/cetz:0.4.2"
 
 #show ref: it => {
   if query(it.target).len() == 0 {
@@ -172,35 +172,35 @@ The transition semi-group ${P_t}$ together with the distribution of the initial 
 
 #example-box("Poisson Process")[
   In this example we are going to introduce a very important type of process, the Poisson one, which will be dealt with in much more detail in the next chapter.
-  
-  $N = {N(t): t >= 0}$ is a Poisson process with intensity $lambda$ if $S = {0, 1, 2, ...}$, $pi_0^((0)) = 1$, and for all $i,j in cal(S)$ we have the following: 
-  
+
+  $N = {N(t): t >= 0}$ is a Poisson process with intensity $lambda$ if $S = {0, 1, 2, ...}$, $pi_0^((0)) = 1$, and for all $i,j in cal(S)$ we have the following:
+
   #math.equation(block: true, numbering: none,
   $
   p_(i j) = 0 "if" j < i; quad quad p_(i i) = 1 - lambda t + cal(o)(t); \
   p_(i i+1) = lambda t + cal(o)(t); quad quad p_(i j) = cal(o)(t) "if" j >= i +2
   $)
-  
-  or, to view this in matrix form: 
-  
+
+  or, to view this in matrix form:
+
   #math.equation(block: true, numbering: none,
   $
   P_t = mat(
-    1 - lambda t + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), cal(o)(t), ...; 
-    0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), ...; 
-    0, 0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), ...; 
+    1 - lambda t + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), cal(o)(t), ...;
+    0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), ...;
+    0, 0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), ...;
     dots.v, dots.v, dots.v, dots.v, dots.down;
   )
   $)
-  
+
   In the next chapter we are going to provide a closed form solution without approximation errors for this kind of process. For the time being, it shall just be noticed that this process is *homogeneous*, so the condition
-  
+
   #math.equation(block: true, numbering: none,
   $
     p_(i j)(t) = prob(N(s+t) = j | N(s) = i) = prob(N(t) = j | N(0) = i)
   $)
-  
-  is satisfied, even if the events $N(0) = i$ have probability zero for all $i != 0$. 
+
+  is satisfied, even if the events $N(0) = i$ have probability zero for all $i != 0$.
 ]
 
 #definition(title: "Standard semigroup")[
@@ -258,13 +258,13 @@ $
 g_(i i) (h) = lim_(h arrow.b 0) (p_(i i)(h) - 1) / h
 $)
 
-To better understand this, suppose that, at time $t >= 0$, the chain $X$ is at state $i$, so $X(t) = i$ and consider what could happen in the time interval $(t, t+h)$ of very small length $h$: 
+To better understand this, suppose that, at time $t >= 0$, the chain $X$ is at state $i$, so $X(t) = i$ and consider what could happen in the time interval $(t, t+h)$ of very small length $h$:
 
 - with probability $p_(i,i) (h) + cal(o)(h)$ the state of the process will remain the same $X(t+h) = i$, where $cal(o)(h)$ is an error term which takes into account the possibility that the chain moves out of $i$ and back, within the interval
 
 - with probability $p_(i j)(h) + cal(o)(h)$ the chain moves to state $j != i$: $X(t+h) = j$, where $cal(o)(h)$ takes into account the possibility that the chain moves into $j$, out and back in, within the time interval
 
-In other words we have the following: 
+In other words we have the following:
 
 #math.equation(block: true, numbering: none,
 $
@@ -274,34 +274,34 @@ $
   )
 $)
 
-and, assuming $h$ is small enough for the error terms to be negligible, if we fix the present state $i$ we can write the law of total probability for the future state as follows: 
+and, assuming $h$ is small enough for the error terms to be negligible, if we fix the present state $i$ we can write the law of total probability for the future state as follows:
 
 #math.equation(block: true, numbering: none,
 $
-  1 = sum_(j in cal(S)) p_(i j)(h) approx 1 + g_(i i) h + sum_(j != i) g_(i j) h = 1 + h sum_(j in cal(S)) g_(i j) 
+  1 = sum_(j in cal(S)) p_(i j)(h) approx 1 + g_(i i) h + sum_(j != i) g_(i j) h = 1 + h sum_(j in cal(S)) g_(i j)
 $)
 
-which leads to the following result: 
+which leads to the following result:
 
 #math.equation(block: true,
 $
   sum_(j in cal(S)) g_(i j) = 0 ==> g_(i i) = - sum_(j != i) g_(i j)
 $)<eq_0505_instantaneous_exit_rates>
 
-The collection ${g_(i i)}$ of the chain is usually referred to *instantaneous exit rates*; overall we refer to @eq_0505_instantaneous_exit_rates as *global balance equations*. 
+The collection ${g_(i i)}$ of the chain is usually referred to *instantaneous exit rates*; overall we refer to @eq_0505_instantaneous_exit_rates as *global balance equations*.
 #remark[
-  We can actually see a standard HCTMC as a graph, where the nodes of the graph constitute the state space $cal(S)$ and the matrix $G$ constitutes the set of weighted directed edges  
+  We can actually see a standard HCTMC as a graph, where the nodes of the graph constitute the state space $cal(S)$ and the matrix $G$ constitutes the set of weighted directed edges
 ]
 
-To wrap it up, we can view the generator of a process as a square matrix with: 
+To wrap it up, we can view the generator of a process as a square matrix with:
 
 - the instantaneous exit rates (negative values) on the diagonal
 - the instantaneous transition rates (positive values) outside of the diagonal
 
 == Forward and Backward Equations
-In the last section we have seen how it is possible to effectively retrieve the generator starting from the transition-semigroup. Now we will focus on the opposite operation, that is, starting from the generator, we are going to try to retrieve the transition semigroup. 
+In the last section we have seen how it is possible to effectively retrieve the generator starting from the transition-semigroup. Now we will focus on the opposite operation, that is, starting from the generator, we are going to try to retrieve the transition semigroup.
 
-Suppose we start the process at $X(0) = i$, for some $i in cal(S)$. If we make $h$ sufficiently small, we try to make use of the Chapman-Kolmogorov equation in @eq_0502_chapman_kolmogorov to find the value of $p_(i j)(t+h)$: 
+Suppose we start the process at $X(0) = i$, for some $i in cal(S)$. If we make $h$ sufficiently small, we try to make use of the Chapman-Kolmogorov equation in @eq_0502_chapman_kolmogorov to find the value of $p_(i j)(t+h)$:
 
 #math.equation(block: true, numbering: none,
 $
@@ -310,40 +310,40 @@ $
   &= p_(i j)(t) + h sum_(k in cal(S))p_(i k)(t) g_(k j)
 $)
 
-Where we derived the first equality by means of Chapman-Kolmogorov equations and went from the first line to the second one by leveraging the fact that we are considering an infinitesimal time interval, thus the transition probability can be approximated by means of the infinitesimal transition rate. The third line of the equation is simply obtained by unfolding the first product and then rearranging the elements in the summation. Let's now consider the equality we have obtained: 
+Where we derived the first equality by means of Chapman-Kolmogorov equations and went from the first line to the second one by leveraging the fact that we are considering an infinitesimal time interval, thus the transition probability can be approximated by means of the infinitesimal transition rate. The third line of the equation is simply obtained by unfolding the first product and then rearranging the elements in the summation. Let's now consider the equality we have obtained:
 
 #math.equation(block: true, numbering: none,
 $
   p_(i j)(t+h) = p_(i j)(t) + h sum_(k in cal(S)) p_(i k)(t) g_(k j)
 $)
 
-And apply on both side a subtraction by $p_(i j)(t)$ and division by $h$. Let's first do it on the left side. We can notice that performing these operations amount to computing the derivative of the left member (since $h$ is infinitesimally small): 
+And apply on both side a subtraction by $p_(i j)(t)$ and division by $h$. Let's first do it on the left side. We can notice that performing these operations amount to computing the derivative of the left member (since $h$ is infinitesimally small):
 
 #math.equation(block: true, numbering: none,
 $
   (p_(i j)(t + h) - p_(i j)(t))/h = p_(i j)^' (t)
 $)
 
-Let's do the same operation on the right side of the previous equation: 
+Let's do the same operation on the right side of the previous equation:
 
 #math.equation(block: true, numbering: none,
 $
   (p_(i j)(t) + h sum_(k in cal(S)) p_(i k)(t) g_(k j) - p_(i j)(t)) / h = sum_(k in cal(S)) p_(i k)(t) g_(k j)
 $)
 
-In the end we are left with the following *forward equations* theorem. 
+In the end we are left with the following *forward equations* theorem.
 #theorem(title: "Forward Equations")[
-  For all $i, j in cal(S)$ and $t >= 0$ we have that the following equality holds: 
-  
+  For all $i, j in cal(S)$ and $t >= 0$ we have that the following equality holds:
+
   #math.equation(block: true,
   $
     p_(i j)^' = sum_(k in cal(S)) p_(i k)(t) g_(k j)
   $)<eq_0506_forward_eq>
-  
-  Or, in matrix notation: $P_t^' = P_t dot G$ with initial condition $P_0 = I$. 
+
+  Or, in matrix notation: $P_t^' = P_t dot G$ with initial condition $P_0 = I$.
 ]<th_0501_forward_eq>
 
-We can see that the backward equations can be retrieved in a very similar fashion by reasoning the other way around, that is, considering transition probabilities for $X(t + h)$ given $X(h)$. 
+We can see that the backward equations can be retrieved in a very similar fashion by reasoning the other way around, that is, considering transition probabilities for $X(t + h)$ given $X(h)$.
 
 #math.equation(block: true, numbering: none,
 $
@@ -353,41 +353,209 @@ $
 $)
 
 #theorem(title: "Backward Equations")[
-  For all $i, j in cal(S)$ and $t >= 0$, we have that: 
-  
+  For all $i, j in cal(S)$ and $t >= 0$, we have that:
+
   #math.equation(block: true,
   $
     p_(i j)^' (t) = sum_(k in cal(S)) g_(i k) p_(k j)(t)
   $)<eq_0507_backward_eq>
-  
-  Or, in matrix notation: $P_t^' = G dot P_t$ with initial condition $P_0 = I$. 
+
+  Or, in matrix notation: $P_t^' = G dot P_t$ with initial condition $P_0 = I$.
 ]<th_0502_backward_equation>
 
 ==== Matrix Exponential
-We can notice that in both the forward and backward equations we end up with a solution in the form (if we were working with normal functions and scalars): $f'(x) = a dot f(x)$. If we think about it, the only function $f$ which has such form when considering its derivative is the *exponential function*. 
+We can notice that in both the forward and backward equations we end up with a solution in the form (if we were working with normal functions and scalars): $f'(x) = a dot f(x)$. If we think about it, the only function $f$ which has such form when considering its derivative is the *exponential function*.
 
-The problem is that we are dealing with much more complex elements, _matrices_ for which, however, it's possible to define an exponential. To do so, let's first look, informally, at the definition of what e^(a x) means. Whenever we are computing such value, we are actually computing the limit of a series: 
+The problem is that we are dealing with much more complex elements, _matrices_ for which, however, it's possible to define an exponential. To do so, let's first look, informally, at the definition of what e^(a x) means. Whenever we are computing such value, we are actually computing the limit of a series:
 
 #math.equation(block: true, numbering: none,
 $
   f(x) = e^(a x) = sum_(n = 0)^oo (a x)^n / n!
 $)
 
-Let's now apply the same reasoning for matrices: 
+Let's now apply the same reasoning for matrices:
 
 #math.equation(block: true, numbering: none,
 $
   P_t = e^(G t) = sum_(n = 0)^oo (G t)^n / n!
 $)
 
-In this course we are going to address this in two possible ways: 
+In this course we are going to address this in two possible ways:
 
 - from a symbolic point of view, we can solve this by means of *wolfram alpha*
 - from a numerical point of view, we are going to use *R* in order to compute this
 
+==== Wrapping it up
+Suppose we have $X = {X_t = X(t): t >= 0}$, a continuous homogeneous time Markov chain, whose random behavior (*law*) is completely described by the following elements:
 
-// #pagebreak()
-// #pagebreak()
++ _initial distributition_ $pi^((0)) = (pi_1^((0)), pi_2^((0)), ...)$, where $pi_i^((0)) = prob(X(0) = i)$
+
++ _transition semigroup_ ${P_t = P(t) : t>=0}$, where $p_(i j)(t) = prob(X(t) = j | X(0) = i)$
+
+According to these elements we can define _infinitesimal generator_ as the derivative of the transition semigroup with respect to time $t$:
+
+#math.equation(block: true, numbering: none,
+$
+  lim_(h arrow.b 0) (P_h - I)/h = G
+$)
+
+Notice how, in some textbooks, the generator $G$ is also referred to by the symbol $Q$. Given such generator, it is possible to replace the transition semigroup with the generator itself, since it is possible to recover the original transition probabilities by means of the forward-backward equations in @eq_0506_forward_eq, @eq_0507_backward_eq: $P_t^' = P_t dot G = G dot P_t$, an equation to which a solution can be found via the matrix exponential $P^t = e^(G t)$, which can be rewritten as follows:
+
+#math.equation(block: true, numbering: none,
+$
+  e^(G t) = sum_(n=0)^oo 1/n! (G t)^n
+$)
+
+We can actually apply to the above equation the usual properties of the exponential function:
+
+- $e^bb(0) = I$, the identity matrix, where $bb(0)$ is the zero-matrix
+
+- $e^A dot e^(-A) = I$, since $e^(A - A) = e^bb(0) = I$, i.e., we can obtain the identity matrix by mutiplying by the exponential of the opposite
+
+- $e^(s A) dot e^(t A) = e^((s+t) A) = e^((t+s) A) = e^(t A) dot e^(s A)$, i.ie., the exponential of a matrix multiplied by more than one constant are commutative
+
+- if $A B = B A$, then also $e^A e^B = e^B e^A$, if the starting matrices commute w.r.t. the product, then also the exponentiated matrices commute
+
+- $d / d t e^(t A) = A e^(t A) = e^(t A) A$, the derivative of the matrix exponential is computed in a similar fashion to the standard, plain exponential function, case
+
+In `R` we are going to compute this automatically by means of the function `expm` provided by the library `expm`.
+
+== Birth and Death Processes - Poisson Processes
+In this section, we introduce a process that is even more general than the Poisson process, the *birth and death process*. Rather than delving into all the technical details, our goal is to provide an intuitive overview. This will help illustrate how the concepts and tools we've developed so far can be applied in a broader context.
+
+As we have already mentioned, we can represent a HCTMC by means of a *graph*, where the process' states constitute the set of nodes, and the transition probabilities represent the weighted directed edges. Let's see a graph representing our birth-death process along with it infinitesimal generator:
+
+#let graph_1 =  cetz.canvas({
+  import cetz.draw: *
+  // Draw four nodes in a line: 0, 1, 2, 3
+  let node_y = 0
+  let node_xs = (0, 2, 4, 6)
+  let node_labels = ("0", "1", "2", "3")
+  let lambdas = ([$lambda_0$], [$lambda_1$], [$lambda_2$])
+  let mus = ([$mu_1$], [$mu_2$], [$mu_3$])
+
+  // Draw nodes
+  for i in range(0, 4) {
+    circle((node_xs.at(i), node_y), radius: 0.25, fill: white, stroke: (thickness: 1pt, paint: black))
+    content((i*2, 0), [$#i$])
+
+  }
+
+  // Draw curved edges for lambda (above)
+  for i in range(1, 4) {
+    let x0 = node_xs.at(i - 1)
+    let x1 = node_xs.at(i)
+    let y0 = node_y
+    let y1 = node_y
+    // Control points for curve above
+    let ctrl_y = node_y + 1.0
+    let ctrl_x = (x0 + x1) / 2
+
+
+    bezier(
+      (x0 + 0.15, 0.2), (x1 - 0.15, 0.2), (ctrl_x - 0.5, 0.5), (ctrl_x + 0.5, 0.5),
+      mark: (end: "stealth")
+    )
+
+    bezier(
+      (x0 + 0.15, -0.2), (x1 - 0.15, -0.2), (ctrl_x - 0.5, -0.5), (ctrl_x + 0.5, -0.5),
+      mark: (start: "stealth")
+    )
+
+
+    content((ctrl_x, 0.7), text[#lambdas.at((i - 1))])
+    content((ctrl_x, -0.7), text[#mus.at(i - 1)])
+
+  }
+})
+
+#grid(
+  columns: (50%, 50%),
+  math.equation(block: true, numbering: none,
+  $
+    G = mat(
+      -lambda_0, lambda_0, 0, 0, ...;
+      mu_1, -(lambda_1 + mu_1), lambda_1, 0, ...;
+      0, mu_2, -(lambda_2 + mu_2), lambda_2, ...;
+      dots.v, dots.v, dots.v, dots.down
+    )
+  $),
+  figure(
+  graph_1,
+  caption: [Graph representing the birth-death process]
+  ),
+)
+
+There are some special cases to a birth-death process, we list them below:
+
+- if all $mu_i = 0, space forall i$ we are actually dealing with a *pure birth process*, in which the state (number of births) can only increase, starting from a certain point
+- if all $mu_i = 0$, $lambda_i = lambda$ and $pi_0^((0)) = 1$ we end up with the already introduced *Poisson process*. This means that every Poisson process is also a birth process
+-  if all $lambda_i = 0, space forall i$ we have a *pure death process*, it is important to notice that this special process must start at some state $j != 0$ because once it reaches 0 it never gets out. $j=0$ is called an *absorbing state*
+
+With this new kind of process in mind, let's try to solve the matrix exponential presented earlier in this chapter. To do so consider the expression $P_t = e^(t G)$ which allows us to retrieve the semigroup starting from the infinitesimal generator. . Notice how $G$ has infinite dimension, since the number of states in this process is made such that it can take into account every possible number. This can only be solved in a _recursive_ fashion.
+
+Instead of trying to compute the transition semigroup of this birth-death process, which gets quite complicate, we are going to observe how all the stuff we have introduced so far can allow us to retrieve a closed form solution for the transition semigroup we have shown in the previous example about Poisson processes.
+
+In case of a Poisson process we have that the probability of starting the process at state 0 is given by the following equation, _remember we are going to omit the first $0$ in $p_(0 i)$ since we are always going to study the probability of switching from state 0 to state $i$ in a time $t$_:
+
+#math.equation(block: true, numbering: none,
+$
+  p_(0)^' (t) = -lambda p_(0)(t) = 0,
+$)
+
+We have obtained $p_(0 0)^' (t) = -lambda p_(0, 0)(t)$ by plugging $i = 0, j = 0$ in @eq_0506_forward_eq, and noticing that for any intermediate state $k != 0$ it is impossible to talk about _"going back from state $k$ to state 0" by definition of a Poisson process_. We have set the equality to 0, since, by definition of Poisson process, it is necessary for a Poisson process to *start in state 0*, thus no movement can occur. If now we consider any other $j > 0$ we obtain the following:
+
+#math.equation(block: true, numbering: none,
+$
+  p_(0 j)(t) = lambda p_(j-1)(t) - lambda p_(j)(t)
+$)
+
+This is due to the fact, that considering Chapman-Kolmogorov equations, we need to consider all the cases in which we can go from state 0 to state $j$ by an intermediate state $k$; the only cases in which the transition rates are non-null are either for $g_(j j)$ (when the intermediate step must be done from state 0 to $j$), and in $g_(j-1, j)$ (in which the intermediate jump occurred from state 0 to $j-1$).
+
+If we solve the first differential equation we get the following result for $p_0$:
+
+#math.equation(block: true, numbering: none,
+$
+  p_0(t) = e^(- lambda)
+$)
+
+Now, we can plug this result in to the next differential equation for $j = 1$:
+#math.equation(block: true, numbering: none,
+$
+  p'_1(t) = lambda e^(-lambda t) - lambda p_1(t) \
+  ==> p_1(t) = lambda t e^(- lambda t)
+$)
+
+We can apply this reasoning recursively, and obtain the $p_j$ for any state $j$ by solving increasingly difficult differential equation. We will end up noticing the following general pattern:
+
+#math.equation(block: true,
+$
+  p_j (t) = (lambda t)^j / j! e^(- lambda t)
+$)<eq_0508_poisson_process_transition_probabilities>
+
+We can recognize the expression in @eq_0508_poisson_process_transition_probabilities as a Poisson random variable distribution, which makes sense, since we are computing the following probability:
+
+#math.equation(block: true, numbering: none,
+$
+  p_(0 j) = prob(N(t) = j | N(0) = 0)
+$)
+
+In the end we obtain that $N(t) ~ "Pois"(lambda t)$ for any time $t$ considered; and, by homogeneity:
+
+#math.equation(block: true,
+$
+  prob(N(t) = j | N(0) = 0) &= prob(N(s + t) = j | N(s) = 0) \
+  &= prob(N(s+t) = j + i | N(s) = i)
+$)<eq_0509_indipendent_poisson_incrments>
+
+The last equality in @eq_0509_indipendent_poisson_incrments comes from the fact, as we will later see, that the *increments are independent* of the previous state. We are going to better see this in the next chapter, where we present the three equivalent definitions of a Poisson process.
+#pagebreak()
+#pagebreak()
+
+
+
+
+
 // == Poisson Processes
 // In this section, which is quite important we are going to study what are Poisson Processes and how they are characterized. A *Poisson process* with *intensity* $lambda$ is a continuous-time *counting process*:
 
