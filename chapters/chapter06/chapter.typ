@@ -185,7 +185,7 @@ $)
 
 which is going to grant us equality of those definitions.
 
-=== @def_0603_PoissonProcess_1 => @def_0604_PoissonProcess_2
+=== @def_0603_PoissonProcess_1 $=>$ @def_0604_PoissonProcess_2
 To understand why the first definition implies the second one, we can notice that the first condition in both definitions is actually the same, and that the first condition of @def_0603_PoissonProcess_1 is a stricter condition w.r.t. the second of @def_0604_PoissonProcess_2, this means the implication holds for them.
 
 Let's now focus on the third. We can see how the third condition of @def_0603_PoissonProcess_1 provides a _first order approximation_ for the _transition semi-group_ of a Poisson process $N ~ "PP"(lambda)$:
@@ -294,8 +294,114 @@ $)
 
 In particular, if $N ~ "PP"(lambda)$, the unit-time increment $N(h+1) - N(h)$ has a Poisson distribution with rate $lambda$ #sym.qed
 
-=== @def_0604_PoissonProcess_2 ==> @def_0605_PoissonProcess_3
+=== @def_0604_PoissonProcess_2 $=>$ @def_0605_PoissonProcess_3
+Again, similarly to the previous proof, we have that condition (1) coincides for @def_0604_PoissonProcess_2 and @def_0605_PoissonProcess_3.
 
+@def_0605_PoissonProcess_3 introduces the sequence of random variables $T_0, T_1, ...$ given by:
+
+#math.equation(block: true, numbering: none,
+$
+  T_0 = 0, quad quad T_n = inf{t : N(t) = n}
+$)
+
+this is called the *sequence of arrival times*, since $T_n$ represents the time of the $n$-th arrival.
+
+Another important sequence introduced by @def_0605_PoissonProcess_3 is the *sequence of inter-arrival times* $X_1, X_2, ...$ given by:
+
+#math.equation(block: true, numbering: none,
+$
+  X_n = T_n - T_(n-1)
+$)
+
+To better understand this, let's visualize a typical path of a Poisson process in the interval $[0, t]$:
+
+#figure(
+  image("/assets/0605_typcal_poisson_process_path.png", width: 80%),
+  caption: [Typical path of a Poisson process in the interval $[0,t]$]
+)
+
+If we want the inter-arrival times to be i.i.d. exponential random variables with parameter $lambda$ it is necessary that the "unit-increments" follow a Poisson distribution with parameter $lambda$, and vice-versa. Thus it is true that @def_0604_PoissonProcess_2 implies @def_0605_PoissonProcess_3 #sym.qed
+
+=== @def_0605_PoissonProcess_3 $=>$ @def_0603_PoissonProcess_1
+To prove this implication it is necessary to prove that, given a sequence of i.i.d. exponentially distributed inter-arrival times, the process $N$ defined by:
+
+#math.equation(block: true, numbering: none,
+$
+  N(t) = max{n : T_n leq t} quad "for" T_n = sum_(i = 1)^n X_i
+$)
+
+is a Poisson process with parameter $lambda$. It's clear that even understanding what we need to prove is not trivial, let's try to understand why $N(t) = max{n : T_n leq t}$ what we are looking for. Let's suppose we have a process which started from state 0, then after some time $t_1$ reached state 1, and after some other time $t_2$ reached state 2. Let's try to build the process $N(t)$ from the definition above:
+
+- at time $t leq t_1$ the state is going to be $N(t) = 0$, since there is no value $T_n$ such that $T_n leq t$, meaning that nothing has changed in the original process, so it makes sense to keep the count stuck to the initial value 0
+
+- at time $t_1 leq t leq t_2$ the state is going to be $N(t) = 1$, in fact, the maximum value of the sequence $T_n$ which is less than or equal to $t$ is exactly $T_1$
+
+- a similar rational is to be applied for any other state of the process $N(t)$ with $t greater 1$
+
+
+#remark[
+  We can notice the following very useful important fact:
+#math.equation(block: true, numbering: none,
+$
+  N(t) geq n quad <==> quad T_n leq t
+$)
+
+To understand why, it is sufficient to look at the above bullet list where we explain why it makes sense to consider a process $N(t)$ defined in that strange way.
+]
+
+We can now apply the law of total probability and find out the following:
+
+#math.equation(block: true, numbering: none,
+$
+  prob(N(t) = 1) = prob(T_1 leq t leq T_2) = prob(X_1 leq t leq X_1 + X_2) \
+  = integral_0^oo prob(X_1 leq t leq X_1 + X_2 | X_1 = s) prob(X_1 = s) space d s  quad (1)\
+  = integral_0^oo prob(X_1 leq t leq X_1 + X_2 | X_1 = s) lambda e^(-lambda s) space d s quad (2) \
+  = lambda integral_0^t prob(X_2 greater t-s) space e^(- lambda s) space d s = lambda integral_0^t  e^(-lambda(t - s)) space e^(-lambda s) space d s quad (3) \
+  = lambda integral_0^t e^(- lambda t) space d s = lambda [s e^(-lambda t)]_0^t = lambda t e^(- lambda t)
+  
+$)
+
+where we have obtained equation (1) by applying the law of total probability for continuous function; after this we have obtained equation (2) by simply plugging into the marginal probability the p.d.f. for exponential random variables. Looking to equation (3) we can notice it can be obtained by noticing that $prob(X_2 greater t - s)$ is already conveying what we are actually looking for in (2). The second equation in (3) is obtained by plugging in the survival function for exponential random variables. 
+
+#remark[
+  Notice how in (3) we have been able to switch the integration interval from $(o, oo)$ to $(o, t)$. The reason is quite straightforward (even though I had to ask my girlfriend): if we consider a value of $s$ which is greater than $t$ we end up computing the probability of $X_2 greater a, space a in NN^-$, which is trivial and non-meaningful. 
+]
+
+We can also notice how the final result can be rewritten in the following manner: 
+#math.equation(block: true, numbering: none,
+$
+  lambda t e^(- lambda t) = lambda t + lambda t(e^(- lambda t) - 1)
+$)
+
+Having rewritten this value in such a way is very convenient because we can notice the following two facts: 
+
+#math.equation(block: true, numbering: none,
+$
+  lambda t(e^(-lambda t) - 1) arrow 0 " and " (lambda t (e^(-lambda t) - 1)) / t arrow 0 quad " as " t arrow.b 0
+$)
+
+So we have proven that is $prob(N(t) = 1) = lambda t + cal(o)(t)$. For $prob(N(t) geq 2)$ we proceed in a similar fashion: 
+
+#math.equation(block: true, numbering: none,
+$
+  prob(N(t) geq 2) &= prob(T_2 leq t) = prob(X_1 + X_2 leq t) \
+  &= integral_0^oo prob(X_1 + X_2 leq t | X_s = s)lambda e^(-lambda t) space d s \
+  &= lambda integral_0^t prob(X_2 leq t - s) e^(-lambda t) space d s = lambda integral_0^t (1 - e^(-lambda(t - s)))e^(- lambda s) space d s quad  (1) \
+  &= lambda integral_0^t (e^(-lambda s) - e^(- lambda t) space d s = 1 - e^(-lambda t) -lambda t e^(- lambda t)
+$)
+
+where at the line of equality (1) we switched from the left to the right side by noticing the $integral prob(X_2 leq t - s)$ is exactly the formulation of the cumulative distribution function. 
+
+Now, similarly to what we did before, we can notice the following facts: 
+
+#math.equation(block: true, numbering: none,
+$
+  1 - e^(-lambda t) - lambda t e^(-lambda t) arrow 0 quad " and " quad (1 - e^(- lambda t) - lambda t e^(-lambda t))/t arrow 0 quad quad "as" t arrow.b 0
+$)
+
+thus we can conclude that $prob(N(t) geq 2) = 1 - e^-lambda t -lambda t e^(-lambda t) = cal(o)(t)$. 
+
+Finally we get that $prob(N(t) = 0) = 1 - prob(N(t) = 1) -prob(N(t) geq 2) = 1 - lambda t + cal(o)(t)$, so we can safely conclude that @def_0605_PoissonProcess_3 implies @def_0603_PoissonProcess_1 #sym.qed
 
 // == Poisson Processes
 // In this section, which is quite important we are going to study what are Poisson Processes and how they are characterized. A *Poisson process* with *intensity* $lambda$ is a continuous-time *counting process*:
