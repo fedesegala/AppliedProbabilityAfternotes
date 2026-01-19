@@ -52,6 +52,8 @@
 #pagebreak()
 #include "chapters/chapter05/chapter.typ"
 #pagebreak()
+#include "chapters/chapter06/chapter.typ"
+#pagebreak()
 
 #pagebreak()
 
@@ -71,4 +73,3 @@
   }
   it
 }
-

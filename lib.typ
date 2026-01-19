@@ -497,6 +497,10 @@
   box(body)
 }
 
+#let less = text[$<$]
+#let greater = text[$>$]
+#let leq = text[$<=$]
+#let geq = text[$>=$]
 
 #let coleq(color, x) = text(fill: color)[$#x$]
 

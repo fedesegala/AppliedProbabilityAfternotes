@@ -225,10 +225,10 @@ Such matrix $G$ obtained by taking the derivative is called the *infinitesimal g
 #definition(title: "Infinitesimal Generator")[
   Given any standard HCTMC $X$ with transition semi-group $P_t$, there exists constants ${g_(i j): i,j in cal(S)$ such that, for sufficiently small $h$:
 
-  #math.equation(block: true, numbering: none,
+  #math.equation(block: true,
   $
     p_(i j)(h) approx g_(i j) h space "if" i != j, quad quad p_(i i) approx 1 + g_(i i) h
-  $)
+  $)<eq_050401_transitionprobs_as_transitionrates>
 
   The matrix with entries $g_(i j)$ is denoted by $G$ and called the *infinitesimal generator* of the HCTMC.
 ]<def_0503_generator>
@@ -549,240 +549,68 @@ $
 $)<eq_0509_indipendent_poisson_incrments>
 
 The last equality in @eq_0509_indipendent_poisson_incrments comes from the fact, as we will later see, that the *increments are independent* of the previous state. We are going to better see this in the next chapter, where we present the three equivalent definitions of a Poisson process.
-#pagebreak()
-#pagebreak()
 
-
-
-
-
-// == Poisson Processes
-// In this section, which is quite important we are going to study what are Poisson Processes and how they are characterized. A *Poisson process* with *intensity* $lambda$ is a continuous-time *counting process*:
-
-// #math.equation(block: true, numbering: none,
-// $
-// N = {N(t): t >= 0}
-// $)
-
-// taking values in $cal(S) = {0, 1, 2, ...}$ with the following properties:
-
-// + $N(0) = 0$
-// + the _increments_ are *independent* and *stationary*
-// + $prob(N(h)=1) = lambda h + cal(o)(h); prob(N(h) >= 2) = cal(o)(h)$ for small $h > 0$
-
-// #remark[
-//   $cal(o)(h)$ is a function that goes to zero faster than $h$ as $h$ approaches 0:
-
-//   #math.equation(block: true, numbering: none,
-//   $
-//     limits(lim)_(h->0) cal(o)(h) = 0 quad "and" quad limits(lim)_(h->0) cal(o)(h)/h = 0
-//   $)
-// ]
-
-// #remark[
-//   As already mentioned in @def_0406_strongstationarity, a stochastic process is (strongly) stationary if the finite dimensional distributions are invariant to time shifts. This means that the following distributions are equivalent:
-
-//   - $X_t$ and $X_t+h$ are equal in distribution for all $t, h >= 0$
-//   - $(X_t, X_s) " and " (X_(t+n), X_(s+n)) quad forall t, s, n >= 0$
-//   - $(X_t, X_s, X_u)$ and $(X_(t+h), X_(s+h), X_(u+h)) quad forall t, s, u, h >= 0$
-// ]
-
-// The previous two remarks should help to clarify the meaning of the last Poisson counting processes property. Let's now summarize what we know about the Poisson counting process $N ~ P "PP"(lambda)$:
-
-// - from property number 1 we know that $N(0) = 0$, this means that $prob(N(0) = 0) = 1$, i.e., we know the marginal at time 0.
-
-// - from property number 2, we know that the increments  $N(t+s) - N(s)$ are independent and stationary, this is illustrated in @fig_0501_strongstationarity_increments below.
-
-//   #figure(
-//     cetz.canvas({
-//       import cetz.draw: *
-
-
-//       line((-0.5, 0), (8, 0), mark: (end: "stealth"))
-//       content((), [$space t$], anchor: "west")
-//       line((0, -.5), (0,4), mark: (end: "stealth"))
-//       content((), [$N(t) space space$], anchor: "east")
-//       stroke(blue + 0.6pt)
-
-
-
-//       // line((0,0), (6,3))
-
-//       line((1,3.6),(1,-0.5), stroke: (thickness: 0.4pt, paint: purple))
-//       content((1, -.7), [#text(fill: purple)[$t$]])
-
-//       line((3,3.6),(3,-0.5), stroke: (thickness: 0.4pt, paint: purple))
-//       content((3, -.7), [#text(fill: purple)[$t+s$]])
-
-//       line((6,3.6),(6,-0.5), stroke: (thickness: 0.4pt, paint: purple))
-//       content((6, -.7), [#text(fill: purple)[$t+s+h$]])
-
-//       circle((0, 0), radius: 0.08, fill: blue)
-//       circle((1, 0.5), radius: 0.08, fill: blue)
-//       circle((3,1.5), radius: 0.08, fill: blue)
-//       circle((6,3), radius: 0.08, fill: blue)
-
-//       line((1,0.5), (3.3,0.5), stroke: (thickness: 0.2pt, dash: "dashed", paint: green))
-//       line((3,1.5), (6.3,1.5), stroke: (thickness: 0.2pt, dash: "dashed", paint: green))
-//       line((3.3, 0.5), (3.3,1.5), stroke: (thickness: 0.2pt, paint: green))
-//       content((3.4,1), angle: -90deg, [#text(size: 3.5pt)[*$N(t+s) - N(s)$*]])
-
-//       line((6,3), (6.3,3), stroke: (thickness: 0.2pt, dash: "dashed", paint: green))
-//       line((6.3, 3), (6.3,1.5), stroke: (thickness: 0.2pt, paint: green))
-//       content((6.5, 2.2), angle: -90deg, [#text(size: 5pt)[*$N(t+s+h) - N(t+s)$*]])
-
-//     }),
-//     caption: [Strong stationarity of increments in a counting process],
-//   )<fig_0501_strongstationarity_increments>
-
-//   This means that is we consider $N(t + s) - N(s)$, this distribution is only dependent on the value of $t$, and similarly $N(t + s + h) - N(t + s)$, which only depends on $h$.
-
-
-// === Poisson Process - Definition (1)
-// All these notions we have presented allow us to provide a first definition of a Poisson process, there are actually other equivalent definitions, but we will present them later on.
-
-// #definition(title: "Poisson Process (1)")[
-//   A *Poisson process* with intensity $lambda$ is a continuous time countin process $N = {N(t): t >= 0}$ taking values in $cal(S) = {0,1,2,...}$ such that:
-
-//   - $N(0) = 0$, no other possible outcome is allowed
-//   - the increments are independent and stationary
-//   - $prob(N(h) = 1) = lambda h + cal(o)(h)$ and $prob(N(h)) >= 2 = cal(o)(h)$
-// ]<def_0501_poisson_process_1>
-
-// What we are still missing to further explore in this definition is the last condition. To do so, we can start studying the probability of $N(h)$ being 1 by means of the law of total probability:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   prob(N(h) = 1) &= sum_(n=0)^oo prob(N(h) = 1 | N(0) = n) space prob(N(0) = n) \
-//   &= prob(N(h) = 1 | N(0) = 0) space "by property (1)" \
-//   &= p_(0,1)(h) space "the transition probability from 0 to 1 in time h"
-// $)
-
-// Let's study what happens inside the transition semi-group of a Poisson process:
-
-// #math.equation(block: true,
-// $
-//   P_t = mat(
-//   1 - lambda t  + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), cal(o)(t), space ...;
-//   0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), space ...;
-//   0, 0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), space ...;
-//   dots.v, dots.v, dots.v, dots.v, space dots.down;
-// )
-// $)<eq_0502_poisson_transition_semigroup>
-
-// This allows us to notice that, thanks to stationarity we can actually provide a more explicit expression for the transition probabilities of a Poisson process, according to the present state $i$ and the future state $j$:
-
-// - $p_(i,j) (h) = 0$ for all $j < i$, this is not clear now, but it will be looking at the definition of a Counting process
-
-// - $p_(i,i) (h) = 1 - lambda(t) + cal(o)(t)$, this is the probability of not having any increment in time $h$
-
-// - $p_(i, i+1) (h) = lambda t + cal(o)(t)$, this is the probability of having exactly one increment in time $h$
-
-// - $p_(i,j) (h) = cal(o)(t) space forall j >= i+2$, this is the probability of having two or more increments in time $h$, which, not surprisingly, goes to zero faster than $h$ as $h$ approaches 0
-
-// To understand why the first point is correct, we need to introduce the definition of the more general *counting process*:
-
-// #definition(title: "Counting Process")[
-//   A stochastic process $X(t)$ is called a *counting process* if the following conditions hold:
-
-//   + $X(t) in NN quad forall t in cal(T) subset RR$, the *time domain*
-
-//   + $X(s) <= X(t) quad forall s <= t$
-
-//   + Counts are non-negative integers, $X(t) in {0, 1, 2, 3, ...}$
-// ]<def_0502_counting_process>
-
-// Basically, the first point of @def_0501_poisson_process_1 holds because, by looking at the second condition of @def_0502_counting_process we know that the counting process is non-decreasing, this means that we cannot have less counts in the future than in the present, which translates to the impossibility of going from state $i$ to any state $j < i$.
-
-// #remark[
-//   The reason why we have introduced the $cal(o)(t)$ factor is to keep into account the size of the considered time interval. In fact, as the time interval $t$ considered approaches 0, the smaller are the chances of having more than one increment.
-// ]
-
-// #warning-box[
-//   The definition of a counting process is actually quite general: it does not specify anything about the distribution of the increments, nor about their independence or stationarity. In fact, a counting process could be as simple as a deterministic function that counts the number of events that have occurred up to time $t$.
-// ]
-
-// === Poisson Process - Definition (2)
-// Let's focus for some more time on the Poisson process $N ~ P P(lambda)$ and let's look at the transition probabilities in case the future state $j$ is greater than the present state $i$ by more than 1, i.e., $j > i + 1$:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)(t) = cal(o)(t) &= prob(N(t) = j | N(0) = i) \
-//   &= prob(N(t + h) = j | N(t) = i) space "by stationarity"
-// $)
-
-// Considering the quantity $cal(o)(h)$ we know the following facts:
-
-// #math.equation(block: true, numbering: none,
-// $
-// lim_(t->0) cal(o)(t) = 0 quad quad quad lim_(t -> 0) (cal(o)(t))/t = 0
-// $)
-
-// We can notice that, independently of whether $i = 0$ or $i != 0$, the value of $j$ is always different from 0. Let's now study the two cases according to the value of $i$.
-
-// If $i != 0$ we can notice that, even though $prob(N(t) = j | N(0) = i)$ is well defined, that is never going to happen, because the conditioning probability $prob(N(0) != 0) = 0$, so we are left only with the second equivalence $prob(N(t+h) = j | N(t) = i)$.
-
-// Let's now focus on the case in which $i=0$, we can imagine to take three pictures of the process at three different times: $t=0$, $t=h$, $t=t+h$ while the process moves. Let's consider the following equality which leverages the law of total probability:
-
-// #math.equation(block: true, numbering: none,
-// $
-// p_(i,j)(t+h) = sum_(k=0)^oo p_(i,k)(h) space p_(k,j)(t)
-// $)
-
-// Consider now the left side of the equation and consider the following manipulation, which will later be transported also to the right side:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   limits(lim)_(h->0) space (p_(i,j)(t+h) - p_(i,j)(t))/h <==> (d space p_(i,j)(t))/ (d t) = p_(i,j)^' (t) \
-// $)
-
-// In the last few lines we have introduced the *derivative* of the transition probability. We can actually define this for any homogeneous continuous time Markov chain, for any state $i,j in cal(S)$ and any time $t in [0, oo)$. Let's now consider the full equality:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t) &= limits(lim)_(h->0) space 1/h [sum_(k=0 \ coleq(#red, k!= i","j))^oo p_(i,k)(h) p_(k,j)(t) + coleq(#red, p_(i,i)(h) p_(i,j)(t)) + coleq(#red, p_(i,j)(h) p_(j,j)(t)) - p_(i,j)(t)] \
-
-//   &= limits(lim)_(h->0) space 1/h [sum_(k!=i)^oo p_(i,k)(h) p_(k, j)(t)  + p_(i,j)(t) (p_(i,i)(h) - 1)] \
-// $)
-
-// If we take a look at the transition semi-group of the Poisson process in @eq_0502_poisson_transition_semigroup, we can notice that $p_(i,k)(h) = 0$ whenever $k > i$ and that $p_(k,j)(t) = 0$ whenever $j > k$. If we try to study when the quantity $p_(i,k)(h) space p_(k,j)(t)$ is positive we can notice that:
-
-// - $k != 0$, this is necessary because we need $k > 0$ and we assumed $i = 0$, otherwise we'd have $p_(i,k)(h) = 0$, which would make the product null
-
-// - at the same time we need $k <= j$ otherwise the other component $p_(k,j)(t)$ would be equal to 0, making the product null
-
-// We have that $k$ must be larger or equal than $j$ not to make the second factor go to zero but at the same time $k$ needs to be smaller or equal than $i$ not to let the first factor be 0. This is impossible, so the summation must cancel out: this leaves us with the following equality:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t)&= limits(lim)_(h->0) space 1/h [p_(i,j)(t) space (p_(i,i)(h) - 1)] \
-//   &= p_(i,j)(t) lim_(h->0) (p_(i,i))(h) - 1 / h
-// $)
-
-// Here we can notice that, the probability of staying in state $i$ in an amount of time that approaches 0, is 1, thus we can rewrite the above equation as:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t) = p_(i,j)(t) lim_(h->0) (p_(i,i)(0 + h) - p_(i,i)(0))/h = p_(i,j)(t) p_(i,i)^' (0)
-// $)
-
-// This was for the case in which $j > i + 1$, to be as formal as possible we should derive this also in case $j$ was equal to $i + 1$ and to $i$; we are not going to do so, but it turns out that using Chapman-Kolmogorov equations we can start from the original transition semi-group and obtain a relationship between the derivatives of the different entries of the matrix.
-
-// In this case we have $p_(i,j)(t) = cal(o)(t)$ and $p_(i,i)(t) = 1 - lambda t - cal(o)(t)$, meaning that we can write the derivative as follows:
-
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t) = cal(o) (t) (1 - lambda t -cal(o)(t) )
-// $)
-
-// This is clearly a *differential equation*, which we are not going to solve, but intuitively we see that if we managed to solve that we could switch from the expression where the $p_(i,j)(t)$ is an approximation to the closed form solution in which we have the exact definition of the function.
-
-// #definition(title: "Poisson Process (2)")[
-//   A *Poisson process* with intensity parameter $lambda$ is a continuous-time counting process $N = {N(t): t >= 0}$ that satisfies the following properties:
-
-//   + $N(0) = 0$
-
-//   + given any pair of disjoint intervals $(s_1, s_1+t_1], (s_2, s_2 + t_2]$, the increments $N(s_1 + t_1) - N(s_1)$ and $N(s_2 + t_2) - N(s_2)$ are *independent*
-
-//   + for any $t, s >= 0$, $N(t+s) - N(s) ~ "Po"(lambda t)$
-// ]
+== Holding Times - Conditional Transition Matrix
+Suppose we have a stochastic process, more precisely an homogeneous continuous time Markov chain, at that such process process is in state $i$ at a certain time $s$: $X(s) = i$. We can define $U_i$ as follows:
+
+#math.equation(block: true,
+$
+  U_i = "inf"{t > 0 : X(s+t) != i}
+$)<eq_0510_holding_time_definition>
+
+is the time the process $X$ stays in state $i$ before jumpnig outside. We will see it later, but in case the process is a Poisson this is a random variable sampled from an exponential distribution with parameter $lambda$. If we generalize this concept to a general HCTMC we will get:
+
+#math.equation(block: true, numbering: none,
+$
+  U_i ~ "Exp"(-g_(i i))
+$)
+
+Let's now assume we know the exact time $u_i$ at which the process leaves state $i$. Let's now study the following probability:
+
+#math.equation(block: true, numbering: none,
+$
+  prob(X(s + u_i) = j | U_i = u_i"," X(s) = i), j != i
+$)
+
+that is, the probability of jumping from state $i$ to state $j$ in exactly time $u_i$. This can be approximated as follows (given a sufficiently small $h$):
+
+#math.equation(block: true, numbering: none,
+$
+  prob(X(s + u_i) = j | U_i = u_i"," X(s) = i) approx (p_(i j)(h)) / (1 - p_(i i)(h))
+$)
+
+where the left hand side of the equation is the _probability_ of ending up in state $j$ knowing that the process moves out of $i$ at time $u_i$, and the right end side of the equation is obtained by unfolding the conditional probability rule $P(A | B) = P(A inter B) / P(B)$: $p_(i j)$ is exactly the probability of going out of $i$ and specifically in state $j$, the denominator is the probability of going in any other state different from $i$. let's now consider the limit of this equation for $h arrow 0$:
+
+#math.equation(block: true, numbering: none,
+$
+  lim_(h arrow.b 0) (p_(i j)(h)) / (1 - p_(i i)(h)) = (g_(i j) h) /( 1 - (1 + g_(i i) h)) =  - (g_(i j)) /  g_(i i)
+$)
+
+where we obtained the first equality by pluggin in the limit the expressions for $p_(i j)$ and $p_(i i)$ in terms of the infinitesimal generator (@eq_050401_transitionprobs_as_transitionrates). This value is called *conditional transition probability* where conditional stands to indicate that we are not keeping in consideration time, in fact we are studying the process at the precise time in which the jump occurs. By arranging all these values form we obtain a *conditional transition matrix* $tilde(P)$, with entries $tilde(p_(i j))$ where: 
+
+#math.equation(block: true,
+$
+  tilde(p_(i j)) = - (g_(i j)) / g_(i i) = prob(#text[ jumping from $i$ to $j$ ] | #text[ jumping happens ])
+$)<eq_0511_conditional_transition_probabilities>
+
+#example-box("Conditional Transition Probability for Poisson Processes")[
+  Even though we still have to talk in detail about Poisson process it is worth noticing that in a Poisson process the value for the infinitesimal transition rate can only assume two possible values: 
+  
+  #math.equation(block: true, numbering: none,
+  $
+    g_(i j) = cases(
+      lambda quad "if" j = i+1, 
+      0 quad "otherwise"
+    )
+  $)
+  
+  this makes sense, in fact in a Poisson process, which is a counting process, we can only talk about increasing the number of occurred rare events by one. Suppose that now we know that after some time $u_i$ we are jumping out of state $i$. Let's plug the above information into @eq_0511_conditional_transition_probabilities and observe the result: 
+  
+  #math.equation(block: true, numbering: none,
+  $
+    prob(X(s + u_i) = j | X(s) = i) = cases(
+      - lambda/lambda &= 1 quad &" if " j = i+1,
+      &0 quad &i" otherwise "
+    )
+  $)
+]
