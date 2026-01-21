@@ -163,7 +163,7 @@ The third condition already allows us to provide some "approximated" transition 
 
   + for any pair of disjoint intervals, $(s_1, s_1 + t_1]$ and $(s_2, s_2 + t_2]$ the *increments* $N(s_1 + t_1) - N(s_1)$ and $N_(s_2 + t_2) - N_(s_2)$ are *independent*
 
-  + for any $t, s geq 0$ the increment $N(t+s) - N(t)$ is a Poisson random variable with parameter $lambda t$: $N(t+s) - N(t) ~ "Pois"(lambda t)$.
+  + for any $t, s geq 0$ the increment $N(t+s) - N(s)$ is a Poisson random variable with parameter $lambda t$: $N(t+s) - N(t) ~ "Pois"(lambda t)$.
 ]<def_0604_PoissonProcess_2>
 
 #definition(title: "Poisson Process (3)")[
@@ -358,29 +358,29 @@ $
   = integral_0^oo prob(X_1 leq t leq X_1 + X_2 | X_1 = s) lambda e^(-lambda s) space d s quad (2) \
   = lambda integral_0^t prob(X_2 greater t-s) space e^(- lambda s) space d s = lambda integral_0^t  e^(-lambda(t - s)) space e^(-lambda s) space d s quad (3) \
   = lambda integral_0^t e^(- lambda t) space d s = lambda [s e^(-lambda t)]_0^t = lambda t e^(- lambda t)
-  
+
 $)
 
-where we have obtained equation (1) by applying the law of total probability for continuous function; after this we have obtained equation (2) by simply plugging into the marginal probability the p.d.f. for exponential random variables. Looking to equation (3) we can notice it can be obtained by noticing that $prob(X_2 greater t - s)$ is already conveying what we are actually looking for in (2). The second equation in (3) is obtained by plugging in the survival function for exponential random variables. 
+where we have obtained equation (1) by applying the law of total probability for continuous function; after this we have obtained equation (2) by simply plugging into the marginal probability the p.d.f. for exponential random variables. Looking to equation (3) we can notice it can be obtained by noticing that $prob(X_2 greater t - s)$ is already conveying what we are actually looking for in (2). The second equation in (3) is obtained by plugging in the survival function for exponential random variables.
 
 #remark[
-  Notice how in (3) we have been able to switch the integration interval from $(o, oo)$ to $(o, t)$. The reason is quite straightforward (even though I had to ask my girlfriend): if we consider a value of $s$ which is greater than $t$ we end up computing the probability of $X_2 greater a, space a in NN^-$, which is trivial and non-meaningful. 
+  Notice how in (3) we have been able to switch the integration interval from $(o, oo)$ to $(o, t)$. The reason is quite straightforward (even though I had to ask my girlfriend): if we consider a value of $s$ which is greater than $t$ we end up computing the probability of $X_2 greater a, space a in NN^-$, which is trivial and non-meaningful.
 ]
 
-We can also notice how the final result can be rewritten in the following manner: 
+We can also notice how the final result can be rewritten in the following manner:
 #math.equation(block: true, numbering: none,
 $
   lambda t e^(- lambda t) = lambda t + lambda t(e^(- lambda t) - 1)
 $)
 
-Having rewritten this value in such a way is very convenient because we can notice the following two facts: 
+Having rewritten this value in such a way is very convenient because we can notice the following two facts:
 
 #math.equation(block: true, numbering: none,
 $
   lambda t(e^(-lambda t) - 1) arrow 0 " and " (lambda t (e^(-lambda t) - 1)) / t arrow 0 quad " as " t arrow.b 0
 $)
 
-So we have proven that is $prob(N(t) = 1) = lambda t + cal(o)(t)$. For $prob(N(t) geq 2)$ we proceed in a similar fashion: 
+So we have proven that is $prob(N(t) = 1) = lambda t + cal(o)(t)$. For $prob(N(t) geq 2)$ we proceed in a similar fashion:
 
 #math.equation(block: true, numbering: none,
 $
@@ -390,206 +390,251 @@ $
   &= lambda integral_0^t (e^(-lambda s) - e^(- lambda t) space d s = 1 - e^(-lambda t) -lambda t e^(- lambda t)
 $)
 
-where at the line of equality (1) we switched from the left to the right side by noticing the $integral prob(X_2 leq t - s)$ is exactly the formulation of the cumulative distribution function. 
+where at the line of equality (1) we switched from the left to the right side by noticing the $integral prob(X_2 leq t - s)$ is exactly the formulation of the cumulative distribution function.
 
-Now, similarly to what we did before, we can notice the following facts: 
+Now, similarly to what we did before, we can notice the following facts:
 
 #math.equation(block: true, numbering: none,
 $
   1 - e^(-lambda t) - lambda t e^(-lambda t) arrow 0 quad " and " quad (1 - e^(- lambda t) - lambda t e^(-lambda t))/t arrow 0 quad quad "as" t arrow.b 0
 $)
 
-thus we can conclude that $prob(N(t) geq 2) = 1 - e^-lambda t -lambda t e^(-lambda t) = cal(o)(t)$. 
+thus we can conclude that $prob(N(t) geq 2) = 1 - e^-lambda t -lambda t e^(-lambda t) = cal(o)(t)$.
 
 Finally we get that $prob(N(t) = 0) = 1 - prob(N(t) = 1) -prob(N(t) geq 2) = 1 - lambda t + cal(o)(t)$, so we can safely conclude that @def_0605_PoissonProcess_3 implies @def_0603_PoissonProcess_1 #sym.qed
 
-// == Poisson Processes
-// In this section, which is quite important we are going to study what are Poisson Processes and how they are characterized. A *Poisson process* with *intensity* $lambda$ is a continuous-time *counting process*:
 
-// #math.equation(block: true, numbering: none,
-// $
-// N = {N(t): t >= 0}
-// $)
+== Properties of Poisson Processes
+Now that we have proved the equality of the three definitions we can introduce some of their properties. First of all we have seen how Poisson processes are particular cases of a HCTMC characterized by transition probabilities in the form
 
-// taking values in $cal(S) = {0, 1, 2, ...}$ with the following properties:
+#math.equation(block: true, numbering: none,
+$
+  p_(m, n+m)(t) = prob(N(t+h) = n + m |N(h) = m)
+$)
 
-// + $N(0) = 0$
-// + the _increments_ are *independent* and *stationary*
-// + $prob(N(h)=1) = lambda h + cal(o)(h); prob(N(h) >= 2) = cal(o)(h)$ for small $h > 0$
+satisfying the following condition:
 
-// #remark[
-//   $cal(o)(h)$ is a function that goes to zero faster than $h$ as $h$ approaches 0:
+#math.equation(block: true, numbering: none,
+$
+  p_(m, n+m)(t) = cases(
+    1 - lambda h + cal(o)(t) quad &"if" n = 0,
+    lambda h + cal(o)(t) quad &"if" n = 1,
+    cal(o)(t) quad &"if" n > 1,
+  )
+$)
 
-//   #math.equation(block: true, numbering: none,
-//   $
-//     limits(lim)_(h->0) cal(o)(h) = 0 quad "and" quad limits(lim)_(h->0) cal(o)(h)/h = 0
-//   $)
-// ]
+We have also shown that the following equation is true:
 
-// #remark[
-//   As already mentioned in @def_0406_strongstationarity, a stochastic process is (strongly) stationary if the finite dimensional distributions are invariant to time shifts. This means that the following distributions are equivalent:
+#math.equation(block: true, numbering: none,
+$
+  p_(m, n+m)(t) &= prob(N(t+h) = n + m | N(h) = m) \
+  &= prob(N(t) = n | N(0) = 0) = prob(N(t) = n)
+$)
 
-//   - $X_t$ and $X_t+h$ are equal in distribution for all $t, h >= 0$
-//   - $(X_t, X_s) " and " (X_(t+n), X_(s+n)) quad forall t, s, n >= 0$
-//   - $(X_t, X_s, X_u)$ and $(X_(t+h), X_(s+h), X_(u+h)) quad forall t, s, u, h >= 0$
-// ]
+This is very useful, since we have a very practical tool to compute the last probability value, since $N(t) ~ "Pois"(lambda t)$.
 
-// The previous two remarks should help to clarify the meaning of the last Poisson counting processes property. Let's now summarize what we know about the Poisson counting process $N ~ P "PP"(lambda)$:
+The process can, alternatively, be characterized by the *holding times*, also called _inter-arrival times_, $X_i limits(~)^"i.i.d." "Exp"(lambda)$. This results in arrival times given by the following equation:
 
-// - from property number 1 we know that $N(0) = 0$, this means that $prob(N(0) = 0) = 1$, i.e., we know the marginal at time 0.
+#math.equation(block: true, numbering: none,
+$
+  T_n = sum_(i = 1)^n X_i ~ "Gamma"(n, lambda)
+$)
 
-// - from property number 2, we know that the increments  $N(t+s) - N(s)$ are independent and stationary, this is illustrated in @fig_0501_strongstationarity_increments below.
+which is not surprising, since a sum of i.i.d. exponentially distributed random variables with the same parameter $lambda$ can be modeled by means of a _Gamma distribution_ (see @th_0301_additivity_exponential).
 
+We are now ready to introduce two fundamental properties about Poisson processes: superposition and thinning.
 
+=== Superposition
+This first property will empower us with the possibility of combining two Poisson processes into one, similarly to what we did when we were summing up independent Poisson random variables. (see @th_0302_additivity_poisson_rv).
 
-//   This means that is we consider $N(t + s) - N(s)$, this distribution is only dependent on the value of $t$, and similarly $N(t + s + h) - N(t + s)$, which only depends on $h$.
+The proof of why this property is valid is left as an exercise but we encourage the reader to try it out.
 
+#theorem(title: "Superposition of Poisson Process")[
+  Let $N_1 = {N_1(t) : t>=0}$ and $N_2: {N_2(t) : t>= 0}$ be two _independent Poisson processes_, with intensities $lambda_1, lambda_2$ respectively. Then, the process $N = {N(t) : t>=0}$ given by $N(t) = N_1(t) + N_2(t)$ is also a Poisson process with intensity $lambda = lambda_1 + lambda_2$.
+]<th_0601_superposition>
 
-// === Poisson Process - Definition (1)
-// All these notions we have presented allow us to provide a first definition of a Poisson process, there are actually other equivalent definitions, but we will present them later on.
+The result can actually be extended to a sum of a countable number of poisson processes:
 
-// #definition(title: "Poisson Process (1)")[
-//   A *Poisson process* with intensity $lambda$ is a continuous time countin process $N = {N(t): t >= 0}$ taking values in $cal(S) = {0,1,2,...}$ such that:
+#math.equation(block: true, numbering: none,
+$
+  N_i limits(~)^perp "PP"(lambda_i) quad ==> quad N = sum_(i = 1)^k N_i ~ "PP"(sum_(i=1)^k lambda_i)
+$)
 
-//   - $N(0) = 0$, no other possible outcome is allowed
-//   - the increments are independent and stationary
-//   - $prob(N(h) = 1) = lambda h + cal(o)(h)$ and $prob(N(h)) >= 2 = cal(o)(h)$
-// ]<def_0501_poisson_process_1>
+Actually, it also possible to extend this to an uncountable sum of independent Poisson processes, provided the sum of the rates is finite.
 
-// What we are still missing to further explore in this definition is the last condition. To do so, we can start studying the probability of $N(h)$ being 1 by means of the law of total probability:
+#figure(
+  image("/assets/0606_superposition_visualization.png", width: 60%),
+  caption: [Visualization of the *superposition property* for Poisson processes]
+)<fig_0603_superposition>
 
-// #math.equation(block: true, numbering: none,
-// $
-//   prob(N(h) = 1) &= sum_(n=0)^oo prob(N(h) = 1 | N(0) = n) space prob(N(0) = n) \
-//   &= prob(N(h) = 1 | N(0) = 0) space "by property (1)" \
-//   &= p_(0,1)(h) space "the transition probability from 0 to 1 in time h"
-// $)
+=== Thinning or Splitting
+The following property is kind of the opposite compared to the previously introduced superposition. It will empower us with the possibility to extract more specific Poisson processes from a more general one.
 
-// Let's study what happens inside the transition semi-group of a Poisson process:
+#theorem(title: "Thinning")[
+  Let $N = {N(t) : t >= 0}$ be a Poisson process with intensity $lambda$ and let $tilde(N) = {tilde(N)(t) : t >= 0}$ be the process obtained by retaining each arrival event with probability $p$ and discarding it with probability $1 - p$. Then $tilde(N) ~ "PP"(lambda p)$. Furthermore, the process $M: {M(t) : t >= 0}$ formed by the discarded arrivals, i.e., $M(t) = N(t) - tilde(N)(t)$ for all $t >= 0$, is also a Poisson process with intensity $lambda(1 - p)$ and independent of $tilde(N)$.
+]<th_0602_thinning>
 
-// #math.equation(block: true,
-// $
-//   P_t = mat(
-//   1 - lambda t  + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), cal(o)(t), space ...;
-//   0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), cal(o)(t), space ...;
-//   0, 0, 1 - lambda t + cal(o)(t), lambda t + cal(o)(t), space ...;
-//   dots.v, dots.v, dots.v, dots.v, space dots.down;
-// )
-// $)<eq_0502_poisson_transition_semigroup>
+This theorem may seem a little more involved than the previous one about superposition, let's try to visualize it.
 
-// This allows us to notice that, thanks to stationarity we can actually provide a more explicit expression for the transition probabilities of a Poisson process, according to the present state $i$ and the future state $j$:
+#figure(
+  image("/assets/0607_splitting_visualization.png", width: 60%),
+  caption: [Visualization of the *thinning property* for a Poisson process]
+)
 
-// - $p_(i,j) (h) = 0$ for all $j < i$, this is not clear now, but it will be looking at the definition of a Counting process
+This result can be extended to a countable number of thinned processes, i.e.,
 
-// - $p_(i,i) (h) = 1 - lambda(t) + cal(o)(t)$, this is the probability of not having any increment in time $h$
+#math.equation(block: true, numbering: none,
+$
+  tilde(N_i) limits(~)^perp "PP"(lambda p_i), quad "for" p_i > 0, sum_(i=1)^k p_i = 1
+$)
 
-// - $p_(i, i+1) (h) = lambda t + cal(o)(t)$, this is the probability of having exactly one increment in time $h$
+provided each arrival of the original process $N$ is assigned, independently to a single process $tilde(N_i)$ with probability $p_i$.
 
-// - $p_(i,j) (h) = cal(o)(t) space forall j >= i+2$, this is the probability of having two or more increments in time $h$, which, not surprisingly, goes to zero faster than $h$ as $h$ approaches 0
+=== Mean and Covariance functions
+We have seen that the marginal distributions of the Poisson process are Poisson, i.e.,
 
-// To understand why the first point is correct, we need to introduce the definition of the more general *counting process*:
+#math.equation(block: true, numbering: none,
+$
+  N ~ "PP"(lambda) quad ==> quad N(t) ~ "Pois"(lambda t)
+$)
 
-// #definition(title: "Counting Process")[
-//   A stochastic process $X(t)$ is called a *counting process* if the following conditions hold:
+So clearly, the Poisson process cannot be *stationary*:
 
-//   + $X(t) in NN quad forall t in cal(T) subset RR$, the *time domain*
+- $mu_N(t) = exp(N(t)) = lambda t$ which depends on $t$ and is not a constant value as we would expect in case of a stationary process
 
-//   + $X(s) <= X(t) quad forall s <= t$
+- $sigma^2_N (t) = var(N(t)) = lambda t$ which, again, depends on $t$
 
-//   + Counts are non-negative integers, $X(t) in {0, 1, 2, 3, ...}$
-// ]<def_0502_counting_process>
+This method to prove _non stationarity_ may appear surprising if we think about @def_0505_stationary_distribution, but if we think about it, in the definition we asked the process to converge to a certain, fixed, distribution in the long run, which directly implies obtaining a mean and a variance which are constant. Also we can notice that for the mean not to be constant is in disagree with @def_0404_weakstationarity, where we required for the mean to be constant.
 
-// Basically, the first point of @def_0501_poisson_process_1 holds because, by looking at the second condition of @def_0502_counting_process we know that the counting process is non-decreasing, this means that we cannot have less counts in the future than in the present, which translates to the impossibility of going from state $i$ to any state $j < i$.
+We can also compute the covariance function for the process. For $s > t$:
 
-// #remark[
-//   The reason why we have introduced the $cal(o)(t)$ factor is to keep into account the size of the considered time interval. In fact, as the time interval $t$ considered approaches 0, the smaller are the chances of having more than one increment.
-// ]
+#math.equation(block: true, numbering: none,
+$
+  sigma_N (t, s) &= cov(N(t), N(s)) = cov(N(t), N(t)+ N(s) - N(t)) \
+  &= cov(N(t), N(t)) + cov(N(t), N(s) - N(t)) = var(N(t)) + 0 = lambda(t)
+$)
 
-// #warning-box[
-//   The definition of a counting process is actually quite general: it does not specify anything about the distribution of the increments, nor about their independence or stationarity. In fact, a counting process could be as simple as a deterministic function that counts the number of events that have occurred up to time $t$.
-// ]
+By a similar argument, for $s < t$, $sigma_N (t, s) = lambda s$. So, in general we have that:
 
-// === Poisson Process - Definition (2)
-// Let's focus for some more time on the Poisson process $N ~ P P(lambda)$ and let's look at the transition probabilities in case the future state $j$ is greater than the present state $i$ by more than 1, i.e., $j > i + 1$:
+#math.equation(block: true,
+$
+  sigma_N (t, s) = lambda min{t, s}
+$)<eq_0604_poisson_covariance_function>
 
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)(t) = cal(o)(t) &= prob(N(t) = j | N(0) = i) \
-//   &= prob(N(t + h) = j | N(t) = i) space "by stationarity"
-// $)
+== Some Examples
 
-// Considering the quantity $cal(o)(h)$ we know the following facts:
+#example-box("Carlton-Devoir 7.25")[
+  Database queries to a certain data warehouse occur randomly throughout the day. On average, 0.8 queries arrive per second during regular business hours. Assume a Poisson process model is applicable here.
 
-// #math.equation(block: true, numbering: none,
-// $
-// lim_(t->0) cal(o)(t) = 0 quad quad quad lim_(t -> 0) (cal(o)(t))/t = 0
-// $)
+  _What is the probability of exactly 1 query in the first second and exactly 2 queries in the four seconds thereafter?_
 
-// We can notice that, independently of whether $i = 0$ or $i != 0$, the value of $j$ is always different from 0. Let's now study the two cases according to the value of $i$.
+  Let $N(t)$ denote the number of queries in the first $t$ seconds. Then $N ~ "PP"(0.8)$ and $N(1), N(5) - N(1)$ are independent Poisson random variables. We can thus compute the probability of the joint event by multiplying individual marginal probabilities.
 
-// If $i != 0$ we can notice that, even though $prob(N(t) = j | N(0) = i)$ is well defined, that is never going to happen, because the conditioning probability $prob(N(0) != 0) = 0$, so we are left only with the second equivalence $prob(N(t+h) = j | N(t) = i)$.
+  To do so we can notice that $N(1)$ che be written as $N(1) - N(0)$ and that we are left with two independent increments (@def_0604_PoissonProcess_2 [2]), we still need to compute the *marginals* to be multiplied, but this is easily computed by condition [3] of @def_0604_PoissonProcess_2:
 
-// Let's now focus on the case in which $i=0$, we can imagine to take three pictures of the process at three different times: $t=0$, $t=h$, $t=t+h$ while the process moves. Let's consider the following equality which leverages the law of total probability:
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N(1) = 1"," N(5) - N(1) = 2) &= prob(N(1) = 1) prob(N(5) - N(1) = 2) \
+    &= (e^(-0.8)0.8)/1! space (e^(-0.8 * 4) (0.8 dot 4)^2)/2! = 0.075
+  $)
 
-// #math.equation(block: true, numbering: none,
-// $
-// p_(i,j)(t+h) = sum_(k=0)^oo p_(i,k)(h) space p_(k,j)(t)
-// $)
+  _What is the probability of exactly 1 query in the first second and exactly 2 queries in the first 5 seconds?_
 
-// Consider now the left side of the equation and consider the following manipulation, which will later be transported also to the right side:
+  This time, time intervals are *not disjoint*, so we need to condition in order to find the required probability.
 
-// #math.equation(block: true, numbering: none,
-// $
-//   limits(lim)_(h->0) space (p_(i,j)(t+h) - p_(i,j)(t))/h <==> (d space p_(i,j)(t))/ (d t) = p_(i,j)^' (t) \
-// $)
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N(5) = 2"," N(1) = 1) &= prob(N(5) = 2 | N(1) = 1)prob(N(1) = 1) \
+    &= prob(N(1) = 1) prob(N(5) - N(1) = 1) \
+    &= (e^(-0.8) 0.8)/1! space (e^(-3.2) 3.2^1)/1! = 0.0469
+  $)
+]
 
-// In the last few lines we have introduced the *derivative* of the transition probability. We can actually define this for any homogeneous continuous time Markov chain, for any state $i,j in cal(S)$ and any time $t in [0, oo)$. Let's now consider the full equality:
+Notice how, in the last part of the previous example, the intervals $[0, 1], [0,5]$ are _overlapping_, the variables $N(1)$ and $N(5)$ are *correlated* with $sigma_N(1,5) = 0.8 min{1, 5} = 0.8$. As one might expect the covariance is positive, since an increase in $N(1)$ is clearly related to an increase in $N(5)$.
 
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t) &= limits(lim)_(h->0) space 1/h [sum_(k=0 \ coleq(#red, k!= i","j))^oo p_(i,k)(h) p_(k,j)(t) + coleq(#red, p_(i,i)(h) p_(i,j)(t)) + coleq(#red, p_(i,j)(h) p_(j,j)(t)) - p_(i,j)(t)] \
+#example-box("Carlton-Devoir 7.27")[
+  Two roads feed into the northbound lanes on the Anderson Street Bridge. During rush hour, the number of vehicles arriving from the first road can be modeled by a Poisson process with a rate parameter of 10 per minute, while arrivals from the second read form an independent Poisson process with rate 8 cars per minute.
 
-//   &= limits(lim)_(h->0) space 1/h [sum_(k!=i)^oo p_(i,k)(h) p_(k, j)(t)  + p_(i,j)(t) (p_(i,i)(h) - 1)] \
-// $)
+  _What is the probability that a total of more than 100 vehicles will arrive at the two feeder roads in the first 5 minutes of rush hour?_
 
-// If we take a look at the transition semi-group of the Poisson process in @eq_0502_poisson_transition_semigroup, we can notice that $p_(i,k)(h) = 0$ whenever $k > i$ and that $p_(k,j)(t) = 0$ whenever $j > k$. If we try to study when the quantity $p_(i,k)(h) space p_(k,j)(t)$ is positive we can notice that:
+  To solve this question we can address @th_0601_superposition: we have two independent processes with different rate parameters, $N_1 ~ "PP"(10), N_2 ~ "PP"(8)$. The resulting Poisson process is going to be $N ~ "PP"(18)$. Now we can use @def_0604_PoissonProcess_2 [3] to see that the increment $N(4) - N(0) ~ "Pois"(lambda t) => N(4) - N(0) ~ "Pois"(18 * 5)$:
 
-// - $k != 0$, this is necessary because we need $k > 0$ and we assumed $i = 0$, otherwise we'd have $p_(i,k)(h) = 0$, which would make the product null
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N(5) > 100) = 1 - prob(N(5) <= 100) = 1 - "ppois"(100, 5 * 18) = 0.11349
+  $)
+]
 
-// - at the same time we need $k <= j$ otherwise the other component $p_(k,j)(t)$ would be equal to 0, making the product null
+#example-box("Carlton-Devoir 7.28")[
+  At a certain large hospital, patients enter the emergency room at a mean rate of 15 per hour. Suppose 20% of patients arrive in critical condition, i.e., they require immediate treatment. Assume patient arrivals meet the conditions of a Poisson process.
 
-// We have that $k$ must be larger or equal than $j$ not to make the second factor go to zero but at the same time $k$ needs to be smaller or equal than $i$ not to let the first factor be 0. This is impossible, so the summation must cancel out: this leaves us with the following equality:
+  _What is the probability that more than 50 patients arrive in the next 4 hours?_
 
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t)&= limits(lim)_(h->0) space 1/h [p_(i,j)(t) space (p_(i,i)(h) - 1)] \
-//   &= p_(i,j)(t) lim_(h->0) (p_(i,i))(h) - 1 / h
-// $)
+  Similarly to what we did in the previous examples, we have a process $N ~ "PP"(15)$, we need to compute:
 
-// Here we can notice that, the probability of staying in state $i$ in an amount of time that approaches 0, is 1, thus we can rewrite the above equation as:
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N(4) > 50) = 1 - prob(N(4) <= 50) = "ppois"(50, 15*4) = 0.89232
+  $)
 
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t) = p_(i,j)(t) lim_(h->0) (p_(i,i)(0 + h) - p_(i,i)(0))/h = p_(i,j)(t) p_(i,i)^' (0)
-// $)
+  _What is the probability that more than 10 critical patients arrive in the next 4 hours?_
 
-// This was for the case in which $j > i + 1$, to be as formal as possible we should derive this also in case $j$ was equal to $i + 1$ and to $i$; we are not going to do so, but it turns out that using Chapman-Kolmogorov equations we can start from the original transition semi-group and obtain a relationship between the derivatives of the different entries of the matrix.
+  To address this question we need to use the *thinning property* (see @th_0602_thinning), by means of which we can model a thinned process representing the sole critical patients in the following way:
 
-// In this case we have $p_(i,j)(t) = cal(o)(t)$ and $p_(i,i)(t) = 1 - lambda t - cal(o)(t)$, meaning that we can write the derivative as follows:
+  #math.equation(block: true, numbering: none,
+  $
+    N^* ~ "PP"(15 * 0.4) ==> N^* ~ "PP"(3)
+  $)
 
-// #math.equation(block: true, numbering: none,
-// $
-//   p_(i,j)^' (t) = cal(o) (t) (1 - lambda t -cal(o)(t) )
-// $)
+  Thus we can apply a reasoning similar to the previous:
 
-// This is clearly a *differential equation*, which we are not going to solve, but intuitively we see that if we managed to solve that we could switch from the expression where the $p_(i,j)(t)$ is an approximation to the closed form solution in which we have the exact definition of the function.
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N^*(4) > 10) = 1 - prob(N^*(4) <= 10) = 1 - "ppois"(10, 3*4) = 0.6528
+  $)
 
-// #definition(title: "Poisson Process (2)")[
-//   A *Poisson process* with intensity parameter $lambda$ is a continuous-time counting process $N = {N(t): t >= 0}$ that satisfies the following properties:
+  _What is the probability that more that 10 critical patients and more than 40 non critical patients arrive in the next 4 hours?_
 
-//   + $N(0) = 0$
+  We can notice that, by the thinning property, we can model the process of non-critical patients as $tilde(N) ~ "PP"(lambda (1 - "P"_"critical")) ==> tilde(N) ~ "PP"(lambda dot 0.8)$. We can also notice that $N^*$ and $tilde(N)$ are two independent processes thus we can multiply the marginal probabilities to obtain the required probability:
 
-//   + given any pair of disjoint intervals $(s_1, s_1+t_1], (s_2, s_2 + t_2]$, the increments $N(s_1 + t_1) - N(s_1)$ and $N(s_2 + t_2) - N(s_2)$ are *independent*
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N^*(4) > 10"," tilde(N)(4) > 40) &= prob(N^*(4) > 10) * prob(tilde(N)(4) > 40) \
+    &= [1 - prob(N^*(4) <= 10)] * [1 - prob(tilde(N)(4) <= 40)] \
+    &= [1 - "ppois"(10, 3*4)] * [1 - "ppois"(40, 12*4)] \
+    &= 0.6528 * 0.8617 = 0.5626
+  $)
+]
 
-//   + for any $t, s >= 0$, $N(t+s) - N(s) ~ "Po"(lambda t)$
-// ]
+#example-box("Carlton-Devoir 7.26")[
+  Consider again the database queries described in the first example, i.e., $N ~ "PP"(0.8)$, where $N(t)$ denotes the number of queries in the first $t$ seconds. 
+  
+  _What is the *expected* waiting time, from the beginning of regular business hours, until the arrival of the 50th query?_
+  
+  Let $T_(50)$ denote the time to the 50-th query from the beginning of regular business hours. We know that the time between each process state change is exponential, we'd like to model the expected sum of these exponential variables, which we know can be done with a *Gamma distribution* with shape parameter $alpha = 50$ and $lambda = 0.8$: $T_50 ~ "Gamma"(50, 0.8)$. 
+  
+  We are now required to provide the expected time, so we can simply answer with the expected value for a Gamma distributed random variable: 
+  
+  #math.equation(block: true, numbering: none,
+  $
+    exp(T_50) = alpha / lambda = 50 / 0.8 = 62.5
+  $)
+  
+  _If 50 or more queries arrive in the first minute, system users will experience a significant backlog in subsequent minutes because of processing time. What is the probability that this happens?_
+  
+  A backlog occurs if $T_50$, that is, the time needed for more than 50 queries to arrive, is less than or equal than 60 seconds. Thus we can compute the probability of a backlog as follows: 
+  
+  #math.equation(block: true, numbering: none,
+  $
+    prob(T_50 <= 60) = "pgamma"(60, 60, 0.8) = 0.4054
+  $)
+  
+  Alternatively we can notice that a backlog occurs if the number of queries in the first 60 seconds is 50 or more, so the same probability can be retrieved as follows: 
+  
+  #math.equation(block: true, numbering: none,
+  $
+    prob(N(60) >= 50) = 1 - "ppois"(49, 60*0.8) = 0.4054
+  $)
+]
+
+With this final example, we conclude the material covered in this course. I hope you found the journey both engaging and insightful!

@@ -586,7 +586,7 @@ $
   lim_(h arrow.b 0) (p_(i j)(h)) / (1 - p_(i i)(h)) = (g_(i j) h) /( 1 - (1 + g_(i i) h)) =  - (g_(i j)) /  g_(i i)
 $)
 
-where we obtained the first equality by pluggin in the limit the expressions for $p_(i j)$ and $p_(i i)$ in terms of the infinitesimal generator (@eq_050401_transitionprobs_as_transitionrates). This value is called *conditional transition probability* where conditional stands to indicate that we are not keeping in consideration time, in fact we are studying the process at the precise time in which the jump occurs. By arranging all these values form we obtain a *conditional transition matrix* $tilde(P)$, with entries $tilde(p_(i j))$ where: 
+where we obtained the first equality by pluggin in the limit the expressions for $p_(i j)$ and $p_(i i)$ in terms of the infinitesimal generator (@eq_050401_transitionprobs_as_transitionrates). This value is called *conditional transition probability* where conditional stands to indicate that we are not keeping in consideration time, in fact we are studying the process at the precise time in which the jump occurs. By arranging all these values form we obtain a *conditional transition matrix* $tilde(P)$, with entries $tilde(p_(i j))$ where:
 
 #math.equation(block: true,
 $
@@ -594,18 +594,18 @@ $
 $)<eq_0511_conditional_transition_probabilities>
 
 #example-box("Conditional Transition Probability for Poisson Processes")[
-  Even though we still have to talk in detail about Poisson process it is worth noticing that in a Poisson process the value for the infinitesimal transition rate can only assume two possible values: 
-  
+  Even though we still have to talk in detail about Poisson process it is worth noticing that in a Poisson process the value for the infinitesimal transition rate can only assume two possible values:
+
   #math.equation(block: true, numbering: none,
   $
     g_(i j) = cases(
-      lambda quad "if" j = i+1, 
+      lambda quad "if" j = i+1,
       0 quad "otherwise"
     )
   $)
-  
-  this makes sense, in fact in a Poisson process, which is a counting process, we can only talk about increasing the number of occurred rare events by one. Suppose that now we know that after some time $u_i$ we are jumping out of state $i$. Let's plug the above information into @eq_0511_conditional_transition_probabilities and observe the result: 
-  
+
+  this makes sense, in fact in a Poisson process, which is a counting process, we can only talk about increasing the number of occurred rare events by one. Suppose that now we know that after some time $u_i$ we are jumping out of state $i$. Let's plug the above information into @eq_0511_conditional_transition_probabilities and observe the result:
+
   #math.equation(block: true, numbering: none,
   $
     prob(X(s + u_i) = j | X(s) = i) = cases(
@@ -613,4 +613,229 @@ $)<eq_0511_conditional_transition_probabilities>
       &0 quad &i" otherwise "
     )
   $)
+]
+
+== Stationary distribution and Global Balance Equations
+Consider a CTMC $X$ such that its initial distribution is given by $pi^((0)) = [pi^((0))_1, pi^((0))_2, ...]$. By the law of total probability, the marginal distribution of $X(t)$, $pi^((t)) = [pi^((t))_1, pi^((t))_2, ...]$ satisfies the following relation:
+
+#math.equation(block: true, numbering: none,
+$
+  pi^((t))_j &= prob(X(t) = j) sum_(i in cal(S)) prob(X(0) = i) space prob(X(t) = j | X(0) = i) \
+  &= sum_(i in cal(S)) pi^((0))_i space p_(i j)(t)
+$)
+
+or, in matrix form $pi^((t)) = pi^((0)) space P_t$. With this concept of distribution in mind we can define the stationary distribution as follows:
+
+#definition(title: "Stationary distribution")[
+  The vector $pi = [pi_1, pi_2, pi_3, ...]$ is a *stationary distribution* of the HCTMC $X$ if $pi_i >= 0$ forall $i in cal(S)$, $sum_(i in cal(S)) pi_i = 1$ and, most importantly:
+
+  #math.equation(block: true,
+  $
+    pi = pi space P_t quad forall t geq 0
+  $)<eq_0512_stationary_distribution>
+]<def_0505_stationary_distribution>
+
+=== Irreducibility
+A stationary distribution is also called *steady state distribution*, because if the process stars at the stationary distribution, it stays there. In this case, the chain is said to be in a *steady state* and $pi_i = prob(X(t) = i)$ can be interpreted as the _average amount of time_ that the chain _spends in state $i$ in the long run_. This is quite nice, but we still have no tool to compute such $pi$; to do so we need another definition which is given below.
+
+#pagebreak() 
+
+#definition(title: "Irreducible HCTMC")[
+  A HCTMC $X$ is *irreducible* if, for any pair of states $i, j in cal(S)$ we have that $pi_(i j) > 0$.
+]
+
+We may not be able to jump from one state to any other state _directly_ but for us it is sufficient to find a *path* that connects every pair of states in the graph. It can be shown that for a CTMC, either $p_(i j)(t) = 0$ for all $t > 0$ or $p_(i j)(t) > 0$ for all $t > 0$. So a HCTMC is irreducible if the probability of reaching state $j$ from state $i$ in a time $t$ is positive for any $i, j in cal(S)$. To verify *irreducibility* we can look at the *infinitesimal generator*.
+
+#theorem(title: "Irreducibility condition")[
+  Let $X$ be a CTMC with generator $G = [g_(i j)]$ and transition semigroup $P_t = exp{t dot G}$. X is *irreducible* if and only if for any pair $i, j in cal(S)$ there exists a sequence $k_1, k_2, ..., k_n$ of states such that
+
+  #math.equation(block: true,
+  $
+    g_(i, k_1) space g_(k_1, k_2) space ... space g_(k_n, j) != 0
+  $)<eq_0513_irreducibility_condition>
+]<th0503_irreducibility_condition>
+
+If we consider a graphical representation of the chain with nodes corresponding to states and directed edges corresponding to non-zero entries of $G$, the chain is irreducible if there is a path from any node to any other node in the graph. Clearly a *birth process* is *not irreducible*, as it is non-decreasing.
+
+#example-box("Birth and Death process")[
+  In this example we are going to study the irreducibility of the birth-death process. Suppose the number $X(t)$ of individuals alive in a population at time $t$ evolves in the following way:
+
+  #math.equation(block: true, numbering: none,
+  $
+    prob(X(t + h) = n + m | X(t) = n) = cases(
+      lambda_n h + cal(o)(h) quad &"if" m = 1,
+      mu_n h + cal(o)(h) quad &"if" m = -1,
+      cal(o)(h) quad &"otherwise"
+    )
+  $)
+
+  where all birth rates $lambda_0, lambda_1, .., ...$ and death rates $mu_0, mu_1, ...$ are positive. We can take a look at the generator of the process:
+
+  #math.equation(block: true, numbering: none,
+  $
+    G = mat(
+      -lambda_0, lambda_0, 0, 0, 0, ...;
+      mu_1, -(lambda_1 + mu_1), lambda_1, 0, 0, ...;
+      0, mu_2, -(lambda_2 + mu_2), lambda_2, 0, ...;
+      dots.v, dots.v, dots.v, dots.v, dots.v, dots.down;
+    )
+  $)
+
+  For this process to be irreducible we need $lambda_i, mu_i > 0$. In many applications it is interesting to consider the case when $lambda_0 = 0$. In this case $0 in cal(S)$ is an absorbing state, representing the extinction of the population. In such case the chain is not irreducible.
+]
+
+Previously we have mentioned a quite straightforward and obvious fact, that is, if we start at a stationary distribution, the process is going to stay there. But what is interesting is the behavior of the processes which have a stationary distribution but do not start with the same initial distribution. We are going to observe their _long term behavior_.
+
+#theorem(title: "Stationary long term behavior")[
+  Let $X$ be an *irreducible* HCTMC with standard semigroup ${P_t}$ of transition probabilities. If a stationary distribution $pi$ exists, then it is *unique* for all $i, j in cal(S)$ and:
+
+  #math.equation(block: true,
+  $
+    p_(i j)(t) = prob(X(t) = j | X(0) = i) --> pi_j " as " t -> oo
+  $)<eq_0513_long_term_stationarity>
+]<th_0504_long_term_stationarity>
+
+So if the stationary distribution $pi$ exists, in the long run, the marginal distribution of $X(t)$ will approach $pi$, regardless of the initial distribution. The only thing we have left to explain is how to compute this.
+
+=== Global balance Equations
+#theorem(title: "Finding the the Stationary Distribution")[
+  A distribution $pi$ is the stationary distribution of a HCTMC with transition semigroup $P_t$ if and only if the following condition holds:
+
+  #math.equation(block: true,
+  $
+  pi dot G = 0
+  $)<eq_0514_stationarity_condition>
+]<th_0505_stationarity_condition>
+
+We can see that they are valid as, remembering that $G^0 = I$ we have the following:
+
+#math.equation(block: true, numbering: none,
+$
+  pi dot G = 0 &<==> space pi dot G (t G)^(n - 1) / n! = 0 (t G)^(n-1)/n! quad forall n>=1, t>=0 quad quad (1)\
+  &<==> space pi + sum_(n = 1)^oo pi (t G)^n / n! = pi + 0 quad forall t>=0  quad quad (2) \
+  &<==> space pi space sum(n=0)^oo (t G)^n / n! = pi  quad forall t >= 0 quad quad (3) \
+  &<==> space  pi P_t = pi quad quad forall t >= 0
+$)
+
+Following we try to explain how the above "proof" has been obtained:
+
++ in the first line we have simply multiplied both sides by the same quantity, preserving the relationship stated in @eq_0514_stationarity_condition
+
++ in the second line, we obtained (2) by noticing that the first equivalence held for any $n >= 1$, so in the second line we added app all the terms starting from $n = 1$
+
++ in the third line we noticed that $pi = (t G)^n / n!$ for $n = 0$, thus it has been brought inside the summation to obtain (3)
+
++ we noticed that $sum_(n=0)^oo (t G)^n / n!$ is exactly the matrix exponential used to obtain the transition semigroup from the generator
+
+The result in @th_0505_stationarity_condition can be interpreted in terms of the flux in and out of a given state $i in cal(S)$, by developing the matrix product $pi^T G = 0$ and recalling $g_(i i) = - sum_(j != i) g_(i j)$. This is formalized in the global balance equations which are presented in the following theorem.
+
+#theorem(title: "Global balance equations")[
+  A distribution $pi$ is the stationary distribution of a HCTMC with transition semigroup $P_t$ is and only if it satisfies the *global balance equations*
+
+  #math.equation(block: true,
+  $
+    pi_i sum_(j != i)g_(i j) = sum_(j != i) pi_j g_(j i)
+  $)<eq_0515_global_balance_equations>
+]<th_0506_global_balance_equations>
+
+The left hand side of @eq_0515_global_balance_equations can be interpreted as the *flux out of state $i$*: the mean proportion of tie that the process spends in state $i$ multiplied by the total rate of transitions out of state $i$.
+
+The right hand side of @eq_0515_global_balance_equations can be interpreted as the *flux into state $i$*: the sum over all states $j != i$ of the mean proportion of time that the process spends in state $j$ multiplied by the rate of transitions from $j$ into $i$
+
+#example-box("Two state process")[
+  Consider a chain $X$ with only two states: $S = {1, 2}$ and generator given by:
+
+  #math.equation(block: true, numbering: none,
+  $
+  G = mat(-mu, mu; lambda, -lambda;)
+  $)
+
+  Developing the matrix product $#text[*$pi$*]^T G = 0$ we obtain the following equations:
+
+  #math.equation(block: true, numbering: none,
+  $
+    -mu pi_1 + lambda pi_2 &= 0 \
+     mu pi_1 - lambda pi_2 &= 0
+  $)
+
+  In order to obtain a unique solution we must consider the condition that *$pi$* is a probability distribution:
+
+  #math.equation(block: true, numbering: none,
+  $
+    pi_1 + pi_2 = 1; quad pi_1, pi_2 in [0, 1]
+  $)
+
+  In this way we obtain the following stationary distribution for the process:
+
+  #math.equation(block: true, numbering: none,
+  $
+    #text[*$pi$*] = (lambda/(mu + lambda), mu/(mu + lambda))
+  $)
+]
+
+In the above example, the global balance equations defined an _irreducible system of equations_, this is true in the vast majority of cases, so we always must remember to consider the _normalization condition_ $sum_(i in cal(S)) pi_i = 1$. In matrix form, this can be done by substituting one of the columns of $G$ with a row of ones, and placing a one in the corresponding place of the row vector 0. We say this, because it will become very handy when trying to solve this kind of equations in `R`, this software, as many others can be used to solve linear systems of the type *$A x = b$* where *$A, b$* are a matrix and a vector of known constants and $x$ is the solution vector for which we wish to solve.
+
+It is therefore convenient to define *$A = tilde(G^T)$*, where *$tilde(G)$* is obtained by substituting the last column of *$G$* with a column of ones, and *$b = e_N$* is the $N$-th canonical vector.
+
+The problem now arises when we are dealing with processes with an *infinite number of states*. Let's see an example of this.
+
+#example-box("Birth-death process global balance equations")[
+  Consider a birth-death process with generator $G = [g_(i j) : i,j >= 0]$ defined as follows:
+
+  #math.equation(block: true, numbering: none,
+  $
+      G = mat(
+        -lambda_0, lambda_0, 0, 0, 0, ...;
+        mu_1, -(lambda_1 + mu_1), lambda_1, 0, 0, ...;
+        0, mu_2, -(lambda_2 + mu_2), lambda_2, 0, ...;
+        dots.v, dots.v, dots.v, dots.v, dots.v, dots.down;
+      )
+  $)
+
+  If all $lambda$'s and $mu$'s are positive, the process is irreducible. The stationary distribution *$pi$*, if it exists, can be found as the unique solution to the global balance equations *pi^T G = 0*. This produces a system with an _infinite number of equations_:
+
+  #math.equation(block: true, numbering: none,
+  $
+    -lambda_0 pi_0 + mu_1 pi_1 &= 0 \
+    lambda_(n-1) pi_(n - 1) - (lambda_n + mu_n)pi_n + mu_(n+1)pi_(n+1) &= 0 quad "if" n >= 1
+  $)
+
+  We can solve this system by _induction_. Following we show how to do it informally:
+
+  - $-lambda_0 pi_0 + mu_1 pi_1 = 0$
+  #math.equation(block: true, numbering: none,
+  $
+    ==> pi_1 = lambda_0 / mu_1 pi_0
+  $)
+
+  - $lambda_0 pi_0 - (lambda_1 + mu_1)pi_1 + mu_2 pi_2 = 0$
+
+  #math.equation(block: true, numbering: none,
+  $
+    &==> lambda_0 pi_0 - (lambda_1 + mu_1) lambda_0 / mu_1 pi_0 + mu_2 pi_2 = 0 \
+    &==> - (lambda_0 lambda_1)/mu_1 pi_0 + mu_2 pi_2 = 0 ==> pi_2 = (lambda_0 lambda_1)/(mu_1 mu_2) pi_0
+  $)
+
+  - In general we can obtain the following expression for $pi_n$:
+
+  #math.equation(block: true, numbering: none,
+  $
+    pi_n = (lambda_0 lambda_1 ... lambda_(n-1))/(mu_1 mu_2 ... mu_n) pi_0 quad n >= 1
+  $)
+
+  Now we can notice that we are still dealing with a *underdetermined* system of equations, to address this we can now use the condition $1 = sum_n pi_n$ which may happen if and only if the following condition holds:
+
+  #math.equation(block: true, numbering: none,
+  $
+    1 + sum_(n=1)^oo (lambda_0 lambda_1 ... lambda_(n-1))/(pi_1 pi_2 ... pi_n) < oo
+  $)
+
+  If this holds, that we are able to find an expression for $pi_0$:
+
+  #math.equation(block: true, numbering: none,
+  $
+    pi_0 = (1 + sum_(n=1)^oo (lambda_0 lambda_1 ... lambda_(n-1))/(pi_1 pi_2 ... pi_n))^(-1)
+  $)
+
+  This means that the process settles into equilibrium with stationary distribution *$pi$* if and only if the sum is finite, a condition which is basically requiring that the birth rates are not too large relative to the death rates.
 ]

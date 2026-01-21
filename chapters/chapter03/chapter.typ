@@ -1023,7 +1023,7 @@ It is actually possible to generalize this property even further: we can even co
   )
 
   that is, the infinite sum of independent Poisson r.v.'s is still a Poisson r.v. If, on the other hand, the series $sum lambda_j = infinity$ then also the probability that the infinite sum diverges is equal to 1.
-]
+]<th_0302_additivity_poisson_rv>
 
 The type of convergence used by this theorem is called *almost sure convergence*, which is stronger than convergence in distribution. To better understand this, suppose we have a sequence $X_i ~ "Pois"(lambda_i)$. We can define *partial sums*: $S_1 = X_1$, $S_2 = X_1 + X_2$, $S_3 = X_1 + X_2 + X_3$, and so on until $S_n$. Along with these random variables we can also define the partial sums of their parameters: $mu_1 = lambda_1$, $mu_2 = lambda_1 + lambda_2$, $mu_3 = lambda_1 + lambda_2 + lambda_3$, and so on until $mu_n$, so that $S_n ~ "Pois"(mu_n)$.
 
@@ -1512,6 +1512,17 @@ Following we are going to provide the formulas to compute the expected value and
 
 ==== Additivity of Exponential Random Variables
 Now that we have defined the Gamma distribution it is important to mention that, if we have $n$ independent random variables $X_j ~ "Exp"(lambda)$ for $j = 1, 2, ..., n$, then their sum $S_n = X_1 + X_2 + ... + X_n$ is a Gamma random variable with parameters $alpha = n$ and $lambda = lambda$.
+
+#theorem()[
+  Given a sequence of i.i.d. exponential random variables $X_1, X_2, ..., X_n$ with the same rate parameter $lambda$, their sum $X$
+
+  #math.equation(block: true, numbering: none,
+  $
+    X = sum_(i = 1)^n X_i
+  $)
+
+  can be modeled by means of a *Gamma distribution* with parameter $lambda = lambda$ and $alpha = n$, that is, $X ~ "Gamma"(n, lambda)$
+]<th_0301_additivity_exponential>
 
 ==== R Implementation
 As usual, in `R` we have the following functions to work with Gamma random variables:
